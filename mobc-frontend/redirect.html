@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui,viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="x5-orientation" content="portrait" />
+    <!-- 强制竖屏 -->
+    <meta name="full-screen" content="yes" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Wind Pro</title>
+    <script>
+        ;
+        (function() {
+            function urlDecode(string, overwrite) {
+                if (!string) {
+                    return {}
+                } else {
+                    string = string.substr(1)
+                }
+                var obj = {},
+                    pairs = string.split('&'),
+                    d = decodeURIComponent,
+                    name,
+                    value
+
+                for (var i = 0, len = pairs.length; i < len; i++) {
+                    var pair = pairs[i]
+                    pair = pair.split('=')
+                    name = d(pair[0])
+                    value = d(pair[1])
+                    obj[name] =
+                        overwrite || !obj[name] ?
+                        value :
+                        [].concat(obj[name]).concat(value)
+                }
+                return obj
+            }
+
+            var env = '<%= htmlWebpackPlugin.options.env %>'.replace(/"/g, '')
+            var urlObj = urlDecode(location.search) // .toLocaleLowerCase()
+            var host = location.origin,
+                WebApiPrefix = ''
+            switch (env) {
+                case 'production': // 生产
+                    host = 'https://wwwsuperwind.com/'
+                    break
+                case 'uat':
+                    host = 'https://wwwsuperwind.com/'
+                    break
+                case 'development': // 开发
+                    host = host
+                    break
+                default:
+                    host = host
+            }
+            var _router = urlObj.router || ''
+                // var _token = urlObj.token
+                // var _symbolCode = urlObj.code
+                // var _locale = urlObj.locale || 'en_US'
+            var _deviceBrand = urlObj.deviceBrand
+                // symbolCode: null //邀请码
+                // if (_symbolCode) {
+                //   _router = 'signin'
+                //   localStorage.setItem('u_symbolCode', _symbolCode)
+                // }
+                // if (_locale) {
+                //     localStorage.setItem('locale', _locale)
+                // }
+            if (_deviceBrand) {
+                if (_deviceBrand.toLowerCase() == 'lenovo') {
+                    localStorage.setItem('plat', 1)
+                } else {
+                    localStorage.removeItem('plat')
+                }
+            }
+            if (_router) {
+                location.replace(
+                    host + '/app.html?#/' + _router + '/' + '?t=' + new Date().getTime()
+                )
+            } else {
+                location.replace(host + '/app.html' + '?t=' + new Date().getTime())
+            }
+        })()
+    </script>
+</head>
+
+<body></body>
+
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PhoneVerifyCodeMapper">
+
+    <resultMap type="PhoneVerifyCode" id="PhoneVerifyCodeResult">
+        <result property="phoneNo"    column="phone_no"    />
+        <result property="verifyCode"    column="verify_code"    />
+        <result property="expiredAt"    column="expired_at"    />
+    </resultMap>
+
+    <resultMap type="ScenesVerifyCode" id="ScenesVerifyCodeResult">
+        <result property="phoneNo"    column="phone_no"    />
+        <result property="verifyCode"    column="verify_code"    />
+        <result property="sendTime"    column="send_time"    />
+        <result property="useTime"    column="use_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="useScenes"    column="use_scenes"    />
+    </resultMap>
+
+    <sql id="selectPhoneVerifyCodeVo">
+        select phone_no, verify_code, expired_at from phone_verify_code
+    </sql>
+
+    <select id="selectPhoneVerifyCodeList" parameterType="PhoneVerifyCode" resultMap="PhoneVerifyCodeResult">
+        <include refid="selectPhoneVerifyCodeVo"/>
+        <where>
+            <if test="phoneNo != null  and phoneNo != ''"> and phone_no = #{phoneNo}</if>
+            <if test="verifyCode != null  and verifyCode != ''"> and verify_code = #{verifyCode}</if>
+            <if test="expiredAt != null "> and expired_at = #{expiredAt}</if>
+        </where>
+    </select>
+
+    <select id="selectPhoneVerifyCodeByPhoneNo" parameterType="String" resultMap="PhoneVerifyCodeResult">
+        <include refid="selectPhoneVerifyCodeVo"/>
+        where phone_no = #{phoneNo}
+    </select>
+
+    <insert id="insertPhoneVerifyCode" parameterType="PhoneVerifyCode">
+        insert into phone_verify_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phoneNo != null">phone_no,</if>
+            <if test="verifyCode != null">verify_code,</if>
+            <if test="expiredAt != null">expired_at,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phoneNo != null">#{phoneNo},</if>
+            <if test="verifyCode != null">#{verifyCode},</if>
+            <if test="expiredAt != null">#{expiredAt},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePhoneVerifyCode" parameterType="PhoneVerifyCode">
+        update phone_verify_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="verifyCode != null">verify_code = #{verifyCode},</if>
+            <if test="expiredAt != null">expired_at = #{expiredAt},</if>
+        </trim>
+        where phone_no = #{phoneNo}
+    </update>
+
+
+    <delete id="deletePhoneVerifyCodeByPhoneNo" parameterType="String">
+        delete from phone_verify_code where phone_no = #{phoneNo}
+    </delete>
+
+    <delete id="deletePhoneVerifyCodeByPhoneNos" parameterType="String">
+        delete from phone_verify_code where phone_no in
+        <foreach item="phoneNo" collection="array" open="(" separator="," close=")">
+            #{phoneNo}
+        </foreach>
+    </delete>
+
+    <insert id="insertScenesVerifyCode"  parameterType="ScenesVerifyCode">
+        insert into scenes_verify_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phoneNo != null">phone_no,</if>
+            <if test="verifyCode != null">verify_code,</if>
+            <if test="useScenes != null">use_scenes,</if>
+            send_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phoneNo != null">#{phoneNo},</if>
+            <if test="verifyCode != null">#{verifyCode},</if>
+            <if test="useScenes != null">#{useScenes},</if>
+            now()
+        </trim>
+    </insert>
+    <update id="updateScenesVerifyCode" parameterType="ScenesVerifyCode">
+        update scenes_verify_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="useScenes != null">use_scenes = #{useScenes},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            use_time = now()
+        </trim>
+        where verify_code = #{verifyCode}
+        and phone_no = #{phoneNo}
+        and status = 'Pending'
+    </update>
+
+    <select id="selectScenesVerifyCodeList" parameterType="ScenesVerifyCode" resultMap="ScenesVerifyCodeResult">
+        select
+            phone_no,
+            verify_code,
+            use_scenes,
+            status,
+            use_time,
+            send_time,
+            remark
+        from
+            scenes_verify_code
+        <where>
+            <if test="phoneNo != null  and phoneNo != ''"> and phone_no = #{phoneNo}</if>
+            <if test="verifyCode != null  and verifyCode != ''"> and verify_code = #{verifyCode}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by send_time desc
+    </select>
+
+</mapper>

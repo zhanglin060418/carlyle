@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanSignRecordMapper">
+
+    <resultMap type="PanSignRecord" id="PanSignRecordResult">
+        <result property="signId"    column="sign_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="signTime"    column="sign_time"    />
+        <result property="signYear"    column="sign_year"    />
+        <result property="signMonth"    column="sign_month"    />
+        <result property="signDay"    column="sign_day"    />
+        <result property="continuousDay"    column="continuous_day"    />
+        <result property="userName"    column="user_name"    />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentName"    column="agent_name"  />
+    </resultMap>
+
+    <select id="selectPanSignRecordList" parameterType="PanSignRecord" resultMap="PanSignRecordResult">
+        SELECT
+            s.sign_id,
+            s.user_id,
+            s.sign_time,
+            s.sign_year,
+            s.sign_month,
+            s.sign_day,
+            s.continuous_day,
+            u.user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name
+        FROM
+            pan_sign_record s
+        LEFT JOIN sys_user u ON u.user_id = s.user_id
+        left join sys_user u2 on u.top_id = u2.user_id
+        left join sys_user u3 on u.manager_id  = u3.user_id
+        LEFT JOIN sys_user u4 ON u4.user_id = u.agent_id
+        <where>
+            <if test="userName != null and userName != ''"> and u.user_name  like concat('%',#{userName})</if>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(s.sign_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(s.sign_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        order by s.sign_time desc
+    </select>
+
+
+    <select id="getSignRecordListByUser" parameterType="PanSignRecord" resultMap="PanSignRecordResult">
+        SELECT
+            sign_id,
+            user_id,
+            sign_time,
+            sign_year,
+            sign_month,
+            sign_day,
+            continuous_day
+        FROM
+        pan_sign_record
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="signYear >0 "> and sign_year = #{signYear}</if>
+            <if test="signMonth >0 "> and sign_month = #{signMonth}</if>
+            <if test="signDay>0 "> and sign_day = #{signDay}</if>
+        </where>
+    </select>
+
+    <select id="getMaxSignRecordByUser" parameterType="Long" resultMap="PanSignRecordResult">
+        SELECT
+            b.sign_id,
+            b.user_id,
+            b.sign_time,
+            b.sign_year,
+            b.sign_month,
+            b.sign_day,
+            b.continuous_day
+        FROM
+        ( SELECT max( sign_id ) AS sgin_Id, user_id FROM pan_sign_record WHERE user_id = #{userId} GROUP BY user_id ) a
+        LEFT JOIN pan_sign_record b ON a.user_id = b.user_id
+        AND a.sgin_Id = b.sign_id;
+    </select>
+
+    <insert id="insertPanSignRecord" parameterType="PanSignRecord">
+        insert into pan_sign_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="signYear != null">sign_year,</if>
+            <if test="signMonth != null">sign_month,</if>
+            <if test="signDay != null">sign_day,</if>
+            <if test="continuousDay != null">continuous_day,</if>
+            sign_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="signYear != null">#{signYear},</if>
+            <if test="signMonth != null">#{signMonth},</if>
+            <if test="signDay != null">#{signDay},</if>
+            <if test="continuousDay != null">#{continuousDay},</if>
+            now()
+         </trim>
+    </insert>
+</mapper>

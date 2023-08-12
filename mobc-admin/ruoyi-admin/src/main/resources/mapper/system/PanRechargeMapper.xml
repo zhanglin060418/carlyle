@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanRechargeMapper">
+
+    <resultMap type="PanRecharge" id="PanRechargeResult">
+        <result property="rechargeId"    column="recharge_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="payInfoUrl"    column="pay_info_url"    />
+        <result property="requestNo"    column="request_no"    />
+        <result property="orderDate"    column="order_date" />
+        <result property="topId"    column="top_id"    />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <result property="channelId"    column="channel_id"  />
+    </resultMap>
+
+    <sql id="selectPanRechargeVo">
+        select recharge_id, pan_recharge.user_id, sys_user.user_name user_name, amount, pan_recharge.status,
+               pan_recharge.create_time, order_no, pay_info_url,
+               request_no, order_date , pan_recharge.channel_id
+        from pan_recharge
+        	left join sys_user on sys_user.user_id = pan_recharge.user_id
+    </sql>
+
+    <select id="selectPanRechargeList" parameterType="PanRecharge" resultMap="PanRechargeResult">
+        SELECT
+            recharge_id,
+            pan_recharge.user_id,
+            sys_user.user_name user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            amount,
+            pan_recharge.STATUS,
+            pan_recharge.create_time,
+            order_no,
+            pay_info_url,
+            request_no,
+            order_date,
+            pan_recharge.channel_id
+        FROM
+            pan_recharge
+        LEFT JOIN sys_user ON sys_user.user_id = pan_recharge.user_id
+        left join sys_user u2 on sys_user.top_id = u2.user_id
+        left join sys_user u3 on sys_user.manager_id  = u3.user_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+        	<if test="userId != null and userId!= ''"> and pan_recharge.user_id  = #{userId}</if>
+            <if test="userName != null and userName != ''"> and sys_user.user_name  like concat('%',#{userName})</if>
+            <if test="status != null  and status != ''"> and pan_recharge.status = #{status}</if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_recharge.order_no = #{orderNo}</if>
+            <if test="requestNo != null  and requestNo != ''"> and pan_recharge.request_no = #{requestNo}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            	AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+        </where>
+        order by pan_recharge.create_time desc
+    </select>
+
+    <select id="selectPanRechargeListCount" parameterType="PanRecharge" resultType="Long" >
+        SELECT
+        IFNULL(sum(amount),0)
+        FROM
+        pan_recharge
+        LEFT JOIN sys_user ON sys_user.user_id = pan_recharge.user_id
+        left join sys_user u2 on sys_user.top_id = u2.user_id
+        left join sys_user u3 on sys_user.manager_id  = u3.user_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="userId != null and userId!= ''"> and pan_recharge.user_id  = #{userId}</if>
+            <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName})</if>
+            <if test="status != null  and status != ''"> and pan_recharge.status = #{status}</if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_recharge.order_no = #{orderNo}</if>
+            <if test="requestNo != null  and requestNo != ''"> and pan_recharge.request_no = #{requestNo}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+
+    <select id="selectPanRechargeByRechargeId" parameterType="Long" resultMap="PanRechargeResult">
+        <include refid="selectPanRechargeVo"/>
+        where recharge_id = #{rechargeId}
+    </select>
+
+    <select id="selectPanRechargeByRequestNo" parameterType="String" resultMap="PanRechargeResult">
+        <include refid="selectPanRechargeVo"/>
+        where request_no = #{requestNo}
+    </select>
+
+    <select id="selectPanRechargeByOrderNo" parameterType="String" resultMap="PanRechargeResult">
+        <include refid="selectPanRechargeVo"/>
+        where order_no = #{orderNo}
+    </select>
+
+    <insert id="insertPanRecharge" parameterType="PanRecharge" useGeneratedKeys="true" keyProperty="rechargeId">
+        insert into pan_recharge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="amount != null and amount != ''">amount,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="payInfoUrl != null">pay_info_url,</if>
+            <if test="requestNo != null">request_no,</if>
+            <if test="channelId != null">channel_id,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="amount != null and amount != ''">#{amount},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="payInfoUrl != null">#{payInfoUrl},</if>
+            <if test="requestNo != null">#{requestNo},</if>
+            <if test="channelId != null">#{channelId},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updatePanRecharge" parameterType="PanRecharge">
+        update pan_recharge
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="payInfoUrl != null">pay_info_url = #{payInfoUrl},</if>
+            <if test="requestNo != null">request_no = #{requestNo},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            order_date = now()
+        </trim>
+        where recharge_id = #{rechargeId}
+    </update>
+
+
+
+    <select id="getTodayRecharge" resultType="Long">
+		select sum(amount) from pan_recharge where  DATE_FORMAT(order_date,'%Y-%m-%d') = CURDATE() and status = 'Completed'
+    </select>
+
+    <select id="getTodayRechargeUsers" resultType="Long">
+        SELECT
+            count( reuser.cou )
+        FROM
+            ( SELECT count( user_id ) AS cou FROM pan_recharge WHERE DATE_FORMAT(order_date,'%Y-%m-%d') = CURDATE() and STATUS = 'Completed' GROUP BY user_id ) reuser
+    </select>
+
+    <select id="getTotalRecharge" resultType="Long">
+        select sum(amount) from pan_recharge where status = 'Completed'
+    </select>
+
+    <select id="getTotalRechargeUsers" resultType="Long">
+        SELECT
+            count( reuser.cou )
+        FROM
+            ( SELECT count( user_id ) AS cou FROM pan_recharge WHERE STATUS = 'Completed' GROUP BY user_id ) reuser
+    </select>
+
+
+    <select id="setTotalRechargeCountByUser" parameterType="Long" resultType="Long">
+        SELECT
+            sum( re.amount ) amount
+        FROM
+            pan_recharge re
+                LEFT JOIN sys_user u ON re.user_id = u.user_id
+        WHERE
+            re.STATUS = 'Completed'
+          AND (
+                    u.parent_id = #{userId}
+                OR u.grand_id = #{userId}
+                OR u.great_grand_id = #{userId})
+    </select>
+</mapper>

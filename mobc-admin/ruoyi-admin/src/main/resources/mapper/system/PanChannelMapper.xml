@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanChannelMapper">
+
+    <resultMap type="PanChannel" id="PanChannelResult">
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelMerno"    column="channel_merNo"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="status"    column="status"    />
+        <result property="inFeeRate"    column="in_fee_rate"    />
+        <result property="outFeeRate"    column="out_fee_rate"    />
+        <result property="inMinAmount"    column="in_min_amount"    />
+        <result property="inMaxAmount"    column="in_max_amount"    />
+        <result property="outMinAmount"    column="out_min_amount"    />
+        <result property="jsonParam"    column="json_param"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="displayName"    column="display_name"    />
+        <result property="displayLogo"    column="display_logo"    />
+        <result property="displayTips"    column="display_tips"    />
+        <result property="isProxy"    column="is_proxy"    />
+    </resultMap>
+
+    <sql id="selectPanChannelVo">
+        select channel_id, channel_merNo, channel_name, status, in_fee_rate, out_fee_rate, in_min_amount, in_max_amount, out_min_amount, json_param, create_time, update_time, display_name, display_logo, display_tips,is_proxy from pan_channel
+    </sql>
+
+    <select id="selectPanChannelList" parameterType="PanChannel" resultMap="PanChannelResult">
+        <include refid="selectPanChannelVo"/>
+        <where>
+            <if test="channelMerno != null  and channelMerno != ''"> and channel_merNo like concat('%', #{channelMerno}, '%')</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="inFeeRate != null "> and in_fee_rate = #{inFeeRate}</if>
+            <if test="outFeeRate != null "> and out_fee_rate = #{outFeeRate}</if>
+            <if test="inMinAmount != null "> and in_min_amount = #{inMinAmount}</if>
+            <if test="inMaxAmount != null "> and in_max_amount = #{inMaxAmount}</if>
+            <if test="outMinAmount != null "> and out_min_amount = #{outMinAmount}</if>
+            <if test="jsonParam != null  and jsonParam != ''"> and json_param like concat('%', #{jsonParam}, '%')</if>
+            <if test="displayName != null  and displayName != ''"> and display_name like concat('%', #{displayName}, '%')</if>
+            <if test="displayLogo != null  and displayLogo != ''"> and display_logo = #{displayLogo}</if>
+            <if test="displayTips != null  and displayTips != ''"> and display_tips = #{displayTips}</if>
+            <if test="isProxy != null  and isProxy != ''"> and is_proxy = #{isProxy}</if>
+
+        </where>
+            order by create_time desc
+    </select>
+
+    <select id="selectPanChannelByChannelId" parameterType="Long" resultMap="PanChannelResult">
+        <include refid="selectPanChannelVo"/>
+        where channel_id = #{channelId}
+    </select>
+
+    <select id="selectPanChannelByStatus" resultMap="PanChannelResult">
+        <include refid="selectPanChannelVo"/>
+        where status = "0" limit 1
+    </select>
+
+    <select id="selectPanProxyChannelByStatus" resultMap="PanChannelResult">
+        <include refid="selectPanChannelVo"/>
+        where is_proxy = "0" limit 1
+    </select>
+
+
+    <insert id="insertPanChannel" parameterType="PanChannel" useGeneratedKeys="true" keyProperty="channelId">
+        insert into pan_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelMerno != null and channelMerno != ''">channel_merNo,</if>
+            <if test="channelName != null and channelName != ''">channel_name,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="inFeeRate != null">in_fee_rate,</if>
+            <if test="outFeeRate != null">out_fee_rate,</if>
+            <if test="inMinAmount != null">in_min_amount,</if>
+            <if test="inMaxAmount != null">in_max_amount,</if>
+            <if test="outMinAmount != null">out_min_amount,</if>
+            <if test="jsonParam != null and jsonParam != ''">json_param,</if>
+            <if test="displayName != null">display_name,</if>
+            <if test="displayLogo != null">display_logo,</if>
+            <if test="displayTips != null">display_tips,</if>
+            create_time,is_proxy
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelMerno != null and channelMerno != ''">#{channelMerno},</if>
+            <if test="channelName != null and channelName != ''">#{channelName},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="inFeeRate != null">#{inFeeRate},</if>
+            <if test="outFeeRate != null">#{outFeeRate},</if>
+            <if test="inMinAmount != null">#{inMinAmount},</if>
+            <if test="inMaxAmount != null">#{inMaxAmount},</if>
+            <if test="outMinAmount != null">#{outMinAmount},</if>
+            <if test="jsonParam != null and jsonParam != ''">#{jsonParam},</if>
+            <if test="displayName != null">#{displayName},</if>
+            <if test="displayLogo != null">#{displayLogo},</if>
+            <if test="displayTips != null">#{displayTips},</if>
+            now(),'1'
+         </trim>
+    </insert>
+
+    <update id="updatePanChannel" parameterType="PanChannel">
+        update pan_channel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelMerno != null and channelMerno != ''">channel_merNo = #{channelMerno},</if>
+            <if test="channelName != null and channelName != ''">channel_name = #{channelName},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="inFeeRate != null">in_fee_rate = #{inFeeRate},</if>
+            <if test="outFeeRate != null">out_fee_rate = #{outFeeRate},</if>
+            <if test="inMinAmount != null">in_min_amount = #{inMinAmount},</if>
+            <if test="inMaxAmount != null">in_max_amount = #{inMaxAmount},</if>
+            <if test="outMinAmount != null">out_min_amount = #{outMinAmount},</if>
+            <if test="jsonParam != null and jsonParam != ''">json_param = #{jsonParam},</if>
+            <if test="displayName != null">display_name = #{displayName},</if>
+            <if test="displayLogo != null">display_logo = #{displayLogo},</if>
+            <if test="displayTips != null">display_tips = #{displayTips},</if>
+            update_time = now()
+        </trim>
+        where channel_id = #{channelId}
+    </update>
+
+    <update id="resetAllProxy" >
+        update pan_channel  set is_proxy='1',update_time = now()
+    </update>
+
+    <update id="setProxy" >
+        update pan_channel  set is_proxy='0',update_time = now() where channel_id = #{channelId}
+    </update>
+
+
+    <delete id="deletePanChannelByChannelId" parameterType="Long">
+        delete from pan_channel where channel_id = #{channelId}
+    </delete>
+
+    <delete id="deletePanChannelByChannelIds" parameterType="String">
+        delete from pan_channel where channel_id in
+        <foreach item="channelId" collection="array" open="(" separator="," close=")">
+            #{channelId}
+        </foreach>
+    </delete>
+</mapper>

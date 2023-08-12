@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanBindCardMapper">
+
+    <resultMap type="PanBindCard" id="PanBindCardResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="bankCode"    column="bank_code"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="cardNo"    column="card_no"    />
+        <result property="oldCardNo"    column="old_card_no"    />
+        <result property="newCardNo"    column="new_card_no"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="topId"    column="top_id"    />
+        <result property="topName"    column="top_name"    />
+        <result property="userName"    column="user_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <association property="bank"    column="bank_code" javaType="PanBank" resultMap="bankResult" />
+    </resultMap>
+
+    <resultMap type="PanBank" id="bankResult">
+        <result property="id"    column="pb_id"    />
+        <result property="name"    column="pb_name"    />
+        <result property="description"    column="pb_description"    />
+        <result property="code"    column="pb_code"    />
+    </resultMap>
+
+    <sql id="selectPanBindCardVo">
+        SELECT
+            pbc.id,
+            pbc.user_id,
+            pbc.NAME,
+            pbc.card_no,
+            pbc.mobile,
+            pb.id pb_id,
+            pb.CODE bank_code,
+            pb.NAME bank_name,
+            pb.description pb_description
+        FROM
+            pan_bind_card pbc
+                LEFT JOIN pan_bank pb ON pbc.bank_code = pb.CODE
+                LEFT JOIN sys_user u ON pbc.user_id = u.user_id
+
+    </sql>
+
+    <select id="selectPanBindCardList" parameterType="PanBindCard" resultMap="PanBindCardResult">
+        SELECT
+            pbc.id,
+            pbc.user_id,
+            u.user_name,
+            pbc.NAME,
+            pbc.card_no,
+            pbc.mobile,
+            pb.id pb_id,
+            pb.CODE bank_code,
+            pb.NAME bank_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            pb.description pb_description
+        FROM
+            pan_bind_card pbc
+        LEFT JOIN pan_bank pb ON pbc.bank_code = pb.CODE
+        LEFT JOIN sys_user u ON pbc.user_id = u.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = u.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = u.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = u.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="userName != null  and userName != ''"> and u.user_name like concat('%',#{userName}) </if>
+            <if test="name != null  and name != ''"> and pbc.name = #{name} </if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="userId != null  and userId != ''"> and pbc.user_id = #{userId}</if>
+            <if test="bankCode != null "> and pbc.bank_code = #{bankCode} </if>
+            <if test="cardNo != null "> and pbc.card_no = #{cardNo} </if>
+            <if test="mobile != null  and mobile != ''"> and pbc.mobile = #{mobile}</if>
+        </where>
+    </select>
+
+    <select id="selectPanBindCardByCardId" parameterType="Long" resultMap="PanBindCardResult">
+        <include refid="selectPanBindCardVo"/>
+        where pbc.id = #{id}
+    </select>
+
+    <insert id="insertPanBindCard" parameterType="PanBindCard" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_bind_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="bankCode != null">bank_code,</if>
+            <if test="cardNo != null">card_no,</if>
+            <if test="mobile != null and mobile != ''">mobile,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="bankCode != null">#{bankCode},</if>
+            <if test="cardNo != null">#{cardNo},</if>
+            <if test="mobile != null and mobile != ''">#{mobile},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePanBindCard" parameterType="PanBindCard">
+        update pan_bind_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="bankCode != null">bank_code = #{bankCode},</if>
+            <if test="cardNo != null">card_no = #{cardNo},</if>
+            <if test="mobile != null and mobile != ''">mobile = #{mobile},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePanBindCardByCardId" parameterType="Long">
+        delete from pan_bind_card where id = #{id}
+    </delete>
+
+    <select id="selectCardInfoByCardNo" parameterType="java.lang.String" resultMap="PanBindCardResult">
+        SELECT
+            p.id,
+            p.user_id,
+            p.NAME,
+            p.bank_code,
+            p.card_no,
+            p.mobile
+        FROM
+            pan_bind_card p
+        where p.card_no = #{cardNo}
+    </select>
+
+    <insert id="insertPanBindCardRecord" parameterType="PanBindCard" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_bind_card_edit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="bankCode != null">bank_code,</if>
+            <if test="oldCardNo != null">old_card_no,</if>
+            <if test="newCardNo != null">new_card_no,</if>
+            <if test="mobile != null and mobile != ''">mobile,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="bankCode != null">#{bankCode},</if>
+            <if test="oldCardNo != null">#{oldCardNo},</if>
+            <if test="newCardNo != null">#{newCardNo},</if>
+            <if test="mobile != null and mobile != ''">#{mobile},</if>
+        </trim>
+    </insert>
+
+    <select id="selectPanBindCardRecordList" parameterType="PanBindCard" resultMap="PanBindCardResult">
+        SELECT
+        pbc.id,
+        pbc.user_id,
+        u.user_name,
+        pbc.NAME,
+        pbc.old_card_no,
+        pbc.new_card_no,
+        pbc.mobile,
+        pb.CODE bank_code,
+        pb.NAME bank_name,
+        u2.user_name top_name,
+        u3.user_name manager_name,
+        u4.user_name agent_name
+        FROM
+        pan_bind_card_edit pbc
+        LEFT JOIN pan_bank pb ON pbc.bank_code = pb.CODE
+        LEFT JOIN sys_user u ON pbc.user_id = u.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = u.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = u.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = u.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="userName != null  and userName != ''"> and u.user_name like concat('%',#{userName}) </if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="oldCardNo != null "> and pbc.old_card_no = #{oldCardNo} </if>
+            <if test="newCardNo != null "> and pbc.new_card_no = #{newCardNo} </if>
+        </where>
+    </select>
+</mapper>

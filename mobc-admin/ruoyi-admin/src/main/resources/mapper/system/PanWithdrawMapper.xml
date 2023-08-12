@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanWithdrawMapper">
+
+    <resultMap type="PanWithdraw" id="PanWithdrawResult">
+        <result property="withdrawId"    column="withdraw_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="amount"    column="amount"    />
+        <result property="fee"    column="fee"    />
+        <result property="bankCode"    column="bank_code"    />
+        <result property="beneficiaryName"    column="beneficiary_name"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="cardName"    column="card_name"    />
+        <result property="cardNo"    column="card_no"    />
+        <result property="beneficiaryNo"    column="beneficiary_no"    />
+        <result property="beneficiaryMobile"    column="beneficiary_mobile"    />
+        <result property="beneficiaryEmail"    column="beneficiary_email"    />
+        <result property="requestNo"    column="request_no"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="status"    column="status"    />
+        <result property="respDesc"    column="resp_desc"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="orderTime"    column="oder_time"    />
+        <result property="remark" column="remark" />
+        <result property="topId"    column="top_id"    />
+        <result property="managerId"        column="manager_id" />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <result property="channelId"    column="channel_id"  />
+    </resultMap>
+
+    <sql id="selectPanWithdrawVo">
+        SELECT
+            withdraw_id,
+            pan_withdraw.user_id,
+            sys_user.user_name user_name,
+            card_id,
+            pan_withdraw.create_time,
+            amount,
+            fee,
+            bank_code,
+            sys_user.agent_id,
+            beneficiary_name,
+            bank_name,
+            card_name,
+            card_no,
+            resp_desc,
+            beneficiary_no,
+            beneficiary_mobile,
+            beneficiary_email,
+            request_no,
+            order_no,
+            pan_withdraw.STATUS,
+            oder_time,
+            pan_withdraw.remark,
+            pan_withdraw.channel_id
+        FROM
+            pan_withdraw
+            LEFT JOIN sys_user ON sys_user.user_id = pan_withdraw.user_id
+    </sql>
+
+    <select id="selectPanWithdrawList" parameterType="PanWithdraw" resultMap="PanWithdrawResult">
+        SELECT
+            withdraw_id,
+            pan_withdraw.user_id,
+            sys_user.user_name user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            card_id,
+            pan_withdraw.create_time,
+            amount,
+            fee,
+            bank_code,
+            beneficiary_name,
+            bank_name,
+            card_name,
+            card_no,
+            pan_withdraw.resp_desc,
+            beneficiary_no,
+            beneficiary_mobile,
+            beneficiary_email,
+            request_no,
+            order_no,
+            pan_withdraw.STATUS,
+            oder_time,
+            pan_withdraw.remark,
+            pan_withdraw.channel_id
+        FROM
+            pan_withdraw
+        LEFT JOIN sys_user ON sys_user.user_id = pan_withdraw.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="userId != null "> and pan_withdraw.user_id = #{userId}</if>
+            <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName}) </if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="cardNo != null  and cardNo != ''"> and pan_withdraw.card_no = #{cardNo}</if>
+            <if test="requestNo != null  and requestNo != ''"> and pan_withdraw.request_no = #{requestNo}</if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_withdraw.order_no = #{orderNo}</if>
+            <if test="status != null  and status != ''"> and pan_withdraw.status = #{status}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and <![CDATA[ DATE_FORMAT(pan_withdraw.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and <![CDATA[ DATE_FORMAT(pan_withdraw.create_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+			</if>
+          ${params.dataScope}
+        </where>
+        order by pan_withdraw.create_time desc
+    </select>
+
+    <select id="selectPanWithdrawListCount" parameterType="PanWithdraw" resultType="Long">
+        SELECT
+        IFNULL(sum(amount + fee) ,0)
+        FROM
+        pan_withdraw
+        LEFT JOIN sys_user ON sys_user.user_id = pan_withdraw.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="userId != null "> and pan_withdraw.user_id = #{userId}</if>
+            <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName}) </if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="cardNo != null  and cardNo != ''"> and pan_withdraw.card_no = #{cardNo}</if>
+            <if test="requestNo != null  and requestNo != ''"> and pan_withdraw.request_no = #{requestNo}</if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_withdraw.order_no = #{orderNo}</if>
+            <if test="status != null  and status != ''"> and pan_withdraw.status = #{status}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and <![CDATA[ DATE_FORMAT(pan_withdraw.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and <![CDATA[ DATE_FORMAT(pan_withdraw.create_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPanWithdrawByWithdrawId" parameterType="Long" resultMap="PanWithdrawResult">
+        <include refid="selectPanWithdrawVo"/>
+        where withdraw_id = #{withdrawId}
+    </select>
+
+    <select id="selectPanWithdrawByOrderNo" parameterType="String" resultMap="PanWithdrawResult">
+        <include refid="selectPanWithdrawVo"/>
+        where order_no = #{orderNo}
+    </select>
+
+    <insert id="insertPanWithdraw" parameterType="PanWithdraw" useGeneratedKeys="true" keyProperty="withdrawId">
+        insert into pan_withdraw
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="amount != null and amount != ''">amount,</if>
+            <if test="fee != null and fee != ''">fee,</if>
+            <if test="bankCode != null">bank_code,</if>
+            <if test="beneficiaryName != null">beneficiary_name,</if>
+            <if test="bankName != null">bank_name,</if>
+            <if test="cardName != null">card_name,</if>
+            <if test="cardNo != null">card_no,</if>
+            <if test="beneficiaryNo != null">beneficiary_no,</if>
+            <if test="beneficiaryMobile != null">beneficiary_mobile,</if>
+            <if test="beneficiaryEmail != null">beneficiary_email,</if>
+            <if test="requestNo != null">request_no,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="status != null">status,</if>
+            <if test="remark!= null">remark,</if>
+            <if test="channelId != null">channel_id,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="amount != null and amount != ''">#{amount},</if>
+            <if test="fee != null and fee != ''">#{fee},</if>
+            <if test="bankCode != null">#{bankCode},</if>
+            <if test="beneficiaryName != null">#{beneficiaryName},</if>
+            <if test="bankName != null">#{bankName},</if>
+            <if test="cardName != null">#{cardName},</if>
+            <if test="cardNo != null">#{cardNo},</if>
+            <if test="beneficiaryNo != null">#{beneficiaryNo},</if>
+            <if test="beneficiaryMobile != null">#{beneficiaryMobile},</if>
+            <if test="beneficiaryEmail != null">#{beneficiaryEmail},</if>
+            <if test="requestNo != null">#{requestNo},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="channelId != null">#{channelId},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updatePanWithdraw" parameterType="PanWithdraw">
+        update pan_withdraw
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="requestNo != null">request_no = #{requestNo},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="respDesc != null">resp_desc = #{respDesc},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            oder_time = now()
+        </trim>
+        where withdraw_id = #{withdrawId}
+    </update>
+
+    <select id="checkWithdrawStatus" parameterType="Long" resultType="Long">
+		select sum(amount+fee) from pan_withdraw where user_id=#{userId} and (status='Pending' or status='In progress');
+    </select>
+
+    <select id="getTotalWithdraw" resultType="Long">
+		select sum(amount+fee) from pan_withdraw where status = 'Completed'
+    </select>
+
+    <select id="getTodayWithdraw" resultType="Long">
+	select sum(amount+fee) from pan_withdraw where DATE_FORMAT(oder_time,'%Y-%m-%d') = CURDATE() and status = 'Completed'
+    </select>
+
+    <select id="getTotalWithdrawCountByUser" parameterType="Long" resultType="Long">
+        SELECT
+            sum( wi.amount+wi.fee ) amount
+        FROM
+            pan_withdraw wi
+                LEFT JOIN sys_user u ON wi.user_id = u.user_id
+        WHERE
+            wi.STATUS = 'Completed'
+          AND (
+                u.parent_id = #{userId}
+                OR u.grand_id = #{userId}
+                OR u.great_grand_id = #{userId})
+    </select>
+
+    <select id="getTransitAmtByUser" parameterType="Long" resultMap="PanWithdrawResult">
+        SELECT
+        IFNULL(sum(amount) ,0) amount,
+        count(1) withdraw_id
+        FROM
+        pan_withdraw
+        LEFT JOIN sys_user ON sys_user.user_id = pan_withdraw.user_id
+        <where>
+            pan_withdraw.status = 'In progress'
+           and sys_user.agent_id  = #{agentId}
+        </where>
+    </select>
+
+    <select id="getUserWithdrawInfoByIds" parameterType="String" resultType="Long">
+       	SELECT
+        IFNULL(sum(amount + fee) ,0)
+        FROM
+        pan_withdraw
+        where withdraw_id in (${withdrawIds})
+    </select>
+
+</mapper>

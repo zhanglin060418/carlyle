@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.options.pathPrefix %>/static/icon.png" />
+    <link rel="icon" href="<%= htmlWebpackPlugin.options.pathPrefix %>/static/favicon.png" type="image/png" />
+    <!--手机兼容-->
+    <script src="<%= htmlWebpackPlugin.options.pathPrefix %>/static/flexible.js"></script>
+    <!--appId 写上开发者-->
+    <!-- <script async defer crossorigin="anonymous" src="https://apis.google.com/js/api:client.js"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v3.3&appId=286660763223206&autoLogAppEvents=1"></script> -->
+    <!-- built files will be auto injected -->
+    <script src="<%= htmlWebpackPlugin.options.pathPrefix %>/static/vue<%= htmlWebpackPlugin.options.min %>.js"></script>
+    <script src="<%= htmlWebpackPlugin.options.pathPrefix %>/static/vue-router.min.js"></script>
+    <script src="<%= htmlWebpackPlugin.options.pathPrefix %>/static/vuex<%= htmlWebpackPlugin.options.min %>.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+    <script src="<%= htmlWebpackPlugin.options.pathPrefix %>/static/jsencrypt.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script> -->
+    <title>${process.env.NODE_ENV_TITLE}</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script>
+        ;
+        (function(win) {
+            var env = '<%= htmlWebpackPlugin.options.env %>'.replace(/"/g, '')
+            switch (env) {
+                case 'production': // pro
+                    let domainPath = window.location.protocol + '//' + window.location.host;
+                    console.log("come on  get current domainPath " + domainPath)
+                    domain = domainPath;
+                    break
+                case 'uat':
+                    domain = 'https://wwwsuperwind.com/'
+                    break
+                case 'development': // dev
+                    domain = location.origin + '/'
+                    break
+                default:
+                    domain = location.origin + '/'
+            }
+            var config = {
+                domain: domain,
+            }
+            win.config = config
+
+            function browserRedirect() {
+                var sUserAgent = navigator.userAgent.toLowerCase()
+                var bIsIpad = sUserAgent.match(/ipad/i) == 'ipad'
+                var bIsIphoneOs = sUserAgent.match(/iphone os/i) == 'iphone os'
+                var bIsMidp = sUserAgent.match(/midp/i) == 'midp'
+                var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == 'rv:1.2.3.4'
+                var bIsUc = sUserAgent.match(/ucweb/i) == 'ucweb'
+                var bIsAndroid = sUserAgent.match(/android/i) == 'android'
+                var bIsCE = sUserAgent.match(/windows ce/i) == 'windows ce'
+                var bIsWM = sUserAgent.match(/windows mobile/i) == 'windows mobile'
+                if (
+                    bIsIpad ||
+                    bIsIphoneOs ||
+                    bIsMidp ||
+                    bIsUc7 ||
+                    bIsUc ||
+                    bIsAndroid ||
+                    bIsCE ||
+                    bIsWM
+                ) {
+                    return false
+                } else {
+                    return true
+                }
+            }
+            // let isPc = browserRedirect()
+            // if (isPc) {
+            //   window.location.href = 'https://wwwsuperwind.com.com/' //移动端首页
+            // } else {
+            //   return
+            // }
+
+            function urlDecode(string, overwrite) {
+                if (!string) {
+                    return {}
+                } else {
+                    string = string.substr(1)
+                }
+                var obj = {},
+                    pairs = string.split('&'),
+                    d = decodeURIComponent,
+                    name,
+                    value
+
+                for (var i = 0, len = pairs.length; i < len; i++) {
+                    var pair = pairs[i]
+                    pair = pair.split('=')
+                    name = d(pair[0])
+                    value = d(pair[1])
+                    obj[name] =
+                        overwrite || !obj[name] ?
+                        value :
+                        [].concat(obj[name]).concat(value)
+                }
+                return obj
+            }
+            var urlObj = urlDecode(location.search) // .toLocaleLowerCase()
+                // var _locale = urlObj.locale || ''
+            var _appId = urlObj.appId || ''
+            var _userType = urlObj.userType || ''
+            var _version = urlObj.version || ''
+                // if (_locale) {
+                //     localStorage.setItem('locale', 'en_US')
+                // }
+            if (_appId || _userType) {
+                sessionStorage.setItem('appId', _appId || _userType)
+            }
+            if (_version) {
+                localStorage.setItem('app_version', _version)
+            }
+        })(window)
+    </script>
+</head>
+
+<body>
+    <div id="app"></div>
+</body>
+
+</html>

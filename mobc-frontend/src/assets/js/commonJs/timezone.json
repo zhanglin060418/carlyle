@@ -1,0 +1,218 @@
+[
+  {
+    "time": -12,
+    "TimeZone": "UTC-12",
+    "TimeZoneDesc_en": "IDLW — International Date Line",
+    "TimeZoneDesc_zh": "IDLW — 国际换日线"
+  },
+  {
+    "time": -11,
+    "TimeZone": "UTC-11 ",
+    "TimeZoneDesc_en": "SST — American Samoa",
+    "TimeZoneDesc_zh": "SST — 美属萨摩亚标准时间"
+  },
+  {
+    "time": -10,
+    "TimeZone": "UTC-10",
+    "TimeZoneDesc_en": "HST — Hawaii-Aleutian",
+    "TimeZoneDesc_zh": "HST — 夏威夷-阿留申标准时间"
+  },
+  {
+    "time": -9.5,
+    "TimeZone": "UTC-9:30",
+    "TimeZoneDesc_en": "MIT — Marquesas",
+    "TimeZoneDesc_zh": "MIT — 马克萨斯群岛标准时间"
+  },
+  {
+    "time": -9,
+    "TimeZone": "UTC-9",
+    "TimeZoneDesc_en": "AKST — Alaska",
+    "TimeZoneDesc_zh": "AKST — 阿拉斯加标准时间"
+  },
+  {
+    "time": -8,
+    "TimeZone": "UTC-8",
+    "TimeZoneDesc_en": "PST — Pacific Ocean",
+    "TimeZoneDesc_zh": "PST — 太平洋标准时间"
+  },
+  {
+    "time": -7,
+    "TimeZone": "UTC-7",
+    "TimeZoneDesc_en": "MST — Mountainous North America",
+    "TimeZoneDesc_zh": "MST — 北美山区标准时间"
+  },
+  {
+    "time": -6,
+    "TimeZone": "UTC-6",
+    "TimeZoneDesc_en": "CST — North American Central",
+    "TimeZoneDesc_zh": "CST — 北美中部标准时间"
+  },
+  {
+    "time": -5,
+    "TimeZone": "UTC-5",
+    "TimeZoneDesc_en": "EST — North American Eastern",
+    "TimeZoneDesc_zh": "EST — 北美东部标准时间"
+  },
+  {
+    "time": -4,
+    "TimeZone": "UTC-4",
+    "TimeZoneDesc_en": "AST — Atlantic",
+    "TimeZoneDesc_zh": "AST — 大西洋标准时间"
+  },
+  {
+    "time": -3.5,
+    "TimeZone": "UTC-3:30",
+    "TimeZoneDesc_en": "NST — Newfoundland ",
+    "TimeZoneDesc_zh": "NST — 纽芬兰岛标准时间"
+  },
+  {
+    "time": -3,
+    "TimeZone": "UTC-3",
+    "TimeZoneDesc_en": "BRT — Brasilia",
+    "TimeZoneDesc_zh": "BRT — 巴西利亚标准时间"
+  },
+  {
+    "time": -2,
+    "TimeZone": "UTC-2",
+    "TimeZoneDesc_en": "FNT —Fernando de Noronha",
+    "TimeZoneDesc_zh": "FNT — 费尔南多·迪诺罗尼亚群岛标准时间"
+  },
+  {
+    "time": -1,
+    "TimeZone": "UTC-1",
+    "TimeZoneDesc_en": "CVT — Cape Verde Time",
+    "TimeZoneDesc_zh": "CVT — 佛得角标准时间"
+  },
+  {
+    "time": 1,
+    "TimeZone": "UTC+1",
+    "TimeZoneDesc_en": "CET — Central Europe",
+    "TimeZoneDesc_zh": "CET — 欧洲中部时区"
+  },
+  {
+    "time": 2,
+    "TimeZone": "UTC+2",
+    "TimeZoneDesc_en": "EET — Eastern Europe",
+    "TimeZoneDesc_zh": "EET — 欧洲东部时区"
+  },
+  {
+    "time": 3,
+    "TimeZone": "UTC+3",
+    "TimeZoneDesc_en": "MSK —Moscow",
+    "TimeZoneDesc_zh": "MSK — 莫斯科时区"
+  },
+  {
+    "time": 3.5,
+    "TimeZone": "UTC+3:30",
+    "TimeZoneDesc_en": "IRST — Iran",
+    "TimeZoneDesc_zh": "IRST — 伊朗标准时间"
+  },
+  {
+    "time": 4,
+    "TimeZone": "UTC+4",
+    "TimeZoneDesc_en": "GST — Gulf Standard Time",
+    "TimeZoneDesc_zh": "GST — 海湾标准时间"
+  },
+  {
+    "time": 4.5,
+    "TimeZone": "UTC+4:30",
+    "TimeZoneDesc_en": "AFT — Afghanistan",
+    "TimeZoneDesc_zh": "AFT — 阿富汗标准时间"
+  },
+  {
+    "time": 5,
+    "TimeZone": "UTC+5",
+    "TimeZoneDesc_en": "PKT — Pakistan",
+    "TimeZoneDesc_zh": "PKT — 巴基斯坦标准时间"
+  },
+  {
+    "time": 5.5,
+    "TimeZone": "UTC+5:30",
+    "TimeZoneDesc_en": "IST —India",
+    "TimeZoneDesc_zh": "IST — 印度标准时间"
+  },
+  {
+    "time": 5.75,
+    "TimeZone": "UTC+5:45",
+    "TimeZoneDesc_en": "NPT — Nepal",
+    "TimeZoneDesc_zh": "NPT — 尼泊尔标准时间"
+  },
+  {
+    "time": 6,
+    "TimeZone": "UTC+6",
+    "TimeZoneDesc_en": "BHT — Bangladesh",
+    "TimeZoneDesc_zh": "BHT — 孟加拉标准时间"
+  },
+  {
+    "time": 6.5,
+    "TimeZone": "UTC+6:30",
+    "TimeZoneDesc_en": "MMT — Myanmar",
+    "TimeZoneDesc_zh": "MMT — 缅甸标准时间"
+  },
+  {
+    "time": 7,
+    "TimeZone": "UTC+7",
+    "TimeZoneDesc_en": "ICT — Indochina",
+    "TimeZoneDesc_zh": "ICT — 中南半岛标准时间"
+  },
+  {
+    "time": 8,
+    "TimeZone": "UTC+8",
+    "TimeZoneDesc_en": "CT — China",
+    "TimeZoneDesc_zh": "CT — 中国标准时间"
+  },
+  {
+    "time": 9,
+    "TimeZone": "UTC+9",
+    "TimeZoneDesc_en": "JST — Japan",
+    "TimeZoneDesc_zh": "JST — 日本标准时间"
+  },
+  {
+    "time": 9.5,
+    "TimeZone": "UTC+9:30",
+    "TimeZoneDesc_en": "ACST — Australia Central",
+    "TimeZoneDesc_zh": "ACST — 澳大利亚中部标准时间"
+  },
+  {
+    "time": 10,
+    "TimeZone": "UTC+10",
+    "TimeZoneDesc_en": "AEST — Australian Eastern",
+    "TimeZoneDesc_zh": "AEST — 澳大利亚东部标准时间"
+  },
+  {
+    "time": 10.5,
+    "TimeZone": "UTC+10:30",
+    "TimeZoneDesc_en": "LHST — Lord Howe Islands",
+    "TimeZoneDesc_zh": "LHST — 豪勋爵群岛标准时间"
+  },
+  {
+    "time": 11,
+    "TimeZone": "UTC+11",
+    "TimeZoneDesc_en": "VUT — Vanuatu",
+    "TimeZoneDesc_zh": "VUT — 瓦努阿图标准时间"
+  },
+  {
+    "time": 12,
+    "TimeZone": "UTC+12",
+    "TimeZoneDesc_en": "NZST — New Zealand",
+    "TimeZoneDesc_zh": "NZST — 纽西兰标准时间"
+  },
+  {
+    "time": 12.75,
+    "TimeZone": "UTC+12:45",
+    "TimeZoneDesc_en": "CHAST — Chatham Islands",
+    "TimeZoneDesc_zh": "CHAST — 查塔姆群岛标准时间"
+  },
+  {
+    "time": 13,
+    "TimeZone": "UTC+13",
+    "TimeZoneDesc_en": "PHOT — Phoenix Islands",
+    "TimeZoneDesc_zh": "PHOT — 菲尼克斯群岛标准时间"
+  },
+  {
+    "time": 14,
+    "TimeZone": "UTC+14",
+    "TimeZoneDesc_en": "LINT — Line Islands",
+    "TimeZoneDesc_zh": "LINT — 莱恩群岛标准时间"
+  }
+]

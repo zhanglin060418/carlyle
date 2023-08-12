@@ -1,0 +1,430 @@
+<template>
+  <modMain :title="this.$route.query.type == 'withdraw' ? $route.meta.withdrawtitle : item.name == this.$t('dw.t196') ? $route.meta.title : 'Confirm Buy'">
+  <div class="sell-energy energy">
+<!--    Choose Methods-->
+<!--    <div v-if="item.name != this.$t('dw.t196')" class="t-box top">-->
+<!--      <span>{{ $t('payDetail.text53') }}</span>-->
+<!--      <template>-->
+<!--        <div-->
+<!--            class="yinhangka has"-->
+<!--            @click="showBank = true"-->
+<!--        >-->
+<!--          <div class="card-info" v-if="selectedBalance == true">-->
+<!--            <img src="static/assets/image/dw/add-bank-l.png" alt="" />-->
+<!--            <div class="info">-->
+<!--              <p>{{ $t('payDetail.text54') }}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="card-info" v-else>-->
+<!--            <img src="static/assets/image/dw/add-bank-l.png" alt="" />-->
+<!--            <div class="info">-->
+<!--              <p>{{ $t('payDetail.text55') }}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <van-icon name="arrow" />-->
+<!--        </div>-->
+<!--      </template>-->
+<!--    </div>-->
+
+    <div class="t-box bot" v-if="item.fundType == '区间'">
+      <p v-if="item.name != $t('dw.t196')">
+        {{ $t('payDetail.text37') }} ( {{ $t('dw.t192') }} : {{ parseFloat(item.minimumBuy/100 )}}
+          - {{ parseFloat(this.item.maximumBuy/100) }} )
+      </p>
+      <div class="reqMoney line05">
+        {{ sym }}
+        <input
+            type="text"
+            v-model.trim="reqNum"
+            :placeholder="$t('dw.t193')"
+        />
+      </div>
+      <p v-if="this.$route.query.type == 'withdraw'" class="shengyu">
+        {{ $t('dw.t79') }}：{{ parseFloat(assetBalance)/100 }}
+      </p>
+      <p v-else-if="selectedBalance" class="shengyu">
+        {{ $t('payDetail.text39') }}：{{ parseFloat(balance/100)}}
+      </p>
+      <div class="buy-box">
+        <div
+            class="m-box"
+            :class="{ active: num == reqNum }"
+            v-for="num in buyList"
+            @click="chooseMoney(num)"
+        >
+          {{ num }}
+          <van-icon name="success ok" v-if="num == reqNum" />
+        </div>
+      </div>
+    </div>
+    <div class="t-box bot" v-else>
+      <div class="reqMoney">
+        {{ sym }}
+        {{ item.minimumBuy/100 }}
+      </div>
+      <p v-if="selectedBalance" class="line05 shengyu">
+        {{ $t('payDetail.text39') }}：{{ parseFloat(balance/100)}}
+      </p>
+    </div>
+    <div class="popup-btn" @click="buyClick()">
+      {{ $t('btn.t27') }} {{ sym }} {{ ' ' }} {{ this.item.fundType == '定额' ? this.item.minimumBuy/100 : reqNum }}
+    </div>
+    <!-- Choose Methods Dialog -->
+    <van-popup
+        v-model="showPurchaseDetailDlg"
+        round
+        position="bottom"
+        safe-area-inset-bottom
+        class="popup-confirm-buy"
+        :style="{ height: '100%', background: '#eaeeff' }"
+    >
+      <div class="sell-buy popup-box energy-popup">
+        <div class="head">
+          <div class="title">
+            {{ $t('dw.t222') }}
+          </div>
+          <img class="poput-close" style="height: 25px; width: 25px" src="static/assets/image/dw/close_circle@3x.png" alt="" @click="showPurchaseDetailDlg = false"/>
+        </div>
+        <div class="content">
+          <div class="usertop">
+            <div class="top">
+              <p class="totlle">{{ $t('dw.t178') }}</p>
+              <h2>{{  currencyShape  }}: {{ parseFloat(balance/100) }}</h2>
+            </div>
+          </div>
+          <div class="bank-main">
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t216') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ reqNum }}({{ sym }})</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t217') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ item.dailyInterest }}%</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t218') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ reqNum * item.dailyInterest / 100 }}</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t219') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ item.cycle }}{{ $t('dw.t7')}}</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t220') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ item.copies - item.buyCount }}</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">{{ $t('dw.t221') }}</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new" style="color: #ff0026">{{ reqNum }}+({{ reqNum }}x{{item.dailyInterest}}%x{{item.cycle}})={{(reqNum * (item.dailyInterest * item.cycle+100)/100).toFixed(2)}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="popup-btn pw" @click="toConfirmPaymentPwd">
+            {{ $t('sys.confirm') }}
+          </div>
+        </div>
+      </div>
+    </van-popup>
+    <top-info ref="InfoRef" @sure="buyClick" :user="userInfo"></top-info>
+    <van-dialog
+        v-model="verifyPayDlgOpen"
+        :title="$t('user.cpfPayment')"
+        :show-cancel-button="true"
+        :close-on-click-overlay="true"
+        :cancelButtonText="$t('sys.cancel')"
+        :confirm-button-text="$t('sys.confirm')"
+        cancelButtonColor="#1fbf75"
+        @confirm="verifyPaymentPassword"
+    >
+    <base-input
+        v-model.trim="payPassword"
+        type="password"
+        :placeholder="$t('home.paymentPwd')"
+    ></base-input>
+    </van-dialog>
+  </div>
+    <loadding v-if="isLoading"></loadding>
+  </modMain>
+</template>
+
+<script>
+import topInfo from "../energy/info.vue";
+import { bus } from '@/utils/bus'
+import {mapActions, mapGetters, mapMutations} from "vuex";
+
+export default {
+  components: {
+    topInfo,
+  },
+  data() {
+    return {
+      currencyShape: '',
+      isLoading: false,
+      sym: '',
+      userId: '',
+      payPassword: '',
+      verifyPayDlgOpen: false,
+      title: "",
+      item: null,
+      currentShow: false,
+      reqNum: null,
+      postNum: null,
+      balance: 0,
+      assetBalance: 0,
+      type: '',
+      showBank: false,
+      selectedBalance: true,
+      showPurchaseDetailDlg: false,
+    }
+  },
+  computed: {
+    buyList() {
+      if( this.item.name == this.$t('dw.t196')) {
+        if (this.currentitem) {
+          let arr = this.currentitem.selection.split(',')
+          return arr.map(d => Number(d))
+        }
+        return [ 50000, 100000, 500000]
+      }
+      let init = this.item.minimumBuy / 100
+      let max = this.item.maximumBuy /100
+      let val = (max - init) / 5
+      if (this.currentitem) {
+        let arr = this.currentitem.selection.split(',')
+        return arr.map(d => Number(d))
+      }
+      return [init, init+val*1, init+val*2, init+val*3, init+val*4, max]
+    },
+  },
+  created() {
+    //获取通道
+    this.userId = localStorage.getItem('userId') || null
+    this.getData()
+    this.item = JSON.parse(this.$route.query.data)
+    this.type = this.$route.query.type
+    this.sym = localStorage.getItem('localeCurrency') || 'NGN'
+    if(this.sym == 'NGN')
+      this.currencyShape = '₦'
+    else this.currencyShape = '¥'
+  },
+  methods: {
+    ...mapActions({
+      addToPurchase: 'user/addToPurchase',
+      transferInAsset: 'user/transferInAsset',
+      transferOutAsset: 'user/transferOutAsset',
+      getUserBalance: 'user/getUserBalance',
+      getBankCard: 'bankCard/getBankCard',
+      recharge: 'user/recharge',
+      verifyPayPassword: 'user/verifyPayPassword'
+    }),
+    ...mapMutations('user', {
+      setAccount: 'SET_ACCOUNT',
+    }),
+    async getData() {
+      await this.getUserBalance({userId: this.userId}).then(res => {
+        this.balance = res.availableAmt || 0
+        this.assetBalance = res.assetBalance || 0
+      })
+    },
+    chooseMoney(num) {
+      this.reqNum = num
+    },
+    buyClick() {
+
+      this.postNum = this.reqNum * 100
+      if (this.item.name == this.$t('dw.t196')) {
+        if(this.$route.query.type == 'withdraw') {
+          if (this.postNum > this.assetBalance) {
+            this.errDialog(this.$t('sa.txt370'))
+            return;
+          }
+        }
+        else if(this.selectedBalance) {
+          if (this.postNum > this.balance) {
+            this.errDialog(this.$t('sa.txt370'))
+            return;
+          }
+        }
+      } else {
+        if (this.item.fundType == "定额") {
+          this.reqNum = this.item.minimumBuy/100
+          this.postNum = this.item.minimumBuy
+        }
+        if (this.postNum < this.item.minimumBuy || this.postNum > this.item.maximumBuy) {
+          this.errDialog(this.$t('msg.inputAmount') + " : \n" + (this.item.minimumBuy / 100) + " - " + (this.item.maximumBuy / 100))
+          return
+        }
+        if (this.selectedBalance && this.postNum > this.balance) {
+          this.errDialog(this.$t('sa.txt370'))
+          return;
+        }
+      }
+      if ( this.item.name == this.$t('dw.t196') )
+        this.verifyPayDlgOpen = true
+      else
+        this.showPurchaseDetailDlg = true
+      // this.verifyPayDlgOpen = true
+    },
+    // Choose Online Purchase
+    // onlineClick() {
+    //   this.selectedBalance = false
+    // },
+    // balanceClick() {
+    //   this.selectedBalance = true
+    // },
+    // toRecharge() {
+    //   this.$router.push({
+    //     path: '/energy',
+    //     query: {
+    //       type: '1',
+    //     },
+    //   })
+    // },
+    toConfirmPaymentPwd() {
+      this.showPurchaseDetailDlg = false
+      this.verifyPayDlgOpen = true
+    },
+    async verifyPaymentPassword(){
+      this.isLoading = true
+      this.verifyPayPassword({password: this.payPassword}).then(res =>{
+        this.isLoading = false
+        if(res.code == 200) {
+         this.buy()
+        }
+        else {
+          this.errDialog(this.$t('msg.failedPayment'))
+          this.verifyPayDlgOpen = false
+          return false
+        }
+      })
+    },
+    async buy() {
+      this.verifyPayDlgOpen = false
+      const user_id = this.userInfo.user_id
+      if(this.item.name == this.$t('dw.t196')) {
+        this.isLoading = true
+        if(this.type == "withdraw") {
+          const formData = {
+            userId: user_id,
+            balance: this.assetBalance,
+            amount: this.postNum
+          }
+          this.transferOutAsset(formData).then(res => {
+            this.isLoading = false
+            if(res.code == 200) {
+              this.errDialog(this.$t('msg.treasureWithdrawSuccess'))
+              this.$router.push({
+                path: '/profit',
+              })
+            }
+            else {
+              this.errDialog(res.msg)
+              return
+            }
+          })
+        } else {
+          const formData = {
+            userId: user_id,
+            balance: this.assetBalance,
+            amount: this.postNum
+          }
+          this.isLoading = true
+          await this.transferInAsset(formData).then(res => {
+            this.isLoading = false
+            if(res.code == 200) {
+              this.errDialog(this.$t('msg.addTreasureSuccess'))
+              this.$router.push({
+                path: '/profit',
+              })
+            }
+            else {
+              this.errDialog(res.msg)
+            }
+          })
+        }
+      } else {
+        let type = this.selectedBalance ? 0 : 1
+        const formData = {
+          userId: user_id,
+          productId: this.item.id,
+          amount: this.postNum,
+          type: type
+        }
+        this.isLoading = true
+        this.addToPurchase(formData).then(res => {
+          this.isLoading = false
+          if(res.code == 200) {
+            if(type == 1) {
+              let _url = res.payInfoUrl
+              if (window.webkit) {
+                window.webkit.messageHandlers.openBrowser.postMessage(_url)
+              } else if (window.appInterface) {
+                window.appInterface.openBrowser(_url)
+              } else {
+                window.location.href = _url
+              }
+            }
+            this.$router.push({
+              path: 'fund',
+            })
+            bus.$emit('openDialog', 1)
+          }
+          else {
+            if(res.msg == 'Not enough Copies')
+              this.errDialog(this.$t('msg.notEnoughCopies'))
+            else
+              this.errDialog(res.msg)
+            return
+          }
+        })
+      }
+      return true
+    }
+  },
+}
+</script>
+<style>
+div.van-popup--bottom.van-popup--round {
+  border-radius: 0 0 0 0;
+}
+div.van-popup--bottom {
+  background: #f3f3f2;
+  box-shadow: inset 0px 2px 4px rgb(243, 243, 242);
+  border-radius: 20px 20px 0px 0px;
+}
+</style>

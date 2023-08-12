@@ -1,0 +1,313 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+textarea,
+input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  font-style: normal;
+  background: transparent;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: Avenir, Helvetica, Arial, sans-serif !important;
+}
+
+input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.vux-loading {
+  .weui-mask_transparent {
+    z-index: 10000 !important;
+  }
+
+  .weui-toast {
+    z-index: 10001 !important;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: normal;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  line-height: 1;
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  max-height: 99999px;
+  min-height: 1px;
+  background-color: #fff;
+  color: #1e2e3b;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+a:focus {
+  outline: 0;
+  background: transparent;
+}
+
+ins {
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+img {
+  vertical-align: middle;
+  border: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input,
+textarea,
+keygen,
+select,
+button {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+input[type='submit'] {
+  border: none;
+}
+
+input[type='search'] {
+  -webkit-appearance: none;
+}
+
+input::-webkit-search-cancel-button {
+  display: none;
+}
+
+::-ms-clear,
+::-ms-reveal {
+  display: none;
+}
+
+button {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+.ellipse {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inline {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  line-height: 0;
+  content: '';
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.flex {
+  display: flex;
+}
+
+* {
+  -webkit-overflow-scrolling: touch;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition-delay: 111111s;
+  transition: color 11111s ease-out, background-color 111111s ease-out;
+}
+:-ms-input-placeholder {
+  color: @placeColor;
+}
+
+::-moz-placeholder {
+  color: @placeColor;
+}
+
+::-webkit-input-placeholder {
+  color: @placeColor;
+}
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: @placeColor;
+  font-size: 14px;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: @placeColor;
+  font-size: 14px;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: @placeColor;
+  font-size: 14px;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: @placeColor;
+  font-size: 14px;
+}
+html {
+  background: @bgColor;
+}
+a {
+  text-decoration: none !important;
+  color: @txtColor;
+}
+input {
+  color: @txtColor;
+  width: 100%;
+}
+textarea {
+  width: 100%;
+  outline: none;
+  resize: none;
+  color: @txtColor;
+  border: none;
+}
+:-ms-input-placeholder {
+  color: @placeColor;
+}
+
+::-moz-placeholder {
+  color: @placeColor;
+}
+
+::-webkit-input-placeholder {
+  color: @placeColor;
+}
+
+textarea-placeholder {
+  color: @placeColor !important;
+}
+
+* {
+  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -khtml-user-select: none; /*早期浏览器*/
+  -moz-user-select: none; /*火狐*/
+  -ms-user-select: none; /*IE10*/
+  user-select: none;
+}
+input {
+  -webkit-user-select: auto;
+}
+img,
+a {
+  -webkit-touch-callout: none;
+}

@@ -1,0 +1,177 @@
+.pre {
+  background: @tabsColor;
+  border-radius: 5px;
+}
+.position-main {
+  .head-fixed {
+    height: 104px;
+    position: fixed;
+    top: 82px;
+    left: 0;
+    z-index: 4;
+    width: 100%;
+    padding: 0 15px;
+    background-color: @bgColor;
+    padding-top: 5px;
+    top: calc(82px + constant(safe-area-inset-top));
+    top: calc(82px + env(safe-area-inset-top));
+  }
+  .head {
+    height: 98px;
+    padding: 8px 15px;
+    // margin-top: 20px;
+    .pre;
+    .time {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      .arrow {
+        width: 16px;
+        height: 13px;
+        background: url('../image/icon/icon_transactions_more@2x.png') no-repeat;
+        background-size: cover;
+        margin-left: 5px;
+        margin-top: 2px;
+      }
+    }
+    .total-box {
+      display: flex;
+      margin-top: 20px;
+      .box {
+        .num {
+          span {
+            font-size: 16px;
+          }
+        }
+        &:nth-of-type(2) {
+          span {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+  .box {
+    width: calc(calc(100%-30px) / 3);
+    display: flex;
+    flex-direction: column;
+    &:nth-of-type(2) {
+      width: 40%;
+    }
+    span {
+      text-align: left;
+      display: block;
+    }
+    .label {
+      font-size: 12px;
+      color: @labelColor;
+      .btc {
+        font-size: 10px;
+        opacity: 0.5;
+        margin-top: 2px;
+        transform: scale(0.9);
+        margin-left: -5px;
+      }
+    }
+    .num {
+      font-size: 12px;
+      color: @txtColor;
+      margin-top: 6px;
+    }
+    .timelogo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-items: center;
+      span {
+        margin-left: 10px;
+      }
+    }
+    &.txt-right {
+      span {
+        text-align: right;
+      }
+    }
+  }
+}
+.history {
+  padding-top: 102px;
+}
+.list-main {
+  // padding: 12px 0;
+  .list-item {
+    .pre;
+    min-height: 103px;
+    height: auto;
+    overflow: hidden;
+    position: relative;
+    padding: 15px;
+    margin-bottom: 8px;
+    .mark {
+      border-radius: 0 5px 0 2px;
+      height: 18px;
+      line-height: 18px;
+      position: absolute;
+      padding: 0 4px;
+      top: 0;
+      right: 1px;
+      font-size: 12px;
+      color: #fefffe;
+      text-align: center;
+      &.standard {
+        background: @blueColor;
+      }
+      &.banker {
+        background: @yellowColor;
+      }
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      // height: 21px;
+      line-height: 18px;
+      margin-bottom: 10px;
+      flex: 1;
+      .logo {
+        width: 20px;
+        height: 20px;
+        background-color: @yellowColor;
+        border-radius: 3px;
+      }
+      span {
+        font-size: 16px;
+        color: @txtColor;
+        margin-left: 5px;
+        &:first-child {
+          margin-left: 10px;
+        }
+      }
+      .head-ico {
+        width: 17px;
+        height: 17px;
+      }
+    }
+    .content {
+      margin-top: 8px;
+      .item-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &:not(:first-child) {
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+}
+//筛选条件按钮
+.right-filter {
+  position: absolute;
+  right: 15px;
+  top: 12px;
+  img {
+    height: 20px;
+    width: 20px;
+  }
+}

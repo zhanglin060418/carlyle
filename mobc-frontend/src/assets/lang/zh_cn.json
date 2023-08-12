@@ -1,0 +1,9 @@
+{
+    "sys": {
+        "confirmButtonText": "确认",
+        "cancelButtonText": "取消"
+    },
+    "user": {
+        "setting": "设置"
+    }
+}

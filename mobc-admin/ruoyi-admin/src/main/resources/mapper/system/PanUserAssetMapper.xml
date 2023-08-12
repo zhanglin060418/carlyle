@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanUserAssetMapper">
+
+    <resultMap type="PanUserAsset" id="PanUserAssetResult">
+        <result property="userAssetId"    column="user_asset_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="balance"    column="balance"    />
+    </resultMap>
+
+    <sql id="selectPanUserAssetVo">
+        select user_asset_id, user_id, balance from pan_user_asset
+    </sql>
+
+    <select id="selectPanUserAssetList" parameterType="PanUserAsset" resultMap="PanUserAssetResult">
+        <include refid="selectPanUserAssetVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="balance != null  and balance != ''"> and balance = #{balance}</if>
+        </where>
+    </select>
+
+    <select id="selectPanUserAssetByUserAssetId" parameterType="Long" resultMap="PanUserAssetResult">
+        <include refid="selectPanUserAssetVo"/>
+        where user_asset_id = #{userAssetId}
+    </select>
+
+    <select id="selectPanUserAssetByUserId" parameterType="Long" resultMap="PanUserAssetResult">
+    	<include refid="selectPanUserAssetVo"/>
+    	where user_id = #{userId}
+    </select>
+
+    <insert id="insertPanUserAsset" parameterType="PanUserAsset" useGeneratedKeys="true" keyProperty="userAssetId">
+        insert into pan_user_asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="balance != null and balance != ''">balance,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="balance != null and balance != ''">#{balance},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePanUserAsset" parameterType="PanUserAsset">
+	update pan_user_asset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="balance != null">balance = #{balance},</if>
+        </trim>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userAssetId != null "> and user_asset_id = #{userAssetId}</if>
+        </where>
+    </update>
+
+    <delete id="deletePanUserAssetByUserAssetId" parameterType="Long">
+        delete from pan_user_asset where user_asset_id = #{userAssetId}
+    </delete>
+
+    <delete id="deletePanUserAssetByUserAssetIds" parameterType="String">
+        delete from pan_user_asset where user_asset_id in
+        <foreach item="userAssetId" collection="array" open="(" separator="," close=")">
+            #{userAssetId}
+        </foreach>
+    </delete>
+
+    <select id="selectUserAssetList" resultMap="PanUserAssetResult">
+        SELECT
+            ua.user_asset_id,
+            ua.user_id,
+            ua.balance
+        FROM
+            pan_user_asset ua
+            left join sys_user u on ua.user_id = u.user_id
+        where u.status='0'
+    </select>
+
+    <select id="selectUserAssetListByJob" resultMap="PanUserAssetResult">
+        SELECT
+            ua.user_asset_id,
+            ua.user_id,
+            ua.balance
+        FROM
+            pan_user_asset ua
+            left join sys_user u on ua.user_id = u.user_id
+        where u.status='0' and ua.balance > 0
+    </select>
+
+    <select id="getAssetTotalBalance" resultType="Long">
+        select sum(balance) from pan_user_asset
+    </select>
+
+    <select id="assetTotalRebate" resultType="Long">
+        select sum(amount) from pan_transaction_history where transaction_type='Treasure_Reward'
+    </select>
+</mapper>

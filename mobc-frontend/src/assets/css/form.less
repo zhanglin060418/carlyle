@@ -1,0 +1,160 @@
+// 表单相关样式
+
+.base-btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  flex: 1;
+  + .base-btn {
+    margin-left: 15px;
+  }
+  button {
+    height: 45px;
+    line-height: 45px;
+    // width: 345px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(180deg, #eaeeff 0%, #3376c4 100%);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3),
+      inset 0px -2px 4px rgba(255, 169, 39, 0.25);
+    border-radius: 8px;
+    &[disabled] {
+      background: @btnColor;
+      box-shadow: none;
+      // opacity: 0.3;
+    }
+    &.no-round {
+      border-radius: 0;
+    }
+  }
+  .flat-button {
+    background: transparent;
+    border: 1px solid #1593ff;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: @navTxtColor;
+  }
+
+  &.disable {
+    button {
+      background: @btnColor;
+    }
+  }
+  &.deposit {
+    button {
+      background: @riseColor;
+    }
+  }
+}
+.base-input {
+  display: flex;
+  height: 40px;
+  // width: 345px;
+  width: 100%;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  background: @baseInput;
+  // margin-bottom: 1px;
+  border-bottom: 1px solid @line05Color;
+  padding: 0 5px;
+  + .base-input {
+    margin-top: 8px;
+  }
+  &.no-margin {
+    margin: 0;
+  }
+
+  &.error {
+    border-color: @inputErr;
+  }
+  .input-box {
+    flex: 1;
+    .ipt {
+      width: 100%;
+      height: 35px;
+      padding: 5px 10px;
+      border: none;
+      background: @baseInput;
+    }
+  }
+  &.click {
+    // border-color: @blueColor;
+    background: @baseInputHover;
+    .ipt {
+      background: @baseInputHover;
+    }
+  }
+  .action {
+    width: 35px;
+    text-align: right;
+    padding-right: 15px;
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .class-send {
+    color: #fff;
+    padding: 0 2px;
+    width: 90px;
+    height: 32px;
+    // background: @blueColor;
+    background: linear-gradient(180deg, #ffb13d 0%, #f45e1e 100%);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3),
+      inset 0px -2px 4px rgba(255, 169, 39, 0.25);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    span {
+      font-size: 14px;
+    }
+  }
+  .class-code {
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    img {
+      border-radius: 2px;
+    }
+  }
+}
+.social-login {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 13px;
+  color: @txt2Color;
+}
+.class-currency {
+  font-size: 14px;
+  color: #fefffe;
+  padding-right: 10px;
+}
+.bottom-margin {
+  margin-bottom: 0;
+}
+
+.counrty-name {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  .right-arrow {
+    border-color: @txt2Color;
+  }
+}
+.btn-wrap {
+  display: flex;
+  flex-direction: column;
+  // padding: 0 15px;
+  // margin-top: 20px;
+}
+.form-title {
+  margin-bottom: 17px;
+  color: #fff;
+}

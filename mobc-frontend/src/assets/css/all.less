@@ -1,0 +1,44 @@
+@import '../font/iconfont.css';
+@import './font.less';
+@import './writeColor.less';
+@import './reset.less';
+@import './common.less';
+@import './public.less';
+@import './update-vant.less';
+@import './nav.less';
+@import './form.less';
+@import './task.less';
+@import './lucky.less';
+@import './single.less';
+@import './bottompopup.less';
+@import './area.less';
+@import './my.less';
+@import './popup.less';
+@import './dwsj.less';
+@import './invite.less';
+@import './wind.less';
+
+#app {
+  height: 100%;
+  font-size: 14px;
+}
+.icon {
+  font-size: 22px;
+  margin-top: 2px;
+}
+
+.top-meng {
+  background: @baseColor;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 0px;
+  z-index: 99999;
+  width: 100%;
+}
+@supports (top: env(safe-area-inset-top)) {
+  .top-meng {
+    height: constant(safe-area-inset-top);
+    height: env(safe-area-inset-top);
+  }
+}

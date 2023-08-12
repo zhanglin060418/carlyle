@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TeamTreatmentMapper">
+
+    <resultMap type="TeamTreatment" id="TeamTreatmentResult">
+        <result property="id"    column="id"    />
+        <result property="description"    column="description"    />
+        <result property="descriptionEn"    column="description_en"    />
+        <result property="descriptionIn"    column="description_in"    />
+        <result property="descriptionRu"    column="description_ru"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectTeamTreatmentVo">
+        select id, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time, remark from team_treatment
+    </sql>
+
+    <select id="selectTeamTreatmentList" parameterType="TeamTreatment" resultMap="TeamTreatmentResult">
+        <include refid="selectTeamTreatmentVo"/>
+        <where>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="descriptionEn != null  and descriptionEn != ''"> and description_en = #{descriptionEn}</if>
+            <if test="descriptionIn != null  and descriptionIn != ''"> and description_in = #{descriptionIn}</if>
+            <if test="descriptionRu != null  and descriptionRu != ''"> and description_ru = #{descriptionRu}</if>
+        </where>
+    </select>
+
+    <select id="selectTeamTreatmentById" parameterType="Long" resultMap="TeamTreatmentResult">
+        <include refid="selectTeamTreatmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTeamTreatment" parameterType="TeamTreatment" useGeneratedKeys="true" keyProperty="id">
+        insert into team_treatment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="description != null">description,</if>
+            <if test="descriptionEn != null">description_en,</if>
+            <if test="descriptionIn != null">description_in,</if>
+            <if test="descriptionRu != null">description_ru,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="description != null">#{description},</if>
+            <if test="descriptionEn != null">#{descriptionEn},</if>
+            <if test="descriptionIn != null">#{descriptionIn},</if>
+            <if test="descriptionRu != null">#{descriptionRu},</if>
+            <if test="remark != null">#{remark},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updateTeamTreatment" parameterType="TeamTreatment">
+        update team_treatment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="description != null">description = #{description},</if>
+            <if test="descriptionEn != null">description_en = #{descriptionEn},</if>
+            <if test="descriptionIn != null">description_in = #{descriptionIn},</if>
+            <if test="descriptionRu != null">description_ru = #{descriptionRu},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = now()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTeamTreatmentById" parameterType="Long">
+        delete from team_treatment where id = #{id}
+    </delete>
+
+    <delete id="deleteTeamTreatmentByIds" parameterType="String">
+        delete from team_treatment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

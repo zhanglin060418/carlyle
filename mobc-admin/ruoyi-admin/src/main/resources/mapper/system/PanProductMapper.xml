@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanProductMapper">
+
+    <resultMap type="PanProduct" id="PanProductResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="nameIn"    column="name_in"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="nameRu"    column="name_ru"    />
+        <result property="coverImages"    column="cover_images"    />
+        <result property="category"    column="category"    />
+        <result property="type"    column="type"    />
+        <result property="rewardProduct"    column="reward_product"    />
+        <result property="dailyInterest"    column="daily_interest"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="minimumBuy"    column="minimum_buy"    />
+        <result property="maximumBuy"    column="maximum_buy"    />
+        <result property="fundType"    column="fund_type"    />
+        <result property="progress"    column="progress"    />
+        <result property="showProgressBar"    column="show_progress_bar"    />
+        <result property="sellingTimestamp"    column="selling_timestamp"    />
+        <result property="totalFund"    column="total_fund"    />
+        <result property="currFund"    column="curr_fund"    />
+        <result property="copies"    column="copies"    />
+        <result property="isVisible"    column="is_visible"    />
+        <result property="onSale"    column="on_sale"    />
+        <result property="hasGroupBuyOption"    column="has_group_buy_option"    />
+        <result property="luckyNumberRangeStart"    column="lucky_number_range_start"    />
+        <result property="luckyNumberRangeEnd"    column="lucky_number_range_end"    />
+        <result property="status"    column="status"    />
+        <result property="description"    column="description"    />
+        <result property="descriptionEn"    column="description_en"    />
+        <result property="descriptionIn"    column="description_in"    />
+        <result property="descriptionRu"    column="description_ru"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPanProductVo">
+        select id, name, name_in,curr_fund, name_en, name_ru, cover_images, category, type, reward_product, daily_interest, cycle, minimum_buy, maximum_buy, fund_type, progress, show_progress_bar, selling_timestamp, total_fund, copies, is_visible, on_sale, has_group_buy_option, lucky_number_range_start, lucky_number_range_end, status, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time from pan_product
+    </sql>
+
+    <select id="selectPanProductList" parameterType="PanProduct" resultMap="PanProductResult">
+        <include refid="selectPanProductVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="nameIn != null  and nameIn != ''"> and name_in = #{nameIn}</if>
+            <if test="nameEn != null  and nameEn != ''"> and name_en = #{nameEn}</if>
+            <if test="nameRu != null  and nameRu != ''"> and name_ru = #{nameRu}</if>
+            <if test="coverImages != null  and coverImages != ''"> and cover_images = #{coverImages}</if>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="rewardProduct != null "> and reward_product = #{rewardProduct}</if>
+            <if test="dailyInterest != null "> and daily_interest = #{dailyInterest}</if>
+            <if test="cycle != null "> and cycle = #{cycle}</if>
+            <if test="minimumBuy != null "> and minimum_buy = #{minimumBuy}</if>
+            <if test="maximumBuy != null "> and maximum_buy = #{maximumBuy}</if>
+            <if test="fundType != null  and fundType != ''"> and fund_type = #{fundType}</if>
+            <if test="progress != null "> and progress = #{progress}</if>
+            <if test="showProgressBar != null  and showProgressBar != ''"> and show_progress_bar = #{showProgressBar}</if>
+            <if test="sellingTimestamp != null "> and selling_timestamp = #{sellingTimestamp}</if>
+            <if test="totalFund != null "> and total_fund = #{totalFund}</if>
+            <if test="copies != null "> and copies = #{copies}</if>
+            <if test="isVisible != null  and isVisible != ''"> and is_visible = #{isVisible}</if>
+            <if test="onSale != null  and onSale != ''"> and on_sale = #{onSale}</if>
+            <if test="hasGroupBuyOption != null  and hasGroupBuyOption != ''"> and has_group_buy_option = #{hasGroupBuyOption}</if>
+            <if test="luckyNumberRangeStart != null "> and lucky_number_range_start = #{luckyNumberRangeStart}</if>
+            <if test="luckyNumberRangeEnd != null "> and lucky_number_range_end = #{luckyNumberRangeEnd}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="descriptionEn != null  and descriptionEn != ''"> and description_en = #{descriptionEn}</if>
+            <if test="descriptionIn != null  and descriptionIn != ''"> and description_in = #{descriptionIn}</if>
+            <if test="descriptionRu != null  and descriptionRu != ''"> and description_ru = #{descriptionRu}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+        </where>
+        order by create_time desc
+    </select>
+
+
+    <select id="selectPanProductBuyUser" parameterType="PanProduct" resultMap="PanProductResult">
+        SELECT
+            pd.id,
+            pd.NAME,
+            pd.name_in,
+            pd.curr_fund,
+            pd.name_en,
+            pd.name_ru,
+            pd.cover_images,
+            pd.category,
+            pd.type,
+            pd.reward_product,
+            pd.daily_interest,
+            pd.cycle,
+            pd.minimum_buy,
+            pd.maximum_buy,
+            pd.fund_type,
+            pd.progress,
+            pd.show_progress_bar,
+            pd.selling_timestamp,
+            pd.description,
+            pd.description_en,
+            pd.total_fund,
+            pd.copies,
+            pd.is_visible,
+            pd.on_sale,
+            IFNULL(pp.cun, 0)  buyCount
+        FROM
+            pan_product pd
+                LEFT JOIN ( SELECT count( pan.product ) cun, pan.product FROM pan_purchase pan WHERE pan.buyer = #{userId} GROUP BY pan.product ) pp ON pd.id = pp.product
+            where pd.name!='Treasure'
+                ORDER BY pd.category
+
+    </select>
+
+    <select id="selectPanProductById" parameterType="Long" resultMap="PanProductResult">
+        <include refid="selectPanProductVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPanProductByName" parameterType="java.lang.String" resultMap="PanProductResult">
+        <include refid="selectPanProductVo"/>
+        where name_in = #{nameIn}
+    </select>
+
+    <select id="getRewardProductId" resultType="String">
+       select GROUP_CONCAT(name) from pan_product where type = '赠送产品'
+    </select>
+
+    <select id="getAsset" resultMap="PanProductResult">
+        <include refid="selectPanProductVo"/>
+        where name = 'Treasure'
+    </select>
+    <insert id="insertPanProduct" parameterType="PanProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_product (
+            <if test="name != null and name != ''">name,</if>
+            <if test="nameIn != null">name_in,</if>
+            <if test="nameEn != null">name_en,</if>
+            <if test="nameRu != null">name_ru,</if>
+            <if test="coverImages != null">cover_images,</if>
+            <if test="category != null and category != ''">category,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="rewardProduct != null">reward_product,</if>
+            <if test="dailyInterest != null">daily_interest,</if>
+            <if test="cycle != null">cycle,</if>
+            <if test="minimumBuy != null">minimum_buy,</if>
+            <if test="maximumBuy != null">maximum_buy,</if>
+            <if test="fundType != null and fundType != ''">fund_type,</if>
+            <if test="progress != null">progress,</if>
+            <if test="showProgressBar != null and showProgressBar != ''">show_progress_bar,</if>
+            <if test="sellingTimestamp != null">selling_timestamp,</if>
+            <if test="totalFund != null">total_fund,</if>
+            <if test="currFund != null">curr_fund,</if>
+            <if test="copies != null">copies,</if>
+            <if test="isVisible != null and isVisible != ''">is_visible,</if>
+            <if test="onSale != null and onSale != ''">on_sale,</if>
+            <if test="hasGroupBuyOption != null and hasGroupBuyOption != ''">has_group_buy_option,</if>
+            <if test="luckyNumberRangeStart != null">lucky_number_range_start,</if>
+            <if test="luckyNumberRangeEnd != null">lucky_number_range_end,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="description != null and description != ''">description,</if>
+            <if test="descriptionEn != null">description_en,</if>
+            <if test="descriptionIn != null">description_in,</if>
+            <if test="descriptionRu != null">description_ru,</if>
+            create_time
+         )values(
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="nameIn != null">#{nameIn},</if>
+            <if test="nameEn != null">#{nameEn},</if>
+            <if test="nameRu != null">#{nameRu},</if>
+            <if test="coverImages != null">#{coverImages},</if>
+            <if test="category != null and category != ''">#{category},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="rewardProduct != null">#{rewardProduct},</if>
+            <if test="dailyInterest != null">#{dailyInterest},</if>
+            <if test="cycle != null">#{cycle},</if>
+            <if test="minimumBuy != null">#{minimumBuy},</if>
+            <if test="maximumBuy != null">#{maximumBuy},</if>
+            <if test="fundType != null and fundType != ''">#{fundType},</if>
+            <if test="progress != null">#{progress},</if>
+            <if test="showProgressBar != null and showProgressBar != ''">#{showProgressBar},</if>
+            <if test="sellingTimestamp != null">#{sellingTimestamp},</if>
+            <if test="totalFund != null">#{totalFund},</if>
+            <if test="currFund != null">#{currFund},</if>
+            <if test="copies != null">#{copies},</if>
+            <if test="isVisible != null and isVisible != ''">#{isVisible},</if>
+            <if test="onSale != null and onSale != ''">#{onSale},</if>
+            <if test="hasGroupBuyOption != null and hasGroupBuyOption != ''">#{hasGroupBuyOption},</if>
+            <if test="luckyNumberRangeStart != null">#{luckyNumberRangeStart},</if>
+            <if test="luckyNumberRangeEnd != null">#{luckyNumberRangeEnd},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="descriptionEn != null">#{descriptionEn},</if>
+            <if test="descriptionIn != null">#{descriptionIn},</if>
+            <if test="descriptionRu != null">#{descriptionRu},</if>
+            now()
+         )
+    </insert>
+
+    <update id="updatePanProduct" parameterType="PanProduct">
+        update pan_product
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="nameIn != null">name_in = #{nameIn},</if>
+            <if test="nameEn != null">name_en = #{nameEn},</if>
+            <if test="nameRu != null">name_ru = #{nameRu},</if>
+            <if test="coverImages != null">cover_images = #{coverImages},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="rewardProduct != null">reward_product = #{rewardProduct},</if>
+            <if test="dailyInterest != null">daily_interest = #{dailyInterest},</if>
+            <if test="cycle != null">cycle = #{cycle},</if>
+            <if test="minimumBuy != null">minimum_buy = #{minimumBuy},</if>
+            <if test="maximumBuy != null">maximum_buy = #{maximumBuy},</if>
+            <if test="fundType != null and fundType != ''">fund_type = #{fundType},</if>
+            <if test="progress != null">progress = #{progress},</if>
+            <if test="showProgressBar != null and showProgressBar != ''">show_progress_bar = #{showProgressBar},</if>
+            <if test="sellingTimestamp != null">selling_timestamp = #{sellingTimestamp},</if>
+            <if test="totalFund != null">total_fund = #{totalFund},</if>
+            <if test="currFund != null">curr_fund = #{currFund},</if>
+            <if test="copies != null">copies = #{copies},</if>
+            <if test="isVisible != null and isVisible != ''">is_visible = #{isVisible},</if>
+            <if test="onSale != null and onSale != ''">on_sale = #{onSale},</if>
+            <if test="hasGroupBuyOption != null and hasGroupBuyOption != ''">has_group_buy_option = #{hasGroupBuyOption},</if>
+            <if test="luckyNumberRangeStart != null">lucky_number_range_start = #{luckyNumberRangeStart},</if>
+            <if test="luckyNumberRangeEnd != null">lucky_number_range_end = #{luckyNumberRangeEnd},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="descriptionEn != null">description_en = #{descriptionEn},</if>
+            <if test="descriptionIn != null">description_in = #{descriptionIn},</if>
+            <if test="descriptionRu != null">description_ru = #{descriptionRu},</if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePanProductById" parameterType="Long">
+        delete from pan_product where id = #{id}
+    </delete>
+
+    <delete id="deletePanProductByIds" parameterType="String">
+        delete from pan_product where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

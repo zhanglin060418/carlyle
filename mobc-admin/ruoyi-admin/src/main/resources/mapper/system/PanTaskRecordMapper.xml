@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanTaskRecordMapper">
+
+    <resultMap type="PanTaskRecord" id="PanTaskRecordResult">
+        <result property="rId"    column="r_id"    />
+        <result property="jobId"    column="job_id"    />
+        <result property="jobName"    column="job_name"    />
+        <result property="invokeTarget"    column="invoke_target"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="taskDate"    column="task_date"    />
+    </resultMap>
+
+    <insert id="insertTaskJobRecord" parameterType="PanTaskRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_task_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rId != null">r_id,</if>
+            <if test="jobId != null">job_id,</if>
+            <if test="jobName != null">job_name,</if>
+            <if test="invokeTarget != null">invoke_target,</if>
+            <if test="taskDate != null">task_date,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rId != null and jobId != ''">#{rId},</if>
+            <if test="jobId != null and jobId != ''">#{jobId},</if>
+            <if test="jobName != null and jobName != ''">#{jobName},</if>
+            <if test="invokeTarget != null and invokeTarget != ''">#{invokeTarget},</if>
+            <if test="taskDate != null and taskDate != ''">#{taskDate},</if>
+            now()
+        </trim>
+
+    </insert>
+
+    <update id="updateTaskJobRecord" parameterType="PanTaskRecord">
+        update pan_task_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskStatus != null and taskStatus != ''">task_status = #{taskStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = now()
+        </trim>
+        where r_id= #{rId}
+    </update>
+
+    <select id="selectTaskJobByTarget" parameterType="java.lang.String" resultMap="PanTaskRecordResult">
+        SELECT
+        job_id,
+        job_name,
+        invoke_target
+        FROM
+        sys_job
+        WHERE
+        STATUS = '0'
+        and invoke_target = #{invokeTarget}
+    </select>
+
+    <select id="selectTaskList" parameterType="PanTaskRecord" resultMap="PanTaskRecordResult">
+        SELECT
+        r_id,
+        job_id,
+        job_name,
+        invoke_target,
+        task_status,
+        create_time,
+        task_date,
+        update_time
+        FROM
+        pan_task_record
+        <where>
+            task_status = 'SUCCESS'
+            <if test="invokeTarget != null and invokeTarget!= ''"> and invoke_target = #{invokeTarget}</if>
+            <if test="taskDate != null and taskDate != ''"> and task_date= #{taskDate}</if>
+        </where>
+    </select>
+
+</mapper>

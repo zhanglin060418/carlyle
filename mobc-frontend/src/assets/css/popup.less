@@ -1,0 +1,126 @@
+.popup-result {
+  &.notic {
+    height: 515px;
+    .content {
+      position: relative;
+
+      .abs {
+        position: absolute;
+        &.hg {
+          width: 47px;
+          height: 35px;
+          top: 10px;
+          left: 10px;
+          z-index: 1;
+        }
+        &.nbot {
+          height: 61px;
+          width: 286px;
+          bottom: 0px;
+          left: 50%;
+          margin-left: -143px;
+        }
+      }
+      .poput-rule {
+        z-index: 3;
+        height: 100%;
+        overflow: auto;
+        h2 {
+          position: relative;
+          width: max-content;
+          margin: 0 auto;
+          padding-bottom: 15px;
+          font-size: 25px;
+          font-weight: bold;
+          &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            height: 12px;
+            width: 100%;
+            background: #a639fc;
+            bottom: 17px;
+            z-index: -1;
+          }
+        }
+        p {
+          font-weight: bold;
+          span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b00;
+            text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+          }
+        }
+      }
+    }
+  }
+  &.rule {
+    height: 460px;
+    .content {
+      height: 100%;
+    }
+  }
+  &.limit-rule {
+    // height: 550px;
+    height: 340px;
+    overflow: hidden;
+    .content {
+      margin-top: 0;
+      height: 100%;
+      .intive-box::after {
+        left: 0;
+      }
+      .intive-btn {
+        animation: heartbeat2 1.5s infinite;
+      }
+    }
+  }
+}
+.poput-rule {
+  color: #fff;
+  font-size: 12px;
+
+  h2 {
+    font-weight: bold;
+    font-size: 17px;
+    line-height: 34px;
+    text-align: center;
+    color: #ffffff;
+  }
+  p {
+    line-height: 16px;
+    text-align: left;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .pop-table {
+    width: 100%;
+    margin-bottom: 4px;
+    td,
+    th {
+      border: 1px solid #fff;
+      text-align: center;
+      height: 20px;
+      vertical-align: middle;
+      padding: 2px;
+      &:first-child {
+        width: 40%;
+      }
+      &:last-child {
+        width: 50%;
+      }
+    }
+    &.multi-5 {
+      th,
+      td {
+        &:first-child {
+          width: auto;
+        }
+        &:last-child {
+          width: auto;
+        }
+      }
+    }
+  }
+}

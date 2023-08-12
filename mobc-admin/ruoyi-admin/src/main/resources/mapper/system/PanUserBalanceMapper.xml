@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanUserBalanceMapper">
+
+    <resultMap type="PanUserBalance" id="PanUserBalanceResult">
+        <result property="userBalanceId"    column="user_balance_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="balance"    column="balance"    />
+        <result property="availableAmt" column="available_amt" />
+        <result property="lockBalance"    column="lock_balance"    />
+        <result property="transitAmt"    column="transit_amt"    />
+        <result property="assetBalance" column="asset_balance" />
+        <result property="username" column="user_name" />
+        <result property="updateAt" column="update_at" />
+        <result property="topId"    column="top_id"    />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <result property="isRebate"    column="is_rebate"  />
+    </resultMap>
+
+    <sql id="selectPanUserBalanceVo">
+		select user_balance_id, user_id, balance,transit_amt,lock_balance, available_amt, transit_amt,asset_balance from pan_user_balance
+
+    </sql>
+
+    <sql id="selectPanUserBalanceListDetailVo">
+        select u.user_id, u.user_name user_name, if (pub.balance is null, 0, pub.balance) balance, if (pua.balance is null, 0, pua.balance) asset from sys_user u
+        	left join pan_user_balance pub on u.user_id = pub.user_id
+            left join pan_user_asset pua on u.user_id = pua.user_id
+            where u.user_type != '00'
+            group by u.user_id, pub.balance, pua.balance
+    </sql>
+
+    <select id="selectPanUserBalanceListDetail" parameterType="PanUserBalance" resultMap="PanUserBalanceResult">
+        SELECT
+            pub.user_id,
+            pub.balance,
+            pub.available_amt,
+            pub.lock_balance,
+            pub.asset_balance,
+            pub.transit_amt,
+            pub.user_balance_id,
+            pub.update_at,
+            u.user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name
+        FROM
+            pan_user_balance pub
+        LEFT JOIN sys_user u ON pub.user_id = u.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = u.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = u.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = u.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="username != null and username != ''"> and u.user_name  like concat('%',#{username}) </if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="balance != null "> and pub.balance = #{balance}</if>
+       </where>
+        order by pub.update_at desc
+        ${params.dataScope}
+    </select>
+
+    <select id="selectPanUserBalanceListDetailCount" parameterType="PanUserBalance" resultType="Long">
+        SELECT
+        IFNULL(sum(balance) ,0)
+        FROM
+        pan_user_balance pub
+        LEFT JOIN sys_user u ON pub.user_id = u.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = u.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = u.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = u.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="username != null and username != ''"> and u.user_name  like concat('%',#{username}) </if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="balance != null "> and pub.balance = #{balance}</if>
+        </where>
+
+    </select>
+
+    <select id="selectPanUserBalanceList" parameterType="PanUserBalance" resultMap="PanUserBalanceResult">
+        <include refid="selectPanUserBalanceVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="balance != null "> and balance = #{balance}</if>
+        </where>
+    </select>
+
+    <select id="selectPanUserBalanceByUserBalanceId" parameterType="Long" resultMap="PanUserBalanceResult">
+        SELECT
+            user_balance_id,
+            pan_user_balance.user_id,
+            sys_user.user_name user_name,
+            transit_amt,
+            balance,
+            lock_balance,
+            available_amt,
+            transit_amt,
+            asset_balance
+        FROM
+            pan_user_balance LEFT JOIN sys_user
+            on pan_user_balance.user_id = sys_user.user_id
+        WHERE
+            pan_user_balance.user_balance_id = #{userBalanceId}
+    </select>
+
+    <select id="getPanUserBalanceByUserId" parameterType="Long" resultMap="PanUserBalanceResult">
+        <include refid="selectPanUserBalanceVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <select id="getUserBalanceByUserId" parameterType="Long" resultMap="PanUserBalanceResult">
+        SELECT
+            pu.user_balance_id,
+            pu.user_id,
+            pu.balance,
+            pu.available_amt,
+            pu.lock_balance,
+            pu.asset_balance,
+            pu.transit_amt,
+            pu.update_at,
+            u.is_rebate
+        FROM
+            pan_user_balance pu left join sys_user u on pu.user_id = u.user_id
+        where pu.user_id = #{userId}
+    </select>
+
+    <insert id="insertPanUserBalance" parameterType="PanUserBalance" useGeneratedKeys="true" keyProperty="userBalanceId">
+        insert into pan_user_balance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="balance != null">balance,</if>
+            <if test="lockBalance != null">lock_balance,</if>
+            <if test="transitAmt != null">transit_amt,</if>
+            <if test="assetBalance != null">asset_balance,</if>
+            <if test="availableAmt != null">available_amt,</if>
+            update_at
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="lockBalance != null">#{lockBalance},</if>
+            <if test="transitAmt != null">#{transitAmt},</if>
+            <if test="assetBalance != null">#{assetBalance},</if>
+            <if test="availableAmt != null">#{availableAmt},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updatePanUserBalance" parameterType="PanUserBalance">
+        update pan_user_balance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="lockBalance != null">lock_balance = #{lockBalance},</if>
+            <if test="transitAmt != null">transit_amt = #{transitAmt},</if>
+            <if test="assetBalance != null">asset_balance = #{assetBalance},</if>
+            <if test="availableAmt != null">available_amt = #{availableAmt},</if>
+            update_at = now()
+        </trim>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userBalanceId != null "> and user_balance_id = #{userBalanceId}</if>
+        </where>
+
+    </update>
+    <select id="getUserBalanceCountAmt" parameterType="PanUserBalance" resultType="Long">
+        select
+        IFNULL( sum(pan_user_balance.balance), 0 )
+        from pan_user_balance left join sys_user u on pan_user_balance.user_id =u.user_id
+        <where>
+            <if test="agentId != null and agentId != 0">
+                AND u.agent_id = #{agentId}
+            </if>
+            <if test="managerId != null and managerId != 0">
+                AND u.manager_id = #{managerId}
+            </if>
+            <if test="topId != null and topId != 0">
+                AND u.top_id = #{topId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserBalanceCount" parameterType="PanUserBalance" resultMap="PanUserBalanceResult">
+            SELECT
+                IFNULL(sum( ub.balance ),0) as balance,
+                IFNULL(sum( ub.asset_balance ) ,0) as asset_balance
+            FROM
+                pan_user_balance ub
+                LEFT JOIN sys_user u ON ub.user_id = u.user_id
+            <where>
+                <if test="agentId != null and agentId != 0">
+                    AND u.agent_id = #{agentId}
+                </if>
+                <if test="managerId != null and managerId != 0">
+                    AND u.manager_id = #{managerId}
+                </if>
+                <if test="topId != null and topId != 0">
+                    AND u.top_id = #{topId}
+                </if>
+            </where>
+    </select>
+
+</mapper>

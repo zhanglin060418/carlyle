@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanTransactionHistoryMapper">
+
+    <resultMap type="PanTransactionHistory" id="PanTransactionHistoryResult">
+        <result property="transactionHistoryId"    column="transaction_history_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="orUserId"    column="or_user_id"    />
+        <result property="orOrderId"    column="or_order_id"    />
+        <result property="username"    column="user_name"    />
+        <result property="transactionDate"    column="transaction_date"    />
+        <result property="transactionType"    column="transaction_type"    />
+        <result property="amount"    column="amount"    />
+        <result property="remark"    column="remark"    />
+        <result property="amountBefore"    column="amount_before"    />
+        <result property="amountAfter"    column="amount_after"    />
+        <result property="billType"    column="bill_type"    />
+        <result property="topId"    column="top_id"    />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <result property="orUserName"    column="orUserName"  />
+        <result property="productAmount"    column="productAmount"  />
+        <result property="transCount"    column="transCount"  />
+        <result property="productName"    column="productName"  />
+
+    </resultMap>
+
+    <resultMap type="TeamIncomeOverview" id="TeamIncomeOverviewResult">
+    	<result property="userId"		column="u_id"/>
+    	<result property="userName"		column="u_username"/>
+    	<result property="userAvatar"		column="u_avatar"/>
+    	<result property="income"		column="income"/>
+    </resultMap>
+
+     <resultMap type="TeamOverview" id="TeamOverviewResult" >
+         <result property="userId"		    column="user_id"/>
+         <result property="userName"		column="user_name"/>
+         <result property="parentId"		column="parent_id"/>
+         <result property="parentName"		column="parent_name"/>
+         <result property="totalPeopleCount" column="totalPeopleCount"/>
+         <result property="transType"	column="transType"/>
+         <result property="transAmt"	column="transAmt"/>
+     </resultMap>
+
+    <resultMap type="TeamRechargeView" id="TeamRechargeViewResult" >
+        <result property="userId"		 column="user_id"/>
+        <result property="userName"		column="user_name"/>
+        <result property="agentId"		column="agent_id"/>
+        <result property="agentName"	column="agent_name"/>
+        <result property="managerId"  column="manager_id"/>
+        <result property="managerName"	column="manager_name"/>
+        <result property="topId"  column="top_id"/>
+        <result property="topName"	column="top_name"/>
+        <result property="childCount"	column="childCount"/>
+        <result property="grandCount"   column="grandCount"/>
+        <result property="greatGrandCount"	column="greatGrandCount"/>
+        <result property="childRechargeCount"	column="childRechargeCount"/>
+        <result property="grandRechargeCount" column="grandRechargeCount"/>
+        <result property="greatGrandRechargeCount"	column="greatGrandRechargeCount"/>
+        <result property="childRechargeAmt"	column="childRechargeAmt"/>
+        <result property="grandRechargeAmt" column="grandRechargeAmt"/>
+        <result property="greatGrandRechargeAmt"	column="greatGrandRechargeAmt"/>
+        <result property="childPurcherCount"	column="childPurcherCount"/>
+        <result property="grandPurcherCount" column="grandPurcherCount"/>
+        <result property="greatGrandPurcherCount"	column="greatGrandPurcherCount"/>
+        <result property="childPurcherAmt"	column="childPurcherAmt"/>
+        <result property="grandPurcherAmt" column="grandPurcherAmt"/>
+        <result property="greatGrandPurcherAmt"	column="greatGrandPurcherAmt"/>
+    </resultMap>
+
+
+    <select id="selectTeamRechargeListByUser" parameterType="TeamRechargeView" resultMap="TeamRechargeViewResult">
+        SELECT
+        ( SELECT count( p.user_id ) FROM sys_user p WHERE p.parent_id = u.user_id ) AS childCount,
+        ( SELECT count( g.user_id ) FROM sys_user g WHERE g.grand_id = u.user_id ) AS grandCount,
+        ( SELECT count( gg.user_id ) FROM sys_user gg WHERE gg.great_grand_id = u.user_id ) AS greatGrandCount,
+        u.user_id,
+        u.user_name,
+        u2.user_name top_name,
+        u3.user_name manager_name,
+        u4.user_name agent_name
+        FROM
+        sys_user u
+        LEFT JOIN sys_user u2 ON u.top_id = u2.user_id
+        LEFT JOIN sys_user u3 ON u.manager_id = u3.user_id
+        LEFT JOIN sys_user u4 ON u.agent_id = u4.user_id
+        WHERE
+        u.del_flag = '0'
+        AND u.user_type = '10'
+        <if test="userName != null and userName != ''">
+            AND u.user_name  like concat('%',#{userName})
+        </if>
+        <if test="topId != null and topId!= ''">
+            and u.top_id  = #{topId}
+        </if>
+        <if test="managerId != null and managerId!= ''">
+            and u.manager_id  = #{managerId}
+        </if>
+        <if test="agentId != null and agentId!= ''">
+            and u.agent_id  = #{agentId}
+        </if>
+        <if test="topName != null and topName != ''">
+            AND u2.user_name= #{topName}
+        </if>
+        <if test="managerName != null and managerName != ''">
+            AND u3.user_name= #{managerName}
+        </if>
+        <if test="agentName != null and agentName != ''">
+            AND u4.user_name= #{agentName}
+        </if>
+    </select>
+
+    <select id="selectTeamTransByUserId" parameterType="Long" resultMap="TeamRechargeViewResult">
+        SELECT
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.parent_id = u.user_id ) AS childRechargeCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.parent_id = u.user_id ) AS childRechargeAmt,
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.grand_id = u.user_id ) AS grandRechargeCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.grand_id = u.user_id ) AS grandRechargeAmt,
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.great_grand_id = u.user_id ) AS greatGrandRechargeCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Recharge' AND gg.great_grand_id = u.user_id ) AS greatGrandRechargeAmt,
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.parent_id = u.user_id ) AS childPurcherCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.parent_id = u.user_id ) AS childPurcherAmt,
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.grand_id = u.user_id ) AS grandPurcherCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.grand_id = u.user_id ) AS grandPurcherAmt,
+            (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.great_grand_id = u.user_id ) AS greatGrandPurcherCount,
+            (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+            WHERE pt.transaction_type = 'Buy_Product_Balance' AND gg.great_grand_id = u.user_id ) AS greatGrandPurcherAmt
+        FROM
+            sys_user u
+       where
+            u.user_id = #{userId}
+    </select>
+
+    <select id="selectTeamRechargeListByClerk" parameterType="TeamRechargeView" resultMap="TeamRechargeViewResult">
+        SELECT
+        ( SELECT count( p.user_id ) FROM sys_user p WHERE p.parent_id = u.user_id ) AS childCount,
+        (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.parent_id = u.user_id ) AS childRechargeCount,
+        (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.parent_id = u.user_id ) AS childRechargeAmt,
+        ( SELECT count( g.user_id ) FROM sys_user g WHERE g.grand_id = u.user_id ) AS grandCount,
+        (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.grand_id = u.user_id ) AS grandRechargeCount,
+        (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.grand_id = u.user_id ) AS grandRechargeAmt,
+        ( SELECT count( gg.user_id ) FROM sys_user gg WHERE gg.great_grand_id = u.user_id ) AS greatGrandCount,
+        (SELECT count( DISTINCT pt.user_id ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.great_grand_id = u.user_id ) AS greatGrandRechargeCount,
+        (SELECT IFNULL( sum( pt.amount ), 0 ) FROM pan_transaction_history pt LEFT JOIN sys_user gg ON pt.user_id = gg.user_id
+        WHERE pt.transaction_type = 'Recharge' AND gg.great_grand_id = u.user_id ) AS greatGrandRechargeAmt,
+        u.user_id,
+        u.user_name,
+        u3.user_name manager_name,
+        u4.user_name agent_name
+        FROM
+        sys_user u
+        LEFT JOIN sys_user u3 ON u.manager_id = u3.user_id
+        LEFT JOIN sys_user u4 ON u.agent_id = u4.user_id
+        WHERE
+        u.del_flag = '0'
+        AND u.user_type = '01'
+        <if test="userName != null and userName != ''">
+            AND u.user_name  like concat('%',#{userName})
+        </if>
+        <if test="managerId != null and managerId!= ''">
+            and u.manager_id  = #{managerId}
+        </if>
+        <if test="agentId != null and agentId!= ''">
+            and u.agent_id  = #{agentId}
+        </if>
+        <if test="managerName != null and managerName != ''">
+            AND u3.user_name= #{managerName}
+        </if>
+        <if test="agentName != null and agentName != ''">
+            AND u4.user_name= #{agentName}
+        </if>
+        <!-- 数据范围过滤 -->
+        order by childRechargeCount desc
+    </select>
+
+    <sql id="selectPanTransactionHistoryVo">
+        SELECT
+            transaction_history_id,
+            pan_transaction_history.user_id,
+            sys_user.user_name,
+            transaction_date,
+            transaction_type,
+            amount,
+            pan_transaction_history.remark,
+            amount_before,
+            amount_after,
+            bill_type
+        FROM
+            pan_transaction_history
+                LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+    </sql>
+
+    <select id="selectPanTransactionHistoryList" parameterType="PanTransactionHistory" resultMap="PanTransactionHistoryResult">
+        SELECT
+            transaction_history_id,
+            pan_transaction_history.user_id,
+            sys_user.user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            transaction_date,
+            transaction_type,
+            amount,
+            pan_transaction_history.remark,
+            amount_before,
+            amount_after,
+            bill_type
+        FROM
+            pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="username != null "> and sys_user.user_name like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="amount != null  and amount != ''"> and amount = #{amount}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        order by transaction_date desc
+    </select>
+
+    <select id="selectPanTransactionHistoryListCount" parameterType="PanTransactionHistory" resultType="Long">
+        SELECT
+            IFNULL(sum(amount),0)
+        FROM
+        pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="username != null "> and sys_user.user_name  like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="amount != null  and amount != ''"> and amount = #{amount}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPanTransByCommissionList" parameterType="PanTransactionHistory" resultMap="PanTransactionHistoryResult">
+        SELECT
+        transaction_history_id,
+        pan_transaction_history.user_id,
+        sys_user.user_name,
+        u2.user_name top_name,
+        u3.user_name manager_name,
+        u4.user_name agent_name,
+        u5.user_name orUserName,
+        transaction_date,
+        transaction_type,
+        amount
+        FROM
+        pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        LEFT JOIN sys_user u5 ON u5.user_id = pan_transaction_history.or_user_id
+        <where>
+            transaction_type in('Child_First_Purchase_Reward','Commission_A_Reward','Commission_C_Reward','Commission_B_Reward')
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="username != null "> and sys_user.user_name like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        order by transaction_date desc
+    </select>
+
+    <select id="selectPanTransByCommissionListCount" parameterType="PanTransactionHistory" resultType="Long">
+        SELECT
+        IFNULL(sum(amount),0)
+        FROM
+        pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        LEFT JOIN sys_user u5 ON u5.user_id = pan_transaction_history.or_user_id
+        <where>
+            transaction_type in('Child_First_Purchase_Reward','Commission_A_Reward','Commission_C_Reward','Commission_B_Reward')
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="username != null "> and sys_user.user_name like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPanTransByInterestList" parameterType="PanTransactionHistory" resultMap="PanTransactionHistoryResult">
+        SELECT
+        sys_user.user_name,
+        u2.user_name top_name,
+        u3.user_name manager_name,
+        u4.user_name agent_name,
+        transaction_date,
+        pan_transaction_history.or_order_id,
+        pan_transaction_history.amount
+        FROM
+        pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            transaction_type='Product_Daily_Interest'
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="username != null "> and sys_user.user_name like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="orOrderId != null  and orOrderId != ''"> and pan_transaction_history.or_order_id = #{orOrderId} </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        order by transaction_date desc
+    </select>
+
+    <select id="selectPanTransByInterestListCount" parameterType="PanTransactionHistory" resultType="Long">
+        SELECT
+        IFNULL(sum(pan_transaction_history.amount),0)
+        FROM
+        pan_transaction_history
+        LEFT JOIN sys_user ON sys_user.user_id = pan_transaction_history.user_id
+        LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+        LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+        LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            transaction_type='Product_Daily_Interest'
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="username != null "> and sys_user.user_name like concat('%',#{username})</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName}</if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="orOrderId != null  and orOrderId != ''"> and pan_transaction_history.or_order_id = #{orOrderId} </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPanTransactionHistoryByTransactionHistoryId" parameterType="Long" resultMap="PanTransactionHistoryResult">
+        <include refid="selectPanTransactionHistoryVo"/>
+        where transaction_history_id = #{transactionHistoryId}
+    </select>
+
+    <insert id="insertPanTransactionHistory" parameterType="PanTransactionHistory" useGeneratedKeys="true" keyProperty="transactionHistoryId">
+        insert into pan_transaction_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="orUserId != null">or_user_id,</if>
+            <if test="orOrderId != null">or_order_id,</if>
+            <if test="transactionType != null">transaction_type,</if>
+            <if test="amount != null">amount,</if>
+            <if test="remark != null">remark,</if>
+            <if test="amountBefore != null">amount_before,</if>
+            <if test="amountAfter != null">amount_after,</if>
+            <if test="billType != null">bill_type,</if>
+            <if test="isIncome != null">is_income,</if>
+            transaction_date
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="orUserId != null">#{orUserId},</if>
+            <if test="orOrderId != null">#{orOrderId},</if>
+            <if test="transactionType != null">#{transactionType},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="amountBefore != null">#{amountBefore},</if>
+            <if test="amountAfter != null">#{amountAfter},</if>
+            <if test="billType != null">#{billType},</if>
+            <if test="isIncome != null">#{isIncome},</if>
+            now()
+         </trim>
+    </insert>
+    <!--个人今日收益-->
+    <select id="getDailyIncome" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and is_income = 'Y' and transaction_type != 'Treasure_Reward' and DATE_FORMAT(transaction_date,'%Y-%m-%d') = CURDATE();
+    </select>
+
+    <select id="getTotalIncome" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and is_income = 'Y' and transaction_type != 'Treasure_Reward'
+    </select>
+
+    <select id="getTodayTreasureRewardById" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0)  from pan_transaction_history where user_id=#{userId} and transaction_type = 'Treasure_Reward' and DATE_FORMAT(transaction_date,'%Y-%m-%d') = CURDATE();
+    </select>
+
+    <select id="getTotalTreasureRewardById" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0)  from pan_transaction_history where user_id=#{userId} and transaction_type = 'Treasure_Reward'
+    </select>
+
+    <select id="getChildTotalIncome" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and is_income = 'Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
+    </select>
+
+    <select id="getChildDailyIncome" parameterType="Long" resultType="Long">
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d') =  CURDATE() and is_income='Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
+    </select>
+
+    <select id="getChildIncome" parameterType="Long" resultType="Long">
+    	select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and transaction_type in ('Child_First_Purchase_Reward','Commission_A_Reward','Reward_Product')
+    </select>
+
+	<select id="getGrandIncome" parameterType="Long" resultType="Long">
+		select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and transaction_type='Commission_B_Reward'
+    </select>
+
+	<select id="getGreatGrandIncome" parameterType="Long" resultType="Long">
+		select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and transaction_type='Commission_C_Reward'
+    </select>
+
+
+    <select id="getTodayTransaction" parameterType="Long" resultMap="PanTransactionHistoryResult">
+    	 select * from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d') = CURDATE()
+    	  order by transaction_date desc
+    </select>
+
+	<select id="getYesterdayTransaction" parameterType="Long" resultMap="PanTransactionHistoryResult">
+         select * from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d')= DATE(NOW() - INTERVAL 1 DAY)
+         order by transaction_date desc
+    </select>
+
+	<select id="getLastWeekTransaction" parameterType="Long" resultMap="PanTransactionHistoryResult">
+		select * from pan_transaction_history where user_id=#{userId} and <![CDATA[  DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE(NOW() - INTERVAL 7 DAY) ]]>
+		order by transaction_date desc
+    </select>
+
+    <select id="getGreatGrandIncomListByUser" parameterType="Long" resultMap="PanTransactionHistoryResult">
+        SELECT
+            u.user_name,
+            pth.amount,
+            pth.transaction_type,
+            pth.transaction_date
+        FROM
+            pan_transaction_history pth
+                LEFT JOIN sys_user u ON pth.or_user_id = u.user_id
+        WHERE
+            pth.user_id = #{userId}
+          AND pth.transaction_type = 'Commission_C_Reward'
+        ORDER BY
+            pth.transaction_date DESC
+    </select>
+
+    <select id="getGrandIncomListByUser" parameterType="Long" resultMap="PanTransactionHistoryResult">
+        SELECT
+            u.user_name,
+            pth.amount,
+            pth.transaction_type,
+            pth.transaction_date
+        FROM
+            pan_transaction_history pth
+                LEFT JOIN sys_user u ON pth.or_user_id = u.user_id
+        WHERE
+            pth.user_id = #{userId}
+          AND pth.transaction_type = 'Commission_B_Reward'
+        ORDER BY
+            pth.transaction_date DESC
+    </select>
+
+    <select id="getChildIncomeListByUser" parameterType="Long" resultMap="PanTransactionHistoryResult">
+        SELECT
+            u.user_name,
+            pth.amount,
+            pth.transaction_type,
+            pth.transaction_date
+        FROM
+            pan_transaction_history pth
+                LEFT JOIN sys_user u ON pth.or_user_id = u.user_id
+        WHERE
+            pth.user_id = #{userId}
+          AND pth.transaction_type IN ( 'Commission_A_Reward', 'Child_First_Purchase_Reward', 'Reward_Product' )
+        ORDER BY
+            pth.transaction_date DESC
+    </select>
+
+    <select id="getChildIncomeOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
+        SELECT
+            u.user_id u_id,
+            u.avatar u_avatar,
+            u.user_name u_username,
+            IFNULL( sum( pth.amount ), 0 ) income
+        FROM
+            sys_user u
+                LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type IN ( 'Commission_A_Reward', 'Child_First_Purchase_Reward', 'Reward_Product' ) ) pth ON u.user_id = pth.or_user_id
+        WHERE
+            u.parent_id = #{userId}
+        GROUP BY
+            u.user_id
+    </select>
+
+    <select id="getGrandIncomOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
+        SELECT
+            u.user_id u_id,
+            u.avatar u_avatar,
+            u.user_name u_username,
+            IFNULL( sum( pth.amount ), 0 ) income
+        FROM
+            sys_user u
+                LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type = 'Commission_B_Reward' ) pth ON u.user_id = pth.or_user_id
+        WHERE
+            u.grand_id = #{userId}
+        GROUP BY
+            u.user_id
+    </select>
+
+    <select id="getGreatGrandIncomOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
+        SELECT
+            u.user_id u_id,
+            u.avatar u_avatar,
+            u.user_name u_username,
+            IFNULL( sum( pth.amount ), 0 ) income
+        FROM
+            sys_user u
+                LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type = 'Commission_C_Reward' ) pth ON u.user_id = pth.or_user_id
+        WHERE
+            u.great_grand_id = #{userId}
+        GROUP BY
+            u.user_id
+    </select>
+
+      <select id="selectUserTeamByManagerList" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+                SELECT
+                    u.user_id,
+                    u.user_name
+                FROM
+                    sys_user u
+                WHERE
+                    u.manager_id = #{userId}
+                and u.user_type = '01'
+                limit #{currentPage},#{size}
+        </select>
+        <select id="selectUserTeamList" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+                SELECT
+                    u.user_id,
+                    u.user_name
+                FROM
+                    sys_user u
+                WHERE
+                    u.parent_id = #{userId}
+                limit #{currentPage},#{size}
+
+        </select>
+
+
+    <select id="selectUserTransCount" parameterType="Long" resultMap="TeamOverviewResult">
+             SELECT
+                    IFNULL( sum( amount ), 0 ) AS transAmt,
+                    transaction_type AS transType
+                FROM
+                    pan_transaction_history
+                WHERE
+                     user_id = #{userId}
+				and transaction_type in('Buy_Product_Balance','Recharge','Withdraw')
+                GROUP BY
+	            transaction_type
+        </select>
+
+    <select id="selectTeamTransCount" parameterType="Long" resultMap="TeamOverviewResult">
+            SELECT
+                IFNULL( sum( t.amount ), 0 ) AS transAmt,
+                t.transaction_type AS transType
+            FROM
+                pan_transaction_history t
+                LEFT JOIN sys_user u ON t.user_id = u.user_id
+            WHERE
+                t.transaction_type IN ( 'Buy_Product_Balance', 'Recharge', 'Withdraw', 'Commission_A_Reward', 'Commission_B_Reward', 'Commission_C_Reward', 'Child_First_Purchase_Reward' )
+                AND ( u.user_id = #{userId} OR u.parent_id = #{userId} OR u.grand_id = #{userId} OR u.great_grand_id = #{userId} )
+            GROUP BY
+                t.transaction_type
+        </select>
+
+        <select id="totalTeamBuyCount" parameterType="Long" resultType="Long">
+        SELECT
+            IFNULL(count( ut.user_id ), 0 )
+        FROM
+            (
+            SELECT
+                t.user_id,
+                count( t.amount )
+            FROM
+                pan_transaction_history t
+                LEFT JOIN sys_user u ON t.user_id = u.user_id
+            WHERE
+                t.transaction_type = 'Buy_Product_Balance'
+                AND ( u.user_id = #{userId} OR u.parent_id = #{userId} OR u.grand_id = #{userId} OR u.great_grand_id = #{userId} )
+            GROUP BY
+                t.user_id
+            ) ut
+        </select>
+
+    <select id="selectManagerTeam" parameterType="Long" resultMap="TeamOverviewResult">
+        SELECT
+            (
+            SELECT
+                count( p.user_id )+1
+            FROM
+                sys_user p
+            WHERE
+                 p.manager_id = #{userId}
+                ) AS totalPeopleCount,
+                u.user_id,
+                u.user_name
+            FROM
+                sys_user u
+        WHERE
+            u.user_id = #{userId}
+
+    </select>
+
+    <select id="selectUserTeam" parameterType="Long" resultMap="TeamOverviewResult">
+            SELECT
+                    (
+                    SELECT
+                        count( p.user_id )+1
+                    FROM
+                        sys_user p
+                    WHERE
+                        p.top_id = #{userId}
+                    ) AS totalPeopleCount,
+                    u.user_id,
+                    u.user_name,
+					u2.user_id parent_id,
+                    u2.user_name parent_name
+                FROM
+                    sys_user u left join sys_user u2 on u.manager_id = u2.user_id
+                WHERE
+                    u.user_id = #{userId}
+    </select>
+
+    <select id="selectPanUserTeam" parameterType="Long" resultMap="TeamOverviewResult">
+            SELECT
+                (
+                SELECT
+                    count( p.user_id )
+                FROM
+                    sys_user p
+                WHERE
+                    1 = 1
+                    AND ( p.user_id = #{userId} OR p.parent_id = #{userId} OR p.grand_id = #{userId} OR p.great_grand_id = #{userId} )
+                )AS totalPeopleCount,
+                u.user_id,
+                u.user_name,
+                u2.user_id parent_id,
+                u2.user_name parent_name
+            FROM
+                sys_user u
+                LEFT JOIN sys_user u2 ON u.parent_id = u2.user_id
+            WHERE
+                u.user_id = #{userId}
+    </select>
+
+    <select id="totalPeopleCount" parameterType="Long" resultType="Long">
+          SELECT
+            count( u.user_id )
+        FROM
+            sys_user u
+        WHERE
+            1 = 1
+            AND ( u.user_id = #{userId} OR u.parent_id = #{userId} OR u.grand_id = #{userId} OR u.great_grand_id = #{userId} )
+        </select>
+
+    <select id="totalPeopleCountBySys" parameterType="Long" resultType="Long">
+          SELECT
+            count( u.user_id )+1
+        FROM
+            sys_user u
+        WHERE
+            u.top_id = #{userId}
+        </select>
+
+    <select id="selectTeamTransCountBySys" parameterType="PanTransactionHistory" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL( sum( t.amount ), 0 ) AS transAmt,
+        t.transaction_type AS transType
+        FROM
+        pan_transaction_history t
+        LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type IN ( 'Buy_Product_Balance', 'Recharge', 'Withdraw', 'Commission_A_Reward', 'Commission_B_Reward', 'Commission_C_Reward', 'Child_First_Purchase_Reward' )
+            <if test = "topId != null and topId!= ''">AND (u.top_id = #{topId} or u.user_id = #{topId}) </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+        </where>
+        GROUP BY
+        t.transaction_type
+    </select>
+
+    <select id="getTotalTransInfo" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL( sum( t.amount ), 0 ) AS transAmt,
+        t.transaction_type AS transType
+        FROM
+        pan_transaction_history t
+        LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+        </where>
+        GROUP BY
+        t.transaction_type
+    </select>
+
+    <select id="getTotalTransInfoByDay" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+            SELECT
+            IFNULL( sum( t.amount ), 0 ) AS transAmt,
+            t.transaction_type AS transType
+            FROM
+            pan_transaction_history t
+            LEFT JOIN sys_user u ON t.user_id = u.user_id
+            <where>
+                <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+                <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+                <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+                <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                    AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+                </if>
+                <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                    AND <![CDATA[ DATE_FORMAT(transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+                </if>
+            </where>
+            GROUP BY
+            t.transaction_type
+    </select>
+
+    <select id="getToatlTransUsers" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL(count( tu.user_id ),0)  totalPeopleCount,
+        tu.transaction_type AS transType
+        FROM
+        (
+        SELECT DISTINCT t.user_id, t.transaction_type FROM pan_transaction_history t LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type in('Recharge','Withdraw','Buy_Product_Balance')
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+        </where>
+        ) tu
+        GROUP BY
+        tu.transaction_type
+    </select>
+
+    <select id="getTodayTransUsers" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL(count( tu.user_id ),0)  totalPeopleCount,
+        tu.transaction_type AS transType
+        FROM
+        (
+        SELECT DISTINCT t.user_id, t.transaction_type FROM pan_transaction_history t LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type in('Recharge','Withdraw','Buy_Product_Balance')
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        ) tu
+        GROUP BY
+        tu.transaction_type
+    </select>
+
+
+    <select id="totalTransCountlist" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL(count( t.transaction_history_id ),0)  totalPeopleCount,
+        t.transaction_type AS transType
+        FROM pan_transaction_history t LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type in('Recharge','Withdraw','Buy_Product_Balance','Reward_Product','Manual_Reward_Product')
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+        </where>
+        GROUP BY
+        t.transaction_type
+    </select>
+
+    <select id="todayTransCountlist" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL(count( t.transaction_history_id ),0)  totalPeopleCount,
+        t.transaction_type AS transType
+        FROM pan_transaction_history t LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type in('Recharge','Withdraw','Buy_Product_Balance')
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        GROUP BY
+        t.transaction_type
+    </select>
+
+    <select id="todayActiveUsers" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultType="java.lang.Long">
+        SELECT
+            IFNULL( count( tu.user_id ), 0 )
+        FROM
+            (
+            SELECT DISTINCT
+                t.user_id
+        FROM
+		    pan_transaction_history t
+		LEFT JOIN sys_user u ON t.user_id = u.user_id
+        <where>
+            t.transaction_type in('Recharge','Withdraw','Buy_Product_Balance')
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+	   ) tu
+    </select>
+
+    <select id="todayFristRechargeUsers" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultType="java.lang.Long">
+        SELECT
+            IFNULL( count( DISTINCT t.user_id ), 0 )
+        FROM
+            pan_transaction_history t LEFT JOIN sys_user u ON t.user_id = u.user_id
+        WHERE
+            t.transaction_type = 'Recharge'
+            <if test = "topId != null and topId!= ''">AND u.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u.agent_id = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+               AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+               AND <![CDATA[ DATE_FORMAT(t.transaction_date,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+            AND t.user_id NOT IN (
+            SELECT
+                h.user_id
+            FROM
+                pan_transaction_history h LEFT JOIN sys_user u2 ON h.user_id = u2.user_id
+            WHERE
+            h.transaction_type = 'Recharge'
+            <if test = "topId != null and topId!= ''">AND u2.top_id = #{topId}  </if>
+            <if test = "managerId != null and managerId!= ''"> AND u2.manager_id = #{managerId}</if>
+            <if test = "agentId != null and agentId!= ''"> AND u2.agent_id = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND <![CDATA[ DATE_FORMAT(h.transaction_date,'%Y-%m-%d') < DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if> )
+    </select>
+
+
+    <select id="getUserTransInfo" parameterType="Long" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL( sum( t.amount ), 0 ) AS transAmt,
+        t.transaction_type AS transType
+        FROM
+        pan_transaction_history t
+        where t.user_id = #{userId}
+        GROUP BY
+        t.transaction_type
+    </select>
+
+    <select id="getUserTransInfoByIds" parameterType="String" resultMap="TeamOverviewResult">
+       	SELECT
+        IFNULL( sum( t.amount ), 0 ) AS transAmt,
+        t.transaction_type AS transType ,
+		t.user_id
+        FROM
+        pan_transaction_history t
+        where t.user_id in (${userIds})
+        GROUP BY
+        t.transaction_type ,t.user_id order by t.user_id
+
+    </select>
+
+    <select id="getPurchaseInterestList" parameterType="PanTransactionHistory" resultMap="PanTransactionHistoryResult">
+       	SELECT
+            transaction_history_id,
+            transaction_date,
+            amount
+        FROM
+            pan_transaction_history
+        WHERE
+            transaction_type = 'Product_Daily_Interest'
+        AND or_order_id = #{orOrderId}
+        AND user_id = #{userId}
+        ORDER BY transaction_date DESC
+        limit #{currentPage},#{size}
+
+    </select>
+
+    <select id="getClerkTeamTransInfo" parameterType="PanTransactionHistory" resultMap="PanTransactionHistoryResult">
+        SELECT
+            u.user_name,
+            sum( p.amount * 0.01 ) amount,
+            p.transaction_type,
+            count( p.transaction_history_id ) transCount
+        FROM
+            pan_transaction_history p
+            LEFT JOIN sys_user u ON p.user_id = u.user_id
+        WHERE
+            p.transaction_type = #{transactionType}
+        <if test="username != null and username != ''">
+            AND u.user_name  like concat('%',#{username})
+        </if>
+        <if test="parentId != null and parentId > 0">
+            AND u.parent_id  = #{parentId}
+        </if>
+        <if test="grandId != null and grandId > 0">
+            and u.grand_id  = #{grandId}
+        </if>
+        <if test="greatGrandId != null and greatGrandId > 0">
+            AND u.great_grand_id = #{greatGrandId}
+        </if>
+        GROUP BY p.transaction_type , u.user_name
+    </select>
+
+
+    <select id="getAgentTransInfo" parameterType="Long" resultMap="TeamOverviewResult">
+        SELECT
+        IFNULL(count( t.transaction_history_id ),0)  totalPeopleCount,
+        IFNULL( sum( t.amount ), 0 ) AS transAmt,
+        t.transaction_type AS transType
+        FROM
+        pan_transaction_history t
+        LEFT JOIN sys_user u ON t.user_id = u.user_id
+        where
+        t.transaction_type in ('Recharge','Withdraw')
+        and u.agent_id =  #{agentId}
+        GROUP BY
+        t.transaction_type
+    </select>
+</mapper>

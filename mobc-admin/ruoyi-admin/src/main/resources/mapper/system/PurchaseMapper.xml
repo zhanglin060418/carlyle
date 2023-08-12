@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PurchaseMapper">
+
+    <resultMap type="Purchase" id="PurchaseResult">
+        <result property="id"    column="id"    />
+        <result property="buyer"    column="buyer"    />
+        <result property="userName"    column="user_name"    />
+        <result property="product"    column="product"    />
+        <result property="productName"    column="product_name"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="dailyInterest"    column="daily_interest"    />
+        <result property="totalInterest"    column="total_interest"    />
+        <result property="amount"    column="amount"    />
+        <result property="payBack"    column="pay_back"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="beginDate"    column="begin_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="endAt"    column="end_at"    />
+        <result property="managerId"        column="manager_id" />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <association property="item"    column="product" javaType="PanProduct" resultMap="productResult" />
+    </resultMap>
+
+ <resultMap type="PanProduct" id="productResult">
+        <result property="id"    column="pd_id"    />
+        <result property="name"    column="name"    />
+        <result property="nameIn"    column="name_in"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="coverImages"    column="cover_images"    />
+        <result property="dailyInterest"    column="daily_interest"    />
+       	<result property="minimumBuy"    column="minimum_buy"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="progress"    column="progress"    />
+        <result property="showProgressBar"    column="show_progress_bar"    />
+        <result property="description"    column="description"    />
+        <result property="descriptionEn"    column="description_en"    />
+        <result property="descriptionIn"    column="description_in"    />
+        <result property="descriptionRu"    column="description_ru"    />
+        <result property="topId"    column="top_id"    />
+    </resultMap>
+
+    <sql id="selectPurchaseVo">
+        SELECT
+            pan_purchase.id id,
+            buyer,
+            product,
+            pan_purchase.cycle,
+            pan_purchase.daily_interest,
+            total_interest,
+            amount,
+            pay_back,
+            pan_purchase.STATUS,
+            end_at,
+            pan_purchase.create_time,
+            sys_user.user_name user_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            pd.NAME product_name,
+            order_no,
+            begin_date,
+            end_date,
+            pd.id pd_id,
+            pd.NAME NAME,
+            u2.user_name top_name,
+            pd.name_in name_in,
+            pd.name_en name_en,
+            pd.cover_images cover_images,
+            pd.daily_interest daily_interest,
+            pd.minimum_buy minimum_buy,
+            pd.cycle cycle,
+            pd.progress progress,
+            pd.show_progress_bar show_progress_bar,
+            pd.description description,
+            pd.description_en description_en
+        FROM
+            pan_purchase
+                LEFT JOIN pan_product pd ON pan_purchase.product = pd.id
+                LEFT JOIN sys_user ON pan_purchase.buyer = sys_user.user_id
+                LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+                LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+                LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+    </sql>
+
+    <select id="selectPurchaseList" parameterType="Purchase" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        <where>
+            <if test="topId != null"> and sys_user.top_id  = #{topId}</if>
+            <if test="buyer != null "> and buyer = #{buyer}</if>
+            <if test="userName != null "> and sys_user.user_name  like concat('%',#{userName}) </if>
+            <if test="managerId != null"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="product != null "> and product = #{product}</if>
+            <if test="productName != null "> and pd.name = #{productName} </if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_purchase.order_no = #{orderNo}</if>
+            <if test="status != null  and status != ''"> and pan_purchase.status = #{status}</if>
+            <if test="beginDate != null  and beginDate != ''"> and begin_date = #{beginDate}</if>
+            <if test="endDate != null  and endDate != ''"> and end_date = #{endDate}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(pan_purchase.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(pan_purchase.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+        </where>
+        order by pan_purchase.create_time desc
+    </select>
+
+
+    <select id="selectPurchaseListForBuy" parameterType="Purchase" resultMap="PurchaseResult">
+         SELECT
+            buyer,
+            product,
+            pan_purchase.cycle,
+            pan_purchase.daily_interest,
+            total_interest,
+            amount,
+            pay_back,
+            pan_purchase.STATUS,
+            end_at,
+            pan_purchase.create_time,
+            sys_user.user_name user_name,
+            pd.NAME product_name,
+            order_no,
+            begin_date,
+            end_date,
+            pd.id pd_id,
+            pd.NAME NAME
+        FROM
+            pan_purchase
+                LEFT JOIN pan_product pd ON pan_purchase.product = pd.id
+                LEFT JOIN sys_user ON pan_purchase.buyer = sys_user.user_id
+        where
+            buyer = #{buyer}
+        and pd.name != 'Reward Product'
+    </select>
+
+    <select id="getPurchaseCount" parameterType="Purchase" resultMap="PurchaseResult">
+        SELECT
+            IFNULL( SUM( amount ), 0 ) AS amount,
+            IFNULL( sum( total_interest ), 0 ) AS total_interest,
+            IFNULL( count( id ), 0 ) AS cycle
+        FROM
+            pan_purchase
+        WHERE
+            buyer = #{buyer}
+    </select>
+
+    <select id="selectPurchaseListCount" parameterType="Purchase" resultType="Long">
+        SELECT
+            IFNULL(sum(amount),0)
+        FROM
+            pan_purchase
+                LEFT JOIN pan_product pd ON pan_purchase.product = pd.id
+                LEFT JOIN sys_user ON pan_purchase.buyer = sys_user.user_id
+                LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+                LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+                LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="topId != null"> and sys_user.top_id  = #{topId}</if>
+            <if test="buyer != null "> and buyer = #{buyer}</if>
+            <if test="userName != null "> and sys_user.user_name like concat('%',#{userName}) </if>
+            <if test="managerId != null"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="product != null "> and product = #{product}</if>
+            <if test="productName != null "> and pd.name = #{productName} </if>
+            <if test="orderNo != null  and orderNo != ''"> and pan_purchase.order_no = #{orderNo}</if>
+            <if test="status != null  and status != ''"> and pan_purchase.status = #{status}</if>
+            <if test="beginDate != null  and beginDate != ''"> and begin_date = #{beginDate}</if>
+            <if test="endDate != null  and endDate != ''"> and end_date = #{endDate}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(pan_purchase.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(pan_purchase.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseCountByUser" parameterType="Purchase" resultMap="PurchaseResult">
+        SELECT
+            id,
+            buyer,
+            product,
+            cycle,
+            daily_interest,
+            total_interest,
+            amount,
+            pay_back,
+            STATUS,
+            end_at,
+            begin_date,
+            end_date
+        FROM
+            pan_purchase
+        where
+            status ='Success'
+          and buyer = #{buyer}
+          and product = #{product}
+    </select>
+
+    <select id="selectPurchaseJobList"  resultMap="PurchaseResult">
+        SELECT
+            p.id,
+            p.buyer,
+            p.cycle,
+            p.daily_interest,
+            p.total_interest,
+            p.amount,
+            p.pay_back,
+            p.begin_date,
+            p.end_date,
+            pd.name product_name,
+            pd.id pd_id,
+            p.order_no,
+            u.user_name
+        FROM
+            pan_purchase p
+                LEFT JOIN sys_user u ON p.buyer = u.user_id
+                LEFT JOIN pan_product pd ON p.product = pd.id
+        where
+            p.status = 'Success'
+          and u.status='0'
+          and p.pay_back = '0'
+          and CURDATE() >= p.begin_date
+          and p.end_date >= CURDATE()
+    </select>
+
+    <select id="selectLast3Purchase" parameterType="Long" resultMap="PurchaseResult">
+        SELECT
+            p.trans_type AS order_no,
+            p.amount,
+            p.user_name,
+            p.create_time
+        FROM
+            pan_scroll_trans_info p
+        ORDER BY RAND() desc LIMIT 20
+    </select>
+
+    <select id="selectPurchaseById" parameterType="Long" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        where pan_purchase.id = #{id}
+    </select>
+
+    <select id="selectPanPurchaseByOrderNo" parameterType="String" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        where order_no = #{orderNo}
+    </select>
+
+    <insert id="insertPurchase" parameterType="Purchase" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_purchase
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="buyer != null">buyer,</if>
+            <if test="product != null">product,</if>
+            <if test="cycle != null">cycle,</if>
+            <if test="dailyInterest != null">daily_interest,</if>
+            <if test="totalInterest != null">total_interest,</if>
+            <if test="amount != null">amount,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="payBack != null and payBack != ''">pay_back,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="beginDate != null and beginDate != ''">begin_date,</if>
+            <if test="endDate != null">end_date,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="buyer != null">#{buyer},</if>
+            <if test="product != null">#{product},</if>
+            <if test="cycle != null">#{cycle},</if>
+            <if test="dailyInterest != null">#{dailyInterest},</if>
+            <if test="totalInterest != null">#{totalInterest},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="payBack != null and payBack != ''">#{payBack},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="beginDate != null">#{beginDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updatePurchase" parameterType="Purchase">
+        update pan_purchase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="totalInterest != null">total_interest = #{totalInterest},</if>
+            <if test="payBack != null and payBack != ''">pay_back = #{payBack},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            end_at = now()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getTotalPurchase" parameterType="Purchase" resultMap="PurchaseResult">
+        SELECT
+        count( 1 ) cycle,
+        IFNULL(sum( p.amount * 0.01 ),0) as total_interest,
+        p2.minimum_buy * 0.01 as amount,
+        p2.name as product_name
+        FROM
+        pan_purchase p
+        LEFT JOIN pan_product p2 ON p.product = p2.id
+        left join sys_user u on p.buyer = u.user_id
+        <where>
+            <if test="topId != null"> and u.top_id  = #{topId}</if>
+            <if test="managerId != null"> and u.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+        </where>
+        GROUP BY p2.name ,p2.minimum_buy
+        order by cycle desc
+    </select>
+
+    <select id="getTotalPurchaseCount" resultType="Long">
+		select count(id) from pan_purchase where status =  'Success'
+    </select>
+
+   <select id="getTotalPurchaseRebate" resultType="Long">
+		select sum(total_interest) from pan_purchase where status = 'Success'
+    </select>
+
+    <select id="getTotalPurchaseRebateCount" resultType="Long">
+		select count(id) from pan_purchase where status = 'Success'
+    </select>
+
+    <select id="getTodayPurchase" resultType="Long">
+		select sum(amount) from pan_purchase where date(create_time) = current_date and status = 'Success'
+    </select>
+
+    <select id="getUserRewardProductAmount" parameterType="Long" resultType="Long">
+		select sum(amount) from pan_purchase where buyer = #{userId} and status = 'Success' and pay_back = '0'
+    </select>
+
+    <select id="getTodayPurchaseCount" resultType="Long">
+		select count(id) from pan_purchase where date(create_time) = current_date and status = 'Success'
+    </select>
+
+    <select id="getTodayPurchaseRebate" resultType="Long">
+		select sum(total_interest) from pan_purchase where date(end_at) = current_date and status = 'Success'
+    </select>
+
+    <select id="getTodayPurchaseRebateCount" resultType="Long">
+		select count(id) from pan_purchase where date(end_at) = current_date and status = 'Success'
+    </select>
+
+    <select id="getOrderRebateNow" resultType="Long">
+		select sum(total_interest) from pan_purchase where current_date >= date(end_at) and status = 'Success'
+    </select>
+
+    <select id="getOrderRebateNowCount" resultType="Long">
+		select count(id) from pan_purchase where current_date >= date(end_at) and status = 'Success'
+    </select>
+
+</mapper>

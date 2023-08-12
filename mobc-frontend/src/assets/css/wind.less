@@ -1,0 +1,382 @@
+.team-wrap {
+  background: #fff;
+  border-radius: 10px;
+  .team-cell {
+    position: relative;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    > img {
+      width: 40px;
+      height: 40px;
+    }
+    .info {
+      margin-left: 16px;
+      p {
+        width: 100%;
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+        &:nth-child(2) {
+          margin: 5px 0;
+        }
+      }
+    }
+    .r-arr {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+    }
+  }
+  &.menu-list {
+    .team-cell {
+      height: 46px;
+      img {
+        width: 25px;
+        height: 25px;
+      }
+      p {
+        font-size: 16px;
+      }
+    }
+  }
+}
+.my-index-middle-box {
+  width: 100%;
+  margin: 0 auto;
+  .my-index-middle {
+    padding: 0 15px;
+    padding-left: 0;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    overflow: hidden;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    &:nth-of-type(1) {
+      background: #5d86a1;
+      .profit-item {
+        padding-right: 30px;
+      }
+    }
+    &:nth-of-type(2) {
+      background: #3376c4;
+      .middle-item {
+        color: #fff;
+      }
+      .profit-item {
+        padding-right: 30px;
+        color: #fff;
+      }
+    }
+    &:nth-of-type(3) {
+      background: #0a364a;
+      .middle-item {
+        color: #fff;
+      }
+      .profit-item {
+        padding-right: 30px;
+        color: #fff;
+      }
+    }
+    .arrow-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around;
+      align-content: center;
+      position: relative;
+      margin-right: 15px;
+      width: 100px;
+      height: 90px;
+      padding-right: 8px;
+      box-sizing: border-box;
+      background: url('../image/wind/icon/lab.png') no-repeat;
+      background-size: contain;
+      strong {
+        font-size: 26px;
+        flex: 0 1 100%;
+        text-align: center;
+        margin-top: 3px;
+        font-style: italic;
+      }
+      p {
+        flex: 0 1 100%;
+        text-align: center;
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 40%;
+        background: rgba(33, 33, 51, 0.1);
+      }
+      img {
+        width: 85px;
+        height: 20px;
+      }
+    }
+    .middle-item {
+      flex: 1;
+      text-align: left;
+      .van-icon {
+        transform: translateY(2px);
+        font-size: 14px;
+      }
+      p {
+        flex: 1;
+        font-weight: 700;
+        margin-top: 5px;
+      }
+    }
+  }
+}
+.home-content {
+  @media screen and (min-width: 600px) {
+    margin-top: 50px;
+  }
+  h1 {
+    color: #000000;
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  .page-title {
+    color: #000000;
+    font-size: 20px;
+    line-height: 25px;
+    margin-bottom: 3px;
+    line-height: 25px;
+  }
+  .text-main {
+    p {
+      color: #71716f;
+      font-size: 16px;
+    }
+    .text-box {
+      margin-bottom: 15px;
+      img {
+        padding: 0 15px;
+        width: 100%;
+      }
+      h1 {
+        margin-top: 28px;
+        color: #212355;
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+      h2 {
+        color: #71716f;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      &.footer {
+        padding: 0 15px;
+        p {
+          color: #212355;
+          font-size: 15px;
+          line-height: 22px;
+          margin-bottom: 30px;
+        }
+      }
+    }
+  }
+}
+
+.loadding-gif {
+  display: flex;
+  justify-content: center;
+  img {
+    height: 120px;
+    margin-top: 120px;
+  }
+}
+.kf {
+  width: 55px;
+  height: 110px;
+  background: transparent;
+  // box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.1);
+  // border-radius: 50%;
+  position: fixed;
+  right: 5px;
+  bottom: 60px;
+  z-index: 29;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  div {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:nth-of-type(2) {
+      margin-top: 5px;
+    }
+  }
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  i {
+    width: 50px;
+    height: 50px;
+    background: url(../image/kf.png) no-repeat;
+    background-size: cover;
+  }
+}
+
+.service-list {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+  .service-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    img {
+      width: 80px;
+    }
+    p {
+      margin-top: 10px;
+    }
+    &:nth-of-type(2) {
+      margin-top: 20px;
+    }
+  }
+}
+.un-pur {
+  position: fixed;
+  bottom: 60px;
+  width: 100%;
+  height: 30px;
+  background: #5497dc;
+  line-height: 30px;
+  padding: 0 16px;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+}
+.pur-txt {
+  background: #f6f1e5;
+  border-radius: 16px;
+  padding: 15px 15px;
+  box-shadow: 0 2px 5px 0 rgb(54 53 88 / 17%);
+  p {
+    line-height: 20px;
+  }
+}
+
+.news {
+  .news-list {
+    ul {
+      li {
+        display: flex;
+        min-height: auto;
+        overflow: hidden;
+        align-items: center;
+        justify-content: space-between;
+        .l-img {
+          height: 40px;
+          width: 40px;
+          i {
+            color: #0a364a;
+            font-size: 30px;
+          }
+        }
+        .right {
+          position: relative;
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .desc {
+          width: 100%;
+          padding: 10px 16px;
+          min-height: 50px;
+          .title {
+            line-height: 1.3em;
+            font-size: 14px;
+            text-align: left;
+            color: #141515;
+            font-weight: normal;
+            font-family: Avenir, Helvetica, Arial, sans-serif !important;
+          }
+          .time {
+            font-size: 12px;
+            text-align: left;
+            color: #4f5050;
+            margin-top: 5px;
+            line-height: 1.2em;
+          }
+        }
+        .r-arrow {
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          font-size: 13px;
+          color: #a1a1a2 !important;
+          .van-icon {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
+.news-detail {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  .title {
+    color: #141515;
+    letter-spacing: -0.02em;
+    line-height: 1.3em;
+    padding: 0px 16px;
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    font-weight: 500;
+  }
+  .post-time {
+    font-size: 11px;
+    padding: 10px 0;
+    margin: 0px 16px;
+    color: #a1a1a2;
+    display: inherit;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px none;
+    border-bottom: none;
+    justify-content: flex-end;
+  }
+}
+.post-content {
+  box-sizing: border-box;
+  line-height: 1.42;
+  height: 100%;
+  outline: none;
+  overflow-y: auto;
+  padding: 12px 15px;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -moz-tab-size: 4;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

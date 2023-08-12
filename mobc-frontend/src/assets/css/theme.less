@@ -1,0 +1,95 @@
+.theme(@bgColor: #131D2F, // 背景色
+@baseColor: #1C2940, //基准色
+@cellColor: #1C2940, //cell颜色
+@tabsColor: #131D2F,//tabs背景色
+@tabbarBg:#131D2F,
+@itemBgColor:#1C2940,
+@tabsActiveColor: #364A6C, //tabs激活背景色
+@btnColor: #6c86a6,
+@txtTabColor: #6c86a6, //tabs字体色
+@labelColor: #6c86a6, //订单label样式
+@popHeadBg: #1C2940,
+@line05Color: #314057,
+@addBg: #1C2940,
+@qaColor: #293247,
+@navTxtColor: #fefffe,
+@playIptColor: #4f566b,
+@txtColor: #D5DDFF,
+@txt2Color: #7692B4,
+@writeColor: #ffffff,
+@blueColor: #0094ff,
+@checkTxtColor: #fefffe,
+@yellowColor: #e09400,
+@inputBg: #1C2940,
+@inputBorder: #314057,
+@inputActive: #0094ff,
+@inputErr: #f15131,
+@placeColor: #66768d,
+@depositColor: #171e32,
+@cellLabelColor: #66768d,
+@rightBgColor: #131f30,
+@riseColor: #1fbf75,
+@fallColor: #f15131,
+@progressBarBg: #030b11,
+@timeColor: #cfd3e9,
+@fieldColor: #cfd3e9,
+@fieldLabelColor: #c9cde3,
+@dialogBgColor: #293b59,
+@dialogBorderColor: #171e32,
+@couponUserColor: #fefffe,
+@switchColor: #1fbf75,
+@selectBorderColor: #171e32,
+@keyBgColor: #1C2940,
+@keyTxtColor: #fefffe,
+@vanSwitchColor: #6C86A6,
+@noticePopupBg: #334566,
+@feffColor:#FEFEFE,
+@ffffffColor:#131d2f,
+@chartBorderColor:#0B1622,
+@popTitlebgColor: #1C2940,
+@popchartbgColor: #3D5071,
+@popTitleColor: #D5DDFF,
+@charttabColor:#131d2f,
+@activeBtnColor:#0f1422,
+@baseInput:#1C2940,
+@baseInputHover:#364a6c,
+) {
+  background-color: @bgColor;
+  color: @txtColor;
+  @import './font.less';
+  @import './reset.less';
+  @import './common.less';
+  @import './update-vant.less';
+  @import './form.less';
+  @import './nav.less';
+  @import './bottompopup.less';
+  @import './ctb.less';
+
+  // height: 100vh;
+  #app {
+    height: 100%;
+    font-size: 14px;
+  }
+  .icon {
+    font-size: 22px;
+    margin-top: 2px;
+  }
+
+  .top-meng {
+    background: @baseColor;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0px;
+    z-index: 99999;
+    width: 100%;
+  }
+  @supports (top: env(safe-area-inset-top)) {
+    .top-meng {
+      height: constant(safe-area-inset-top);
+      height: env(safe-area-inset-top);
+      //   padding-top: constant(safe-area-inset-top);
+      //   padding-top: env(safe-area-inset-top);
+    }
+  }
+}

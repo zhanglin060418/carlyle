@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanAgentBalanceMapper">
+
+    <resultMap type="PanAgentBalance" id="PanAgentBalanceResult">
+        <result property="id"    column="id"    />
+        <result property="balance"    column="balance"    />
+        <result property="availableAmt" column="available_amt" />
+        <result property="transitAmt"    column="transit_amt"    />
+        <result property="prechargeAmt" column="precharge_amt" />
+        <result property="updateAt" column="update_at" />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+    </resultMap>
+
+    <select id="selectPanAgentBalanceList" parameterType="PanAgentBalance" resultMap="PanAgentBalanceResult">
+        SELECT
+            pub.id,
+            pub.agent_id,
+            pub.balance,
+            pub.available_amt,
+            pub.precharge_amt,
+            pub.transit_amt,
+            pub.update_at,
+            u.user_name agent_name
+        FROM
+            pan_agent_balance pub
+        LEFT JOIN sys_user u ON pub.agent_id = u.user_id
+        <where>
+            u.user_type = '03'
+         <if test="agentId != null and agentId!= ''"> and pub.agent_id  = #{agentId}</if>
+       </where>
+        order by pub.update_at desc
+    </select>
+
+
+    <insert id="insertPanAgentBalance" parameterType="PanAgentBalance" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_agent_balance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">agent_id,</if>
+            <if test="balance != null">balance,</if>
+            <if test="transitAmt != null">transit_amt,</if>
+            <if test="prechargeAmt != null">precharge_amt,</if>
+            <if test="availableAmt != null">available_amt,</if>
+            update_at
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">#{agentId},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="transitAmt != null">#{transitAmt},</if>
+            <if test="prechargeAmt != null">#{prechargeAmt},</if>
+            <if test="availableAmt != null">#{availableAmt},</if>
+            now()
+         </trim>
+    </insert>
+
+    <insert id="insertAgentBalanceDetail" parameterType="com.ruoyi.system.domain.PanAgentBalanceDetail" useGeneratedKeys="true" keyProperty="transId">
+        insert into pan_agent_balance_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">agent_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="remark != null">remark,</if>
+            <if test="amountBefore != null">amount_before,</if>
+            <if test="amountAfter != null">amount_after,</if>
+            <if test="transType != null">trans_type,</if>
+            <if test="orOrderId != null">or_order_id,</if>
+            transaction_date
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">#{agentId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="amountBefore != null">#{amountBefore},</if>
+            <if test="amountAfter != null">#{amountAfter},</if>
+            <if test="transType != null">#{transType},</if>
+            <if test="orOrderId != null">#{orOrderId},</if>
+            now()
+        </trim>
+    </insert>
+
+    <update id="updatePanAgentBalance" parameterType="PanAgentBalance">
+        update pan_agent_balance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="transitAmt != null">transit_amt = #{transitAmt},</if>
+            <if test="prechargeAmt != null">precharge_amt = #{prechargeAmt},</if>
+            <if test="availableAmt != null">available_amt = #{availableAmt},</if>
+            update_at = now()
+        </trim>
+        <where>
+            <if test="agentId != null "> and agent_id = #{agentId}</if>
+        </where>
+    </update>
+
+    <select id="selectPanAgentBalanceByAgentId" parameterType="Long" resultMap="PanAgentBalanceResult">
+        SELECT
+            id,
+            agent_id,
+            balance,
+            available_amt,
+            precharge_amt,
+            transit_amt,
+            update_at
+        FROM
+            pan_agent_balance
+        where
+            agent_id = #{agentId}
+    </select>
+
+    <select id="selectPanAgentBalanceById" parameterType="Long" resultMap="PanAgentBalanceResult">
+        SELECT
+            a.id,
+            a.agent_id,
+            a.balance,
+            a.available_amt,
+            a.precharge_amt,
+            a.transit_amt,
+            a.update_at,
+            u.user_name agent_name
+        FROM
+            pan_agent_balance a left join sys_user u on a.agent_id = u.user_id
+        where
+            a.id = #{id}
+    </select>
+
+</mapper>

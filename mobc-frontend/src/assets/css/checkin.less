@@ -1,0 +1,144 @@
+.test-page {
+  width:100%;
+  height:100%;
+  background-color:#eaeeff;
+  .top {
+    background-size: 100% 100%;
+    overflow: hidden;
+    color: #fff;
+    padding: 15px;
+    height: 150px;
+    text-align: center;
+    background-color: #0a364a;
+    .button {
+      display: flex;
+      justify-content: center;
+      border: 1px solid #fff;
+      border-radius: 20px;
+      font-size: 18px;
+      width: 36%;
+      margin: 0 auto 10px;
+      margin-top:10px;
+      height: 40px;
+      line-height: 40px;
+      .calendar-icon {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background: url('../../assets/image/calendar-icon.png');
+        background-size: 40px 40px;
+      }
+    }
+    .button:active {
+      background-color: #3376c4;
+      opacity: 0.8;
+    }
+  }
+  .content {
+    margin: 0px 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: -40px;
+    box-shadow: rgba(225,225,225,0.7) 0  10px 20px 0;
+  }
+  .month {
+    background: #ffffff;
+    margin: 0;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    li {
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .arrow {
+      color: #3376c4;
+      font-size: 12px;
+      i {
+        font-size: 13px;
+        top: 2px;
+      }
+    }
+    .year-month { font-size: 17px; }
+  }
+
+  .weekdays { /*头部星期*/
+    margin: 0;
+    padding: 10px 0;
+    background-color: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    li {
+      display: inline-block;
+      text-align: center;
+    }
+  }
+
+  .days { /*日期*/
+    padding: 0 0 10px;
+    background: #FFFFFF;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    li {
+      list-style-type: none;
+      width: 14.2%;
+      padding: 1%;
+      box-sizing: border-box;
+      height: 40px;
+      margin-bottom: 4px;
+      text-align: center;
+      color: #555555;
+      .cli {
+        position: relative;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {/*签到的日期*/
+          height: 40px;
+          position: absolute;
+        }
+      }
+    }
+  }
+
+  .role {
+    padding: 20px 15px;
+    .role-title {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .role-content {
+      font-size: 13px;
+      color: #555555;
+    }
+  }
+
+  .toSign{
+    display: inline-block;
+    color: transparent;
+    span{
+      font-size: 18px;
+      animation: twinkle 1.2s linear infinite;
+    }
+  }
+  @keyframes twinkle{
+    0%{
+      color: transparent;
+    }
+    100% {
+      color: #fff;
+      text-shadow: 0 0 10px #0a364a,
+      0 0 20px #0a364a,
+      0 0 40px #0a364a,
+      0 0 60px #0a364a,
+      0 0 80px #0a364a
+    }
+  }
+}

@@ -1,0 +1,447 @@
+@import url('./theme.less');
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+textarea,
+input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  font-style: normal;
+  background: transparent;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'DIN-Medium', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Ubuntu, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Source Han Sans CN', sans-serif !important;
+}
+
+input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.vux-loading {
+  .weui-mask_transparent {
+    z-index: 10000 !important;
+  }
+
+  .weui-toast {
+    z-index: 10001 !important;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: normal;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  line-height: 1;
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  max-height: 99999px;
+  min-height: 1px;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+a:focus {
+  outline: 0;
+  background: transparent;
+}
+
+ins {
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+img {
+  vertical-align: middle;
+  border: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input,
+textarea,
+keygen,
+select,
+button {
+  outline: none;
+  border: none;
+  font-family: 'DIN-Medium', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Ubuntu, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Source Han Sans CN', sans-serif !important;
+  box-shadow: none;
+}
+
+input[type='submit'] {
+  border: none;
+}
+
+input[type='search'] {
+  -webkit-appearance: none;
+}
+
+input::-webkit-search-cancel-button {
+  display: none;
+}
+
+::-ms-clear,
+::-ms-reveal {
+  display: none;
+}
+
+button {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+.ellipse {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inline {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  line-height: 0;
+  content: '';
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.flex {
+  display: flex;
+}
+
+* {
+  -webkit-overflow-scrolling: touch;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition-delay: 111111s;
+  transition: color 11111s ease-out, background-color 111111s ease-out;
+}
+.g-dark {
+  .theme();
+}
+.g-light {
+  .theme(
+      #f6f7fb,
+      #ffffff,
+      #ffffff,
+      #eeeeef,
+      #f6f7fb,
+      #ffffff,
+      #fefffe,
+      #9fa3aa,
+      #9fa3aa,
+      #9fa3aa,
+      #fefffe,
+      //@line05Color
+        #ecf0f9,
+      #fefffe,
+      #fefffe,
+      #14181f,
+      #8c9fad,
+      #303235,
+      #9fa3aa,
+      #000000,
+      #0094ff,
+      #fefffe,
+      #e09400,
+      #fefffe,
+      #cfd9df,
+      #0094ff,
+      #f15131,
+      #9fa3aa,
+      #171e32,
+      #9fa3aa,
+      #131f30,
+      #1fbf75,
+      #f15131,
+      #030b11,
+      #cfd3e9,
+      #cfd3e9,
+      #c9cde3,
+      #fefffe,
+      rgba(0, 0, 0, 0.1),
+      #fefffe,
+      #1fbf75,
+      #cfd9df,
+      #f2f6f9,
+      #14181f,
+      #e9e9ea,
+      #edf0f2,
+      #fefefe,
+      #ffffff,
+      #f5f6f7,
+      #f6f7fb,
+      #f6f7fb,
+      #303235,
+      #ecf0f9,
+      #eeeeef,
+      #f6f7fb,
+      #eeeeee
+    )
+    ;;
+  .head-ico {
+    border: 1px solid #e6e8f0;
+  }
+  .head-ico2 {
+    border: 1px solid #e6e8f0;
+  }
+
+  div.van-toast {
+    box-shadow: 0 1px 23px 0 rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .van-info--dot {
+    border-color: transparent;
+  }
+  .noData img {
+    opacity: 0.6;
+  }
+  .bit-nav .middle .title-account {
+    text-shadow: none;
+  }
+  .bankBox .bank-item {
+    background: #fefffe;
+  }
+  .icon-chain {
+    background-image: url('../image/1.1/icon_deposit_chain_bl@2x.png');
+  }
+  .buy-usdt .h8 {
+    background: #fefffe;
+  }
+  .buy-usdt {
+    .deposit-ipt {
+      .ipt,
+      .coin {
+        background: #fefffe;
+      }
+    }
+    .num-box {
+      .active {
+        background: linear-gradient(
+          180deg,
+          rgba(222, 222, 222, 0) 0%,
+          rgba(222, 222, 222, 0.34) 100%
+        );
+        &.lv-box {
+          background: linear-gradient(
+            180deg,
+            rgba(157, 210, 168, 0) 0%,
+            rgba(157, 210, 168, 0.35) 100%
+          );
+        }
+        &.ye-box {
+          background: linear-gradient(
+            180deg,
+            rgba(236, 202, 104, 0) 0%,
+            rgba(236, 202, 104, 0.35) 100%
+          );
+        }
+      }
+    }
+  }
+
+  .icon-ok {
+    background-image: url('../image/icon/write/icon_accountswitch_xuanze@2x.png');
+  }
+  .transaction-box .transaction-select {
+    .tool-box {
+      .motai {
+        position: absolute;
+        top: 0;
+        left: -34px;
+        width: 34px;
+        height: 34px;
+        z-index: 100;
+        background: linear-gradient(
+          270deg,
+          #f6f7fb 52.18%,
+          rgba(246, 247, 251, 0) 100%
+        );
+      }
+    }
+  }
+
+  .van-dialog {
+    box-shadow: none;
+  }
+  .van-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .van-button--primary {
+    background: #ffffff;
+    border-radius: 4px;
+    width: 115px;
+    height: 28px;
+    line-height: 28px;
+    color: #303235;
+    border: none;
+  }
+  .text-btn .van-button .van-button__content .van-button__text {
+    font-size: 10px;
+    white-space: nowrap;
+    margin-right: 5px;
+  }
+  .van-popover--light,
+  .van-popover__content {
+    background: #ffffff;
+  }
+  .van-popover__arrow {
+    color: #ffffff;
+  }
+  .van-popover__action {
+    white-space: nowrap;
+    background: #ffffff;
+    padding: 0;
+    color: #303235;
+    text-align: center;
+  }
+
+  .van-popover__content {
+    background: #ffffff;
+    border-radius: 0;
+    width: 115px;
+    // margin-left: 5px;
+  }
+
+  .van-popover--light .van-popover__action:active {
+    background: #ffffff;
+  }
+  .van-popover__action-text:active {
+    color: #1593ff;
+  }
+  .van-popover__action-text {
+    color: #303235;
+    transform: scale(0.7);
+    margin-left: -12px;
+  }
+  .van-popover__action-text-active {
+    color: #1593ff;
+    .van-popover__action-text {
+      color: #1593ff;
+    }
+  }
+  .statistics-graphtype {
+    transform: scale(1);
+    .van-popover__action-text {
+      transform: scale(1);
+      margin-right: 10px;
+    }
+  }
+}

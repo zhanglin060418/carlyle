@@ -1,0 +1,151 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2779867 */
+  src: url('iconfont.woff2?t=1677176257895') format('woff2'),
+       url('iconfont.woff?t=1677176257895') format('woff'),
+       url('iconfont.ttf?t=1677176257895') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-home:before {
+  content: "\e63d";
+}
+
+.icon-icnews:before {
+  content: "\e630";
+}
+
+.icon-whatsapp:before {
+  content: "\e646";
+}
+
+.icon-facebook:before {
+  content: "\e66e";
+}
+
+.icon-twitter:before {
+  content: "\e882";
+}
+
+.icon-24gl-podium:before {
+  content: "\e8c2";
+}
+
+.icon-copy:before {
+  content: "\e74a";
+}
+
+.icon-person_circle:before {
+  content: "\e8aa";
+}
+
+.icon-git-merge:before {
+  content: "\e9b9";
+}
+
+.icon-weibiaoti-_huabanfuben:before {
+  content: "\e60f";
+}
+
+.icon-kefu:before {
+  content: "\e60b";
+}
+
+.icon-kefu1:before {
+  content: "\eeb4";
+}
+
+.icon-kefu1-copy:before {
+  content: "\eeb5";
+}
+
+.icon-guanbi-:before {
+  content: "\e61e";
+}
+
+.icon-guanbi--copy:before {
+  content: "\ebb4";
+}
+
+.icon-guanbi2fill:before {
+  content: "\e724";
+}
+
+.icon-guanbi:before {
+  content: "\eaf2";
+}
+
+.icon-jietu1:before {
+  content: "\e6ac";
+}
+
+.icon-fenxiang:before {
+  content: "\e600";
+}
+
+.icon-yunshangchuan_o:before {
+  content: "\ebb3";
+}
+
+.icon-icon-user-img:before {
+  content: "\e699";
+}
+
+.icon-jiantou_qiehuanzuo:before {
+  content: "\eb06";
+}
+
+.icon-chongzhi:before {
+  content: "\e715";
+}
+
+.icon-chongzhi1:before {
+  content: "\e64b";
+}
+
+.icon-chongzhi1-copy:before {
+  content: "\eb07";
+}
+
+.icon-morentouxiang1:before {
+  content: "\e62f";
+}
+
+.icon-morentouxiang:before {
+  content: "\e609";
+}
+
+.icon-ok:before {
+  content: "\e70b";
+}
+
+.icon-wodezhangdan:before {
+  content: "\e73d";
+}
+
+.icon---fuwuleidingdancaigouyingfufapiaobaozhangdan:before {
+  content: "\e636";
+}
+
+.icon-star:before {
+  content: "\e614";
+}
+
+.icon-team:before {
+  content: "\e62d";
+}
+
+.icon-quality:before {
+  content: "\e638";
+}
+
+.icon-sun:before {
+  content: "\e999";
+}
+
