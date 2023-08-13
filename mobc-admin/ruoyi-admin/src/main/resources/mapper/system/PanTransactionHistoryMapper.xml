@@ -44,6 +44,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          <result property="totalPeopleCount" column="totalPeopleCount"/>
          <result property="transType"	column="transType"/>
          <result property="transAmt"	column="transAmt"/>
+         <result property="childCount"	column="childCount"/>
+         <result property="grandCount"	column="grandCount"/>
+         <result property="greatGrandCount"	column="greatGrandCount"/>
+         <result property="childIncome"	column="childIncome"/>
+         <result property="grandIncome"	column="grandIncome"/>
+         <result property="greatGrandIncome" column="greatGrandIncome"/>
      </resultMap>
 
     <resultMap type="TeamRechargeView" id="TeamRechargeViewResult" >
@@ -1012,5 +1018,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and u.agent_id =  #{agentId}
         GROUP BY
         t.transaction_type
+    </select>
+    <select id="getTeamIncomeInfo" parameterType="Long" resultMap="TeamOverviewResult">
+        SELECT
+            count( user_id ) childCount,
+            ( SELECT count( user_id ) FROM sys_user WHERE grand_id = #{userId}  ) grandCount,
+            ( SELECT count( user_id ) FROM sys_user WHERE great_grand_id = #{userId}  ) greatGrandCount,
+            ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type IN ('Child_First_Purchase_Reward','Commission_A_Reward','Reward_Product')) childIncome,
+            ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type = 'Commission_B_Reward' ) grandIncome,
+            ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type = 'Commission_C_Reward' ) greatGrandIncome
+        FROM
+            sys_user
+        WHERE
+            parent_id = #{userId}
     </select>
 </mapper>

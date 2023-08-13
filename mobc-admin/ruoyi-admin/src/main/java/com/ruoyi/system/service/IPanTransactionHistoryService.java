@@ -144,4 +144,6 @@ public interface IPanTransactionHistoryService
     public List<PanTransactionHistory> getClerkTeamTransInfo(PanTransactionHistory transInfo);
 
     public List<TeamOverview> getAgentTransInfo(Long agentId);
+
+    public TeamOverview getTeamIncomeInfo(Long userId);
 }

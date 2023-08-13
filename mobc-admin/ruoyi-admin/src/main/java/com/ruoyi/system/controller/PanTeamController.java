@@ -54,45 +54,37 @@ public class PanTeamController extends BaseController {
     @ApiOperation("overview")
     @GetMapping("/overview")
     public AjaxResult getTeamOverview(@RequestParam Long userId) {
-        TeamOverview teamOverview = new TeamOverview();
-        teamOverview.setUserId(userId);
 
-        //今日新增团队成员
-        teamOverview.setTodayChildCount(sysUserService.getTodayChildCount(userId));
-        teamOverview.setChildTotalIncome(panTransactionHistoryService.getChildTotalIncome(userId));
+        TeamOverview requestTeam =  panTransactionHistoryService.getTeamIncomeInfo(userId);
+        requestTeam.setUserId(userId);
+        //        //今日新增团队成员
+        requestTeam.setTodayChildCount(sysUserService.getTodayChildCount(userId));
+        requestTeam.setChildTotalIncome(panTransactionHistoryService.getChildTotalIncome(userId));
         //今日团队总收益
-        teamOverview.setDailyIncome(panTransactionHistoryService.getChildDailyIncome(userId));
-
-        teamOverview.setChildCount(sysUserService.getChildCount(userId));
-        teamOverview.setGrandCount(sysUserService.getGrandCount(userId));
-        teamOverview.setGreatGrandCount(sysUserService.getGreatGrandCount(userId));
-        teamOverview.setChildIncome(panTransactionHistoryService.getChildIncome(userId));
-        teamOverview.setGrandIncome(panTransactionHistoryService.getGrandIncome(userId));
-        teamOverview.setGreatGrandIncome(panTransactionHistoryService.getGreatGrandIncome(userId));
+        requestTeam.setDailyIncome(panTransactionHistoryService.getChildDailyIncome(userId));
 
         List<SysConfig> configList = sysConfigService.selectConfigListByKey();
         for(SysConfig conf : configList){
             if(conf.getConfigKey().equals("commission_A_share_ratio") ){
-                teamOverview.setChildCrowdRatio(Double.parseDouble(conf.getConfigValue()));
+                requestTeam.setChildCrowdRatio(Double.parseDouble(conf.getConfigValue()));
             }else if(conf.getConfigKey().equals("commission_B_share_ratio") ){
-                teamOverview.setGrandCrowdRatio(Double.parseDouble(conf.getConfigValue()));
+                requestTeam.setGrandCrowdRatio(Double.parseDouble(conf.getConfigValue()));
             }else  if(conf.getConfigKey().equals("commission_C_share_ratio") ){
-                teamOverview.setGreatGrandCrowdRatio(Double.parseDouble(conf.getConfigValue()));
+                requestTeam.setGreatGrandCrowdRatio(Double.parseDouble(conf.getConfigValue()));
             }else if(conf.getConfigKey().equals("first_purchase_commission_A_ratio") ){
-                teamOverview.setFirstPurchaseCommissionRatio(Double.parseDouble(conf.getConfigValue()));
+                requestTeam.setFirstPurchaseCommissionRatio(Double.parseDouble(conf.getConfigValue()));
             }else  if(conf.getConfigKey().equals("purchase_treasure_rate") ){
-                teamOverview.setPurchaseTreasureRate(Double.parseDouble(conf.getConfigValue()));
+                requestTeam.setPurchaseTreasureRate(Double.parseDouble(conf.getConfigValue()));
             }
         }
 
         PanProduct product = panProductService.selectPanProductByName("Reward Product");
-        teamOverview.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
-        teamOverview.setTotalWithdrawCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
-        teamOverview.setRewardProductDailyInterest(product.getDailyInterest());
+        requestTeam.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
+        requestTeam.setTotalWithdrawCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
+        requestTeam.setRewardProductDailyInterest(product.getDailyInterest());
 
         AjaxResult ajax = AjaxResult.success();
-        ajax.put("teamOverview", teamOverview);
-
+        ajax.put("teamOverview", requestTeam);
         return ajax;
     }
 
