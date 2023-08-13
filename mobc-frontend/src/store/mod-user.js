@@ -33,6 +33,9 @@ export default client => ({
     getNoticeNews() {
       return client.get('/system/notice/listActive')
     },
+    getNoticeNewsByQa() {
+      return client.get('/system/notice/listActiveByQa')
+    },
     addToPurchase({ commit }, params) {
       return client.post('/system/purchase', params)
     },

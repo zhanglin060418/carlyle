@@ -75,13 +75,6 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <!-- <div class="team-cell line05" @click="toGo('/helpcenter')">
-        <img src="static/assets/image/wind/icon/icon-service.png" alt="" />
-        <div class="info">
-          <p>FAQ</p>
-        </div>
-        <van-icon name="arrow r-arr" />
-      </div> -->
       <div class="team-cell line05" @click="toGo('/inOutList?type=1')">
         <img src="static/assets/image/wind/icon/icon-r.png" alt="" />
         <div class="info">
@@ -89,28 +82,35 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <div class="team-cell" @click="toGo('/inOutList?type=2')">
+      <div class="team-cell line05" @click="toGo('/inOutList?type=2')">
         <img src="static/assets/image/wind/icon/icon-w.png" alt="" />
         <div class="info">
           <p>{{ $t('dw.t161') }}</p>
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <div class="team-cell" @click="toGo('/bankcard')">
+      <div class="team-cell line05" @click="toGo('/bankcard')">
         <img src="static/assets/image/wind/icon/icon-bank.png" alt="" />
         <div class="info">
           <p>{{ $t('dw.t162')  }}</p>
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <div class="team-cell" @click="downAppEx">
+      <div class="team-cell line05" @click="downAppEx">
         <img src="static/assets/image/wind/icon/download.png" alt="" />
         <div class="info">
           <p>{{ $t('dw.t163')  }}</p>
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <div class="team-cell" @click="toPersonCenter">
+      <div class="team-cell line05" @click="toGo('/helpcenter')">
+        <img src="static/assets/image/wind/icon/icon-service.png" alt="" />
+        <div class="info">
+          <p>FAQ</p>
+        </div>
+        <van-icon name="arrow r-arr" />
+      </div>
+      <div class="team-cell " @click="toPersonCenter">
         <img src="static/assets/image/wind/icon/setting.png" alt="" />
         <div class="info">
           <p>Setting</p>

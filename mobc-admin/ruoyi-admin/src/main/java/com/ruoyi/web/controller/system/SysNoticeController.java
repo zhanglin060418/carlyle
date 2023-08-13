@@ -49,18 +49,27 @@ public class SysNoticeController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:notice:list')")
 
     @GetMapping("/list")
-public TableDataInfo list(SysNotice notice)
-{
-    startPage();
-    notice.setNoticeType("1");
-    List<SysNotice> list = noticeService.selectNoticeList(notice);
-    return getDataTable(list);
-}
+    public TableDataInfo list(SysNotice notice)
+    {
+        startPage();
+        notice.setNoticeType("1");
+        List<SysNotice> list = noticeService.selectNoticeList(notice);
+        return getDataTable(list);
+    }
     @GetMapping("/listAnnouncement")
     public TableDataInfo listAnnouncement(SysNotice notice)
     {
         startPage();
         notice.setNoticeType("2");
+        List<SysNotice> list = noticeService.selectNoticeList(notice);
+        return getDataTable(list);
+    }
+
+    @GetMapping("/listNoticeByQa")
+    public TableDataInfo listNoticeByQa(SysNotice notice)
+    {
+        startPage();
+        notice.setNoticeType("3");
         List<SysNotice> list = noticeService.selectNoticeList(notice);
         return getDataTable(list);
     }
@@ -72,6 +81,18 @@ public TableDataInfo list(SysNotice notice)
         SysNotice sysNotice = new SysNotice();
         sysNotice.setStatus("0");
         List<SysNotice> list = noticeService.selectActiveList(sysNotice);
+        ajax.put("list", list);
+        return ajax;
+    }
+
+    @GetMapping("/listActiveByQa")
+    public AjaxResult listActiveByQa(SysNotice notice)
+    {
+        AjaxResult ajax = new AjaxResult();
+        SysNotice sysNotice = new SysNotice();
+        sysNotice.setStatus("0");
+        sysNotice.setNoticeType("3");
+        List<SysNotice> list = noticeService.selectNoticeList(sysNotice);
         ajax.put("list", list);
         return ajax;
     }

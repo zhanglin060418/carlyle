@@ -2481,31 +2481,56 @@ body {
     font-size: 12px;
   }
 }
+
+.ban-header{
+  margin-top: 5px;
+  height: 20px;
+  display: flex;
+  justify-content:flex-start;
+  align-items: center;
+  .leftImg{
+    height: 20px;
+    margin-left: 15px;
+    margin-right: 5px;
+    img{
+      width:20px;
+      height: auto;
+    }
+  }
+  .secondImg{
+    height: 20px;
+    margin-left: 2px;
+    img{
+      width:10px;
+      height: 10px;
+    }
+  }
+  h3{
+    font-weight: 700;
+  }
+}
+
 .ban-box {
+  margin-top: 5px;
   transform-origin: right bottom 0;
   width: 100%;
   overflow: hidden;
-  height: 250px;
+  height: 220px;
   z-index: 19;
   position: relative;
-  top: -110px;
-  transform: skewY(-13deg);
 }
 .h-banner {
   position: absolute;
   content: '';
   top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 170%;
+  left: 5px;
+  right: 5px;
   background-repeat: no-repeat;
   background-image: url('../image/bcf/10017.jpg');
-  background-size: 170% auto;
-  background-position: center 55px;
-  transform: skewY(13deg);
+  background-size: cover;
   .logo {
-    margin-top: 100px;
+    margin-top: 30px;
     width: 170px;
     margin-left: 16px;
   }

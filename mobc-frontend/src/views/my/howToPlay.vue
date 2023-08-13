@@ -11,7 +11,7 @@ import qa from './components/qa'
 export default {
   // mixins: [webViewMixins],
   components: {
-    howTo,
+    // howTo,
     qa,
   },
 }

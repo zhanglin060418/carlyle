@@ -41,8 +41,8 @@
               <li class="earning-item" v-for="item in newPurchase">
                 <div >
                     <!-- purchase  and withdraw and recharge-->
-                  <van-icon name="static/assets/image/icon/icon-addbank.png" /> User {{ item.userName.substring(0, 3) }} ***** {{ item.userName.substring(item.userName.length-3, item.userName.length) }} {{item.remark}}
-                    {{  currencyShape  }}{{ parseFloat(item.amount) }} fund now
+                  <van-icon name="static/assets/image/icon/icon-addbank.png" /> User {{ item.userName.substring(0, 3) }} **** {{ item.userName.substring(item.userName.length-3, item.userName.length) }} {{item.remark}}
+                    {{  currencyShape  }}{{ parseFloat(item.amount) }} now
                 </div>
               </li>
             </ul>
@@ -335,7 +335,7 @@ export default {
     width: 100%;
     line-height: 15px;
     text-align: center;
-    padding-left: 0.5rem;
+    padding-left: 0.3rem;
     margin-bottom: 0.1rem;
     display: flex;
     flex-direction: row;

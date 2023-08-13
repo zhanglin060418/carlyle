@@ -4,45 +4,64 @@
     <div class="content">
       <div class="list-box" v-for="(item, idx) in problemData">
         <div class="title" @click="openProblem(item)">
-          <p :class="{ ell: !item.isOpen, large: !item.isOpen }">
-            {{ idx + 1 }}、{{ lang == 'en_US' ? item.titleEn : item.titleId }}
+          <p :class="{ ell: item.status==1, large: item.status==1 }">
+            {{ idx + 1 }}.{{ item.noticeTitle}}
           </p>
           <div class="right">
-            <i class="right-arrow" :class="{ down: !item.isOpen }"></i>
+            <i class="right-arrow" :class="{ down: item.status==1 }"></i>
           </div>
         </div>
-        <div class="info" v-show="!item.isOpen" v-html="lang == 'en_US' ? item.contentEn : item.contentId"></div>
+        <div class="info" v-show="item.status==1" v-html="item.noticeContent"></div>
       </div>
     </div>
+    <loadding v-if="isLoading"></loadding>
   </div>
 </template>
 
 <script>
-import { problemData } from './qaData.js'
+// import { problemData } from './qaData.js'
+import { mapGetters, mapActions } from 'vuex'
+import mixinsSerivce from '@/mixins/service'
 export default {
+  mixins: [mixinsSerivce],
   data() {
     return {
-      problemData,
-      params: {
-        page: 1,
-        size: 200,
-      },
-      lang: localStorage.getItem('locale') || 'en_US',
+      isOpen:false,
+      isLoading:false,
+      problemData: [],
+
     }
   },
+  watch: {
+    '$route'() {
+      if (this.$route.name == 'news')
+        this.getData()
+    }
+  },
+  created() {
+    let token = localStorage.getItem('token') || null
+    if(token == null) {
+      this.errDialog(this.$t('msg.loginFirst'))
+      return this.$router.push("/login")
+    }
+    this.getData()
+  },
   methods: {
-    getData() {
-      // this.helpProblemPage(this.params).then(res => {
-      //   console.log('常见问答', res)
-      //   if (res && res.code == 0) {
-      //     let data = res.data ? res.data.records : []
-      //     data.forEach(d => d.isOpen = false)
-      //     this.problemData = data
-      //   }
-      // })
+    ...mapActions({
+      getNoticeNewsByQa: 'user/getNoticeNewsByQa'
+    }),
+    async getData() {
+      this.isLoading = true;
+      let res = await this.getNoticeNewsByQa()
+      this.problemData = res.list
+      this.isLoading = false;
     },
     openProblem(item) {
-      item.isOpen = !item.isOpen
+      if(item.status==0){
+        item.status = 1
+      }else{
+        item.status = 0
+      }
     },
   },
 }

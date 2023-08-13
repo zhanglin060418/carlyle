@@ -1,5 +1,10 @@
 <template>
   <div class="task" ref="scrollbox">
+    <div class="ban-header">
+      <span class="leftImg"><img src="/static/assets/image/logo.png" alt="" class="logo" /></span>
+      <h3>carlyle</h3>
+      <span class="secondImg"><img src="/static/assets/image/icon_selected_circle@2x.png" alt="" class="logo"/></span>
+    </div>
     <div class="ban-box">
       <div class="h-banner" @click="$router.push('/fund')">
         <img src="https://www.carlyle.com/themes/carlyle_2020/logo.svg" alt="" class="logo" />
