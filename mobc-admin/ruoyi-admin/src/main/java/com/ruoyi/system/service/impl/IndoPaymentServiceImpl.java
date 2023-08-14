@@ -297,7 +297,7 @@ public class IndoPaymentServiceImpl implements IndoPaymentService {
     private void getUrlsByDomain(String domain, JSONObject channelJsonParam) {
         //因为只有生产才涉及多域名
         if ("pro".equalsIgnoreCase(activeProfile) && !StringUtil.isEmpty(domain)) {
-            domain = domain.split("\\.")[1]; // www.ngn.com - >  ngn
+            //domain = domain.split("\\.")[1]; // www.ngn.com - >  ngn 不再使用这种方式，这种方式不兼容非com的域名
             //"notify_url":"https://service.domain.com/system/payment/notifyUrl"
             String notify_url = channelJsonParam.getString("notify_url").replaceAll("domain", domain);
             channelJsonParam.put("notify_url", notify_url);
