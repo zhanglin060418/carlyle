@@ -419,7 +419,7 @@ export default {
     let now = new Date();
     let sevenHoursAgo = now.getTime();
     const domainHost = location.hostname;
-    if (domainHost.includes('mgt.ifund')||domainHost.includes('mgt.exfdngn')||domainHost.includes('mgt.fdngn')||domainHost.includes('mgt.bainbc')){
+    if (!domainHost.includes('localhost')){
       sevenHoursAgo = now.getTime() - 7 * 60 * 60 * 1000;
     }
     let date = new Date(sevenHoursAgo);
