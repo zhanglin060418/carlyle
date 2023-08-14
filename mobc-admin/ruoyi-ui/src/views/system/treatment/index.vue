@@ -10,16 +10,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:treatment:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="success"
           plain
           icon="el-icon-edit"
@@ -28,17 +18,6 @@
           @click="handleUpdate"
           v-hasPermi="['system:treatment:edit']"
         >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:treatment:remove']"
-        >删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -69,13 +48,6 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:treatment:edit']"
           >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:treatment:remove']"
-          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,7 +90,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="form.remark" placeholder="请输入备注" />
+              <el-input v-model="form.remark" readonly="readonly" placeholder="请输入备注" />
             </el-form-item>
           </el-col>
         </el-row>

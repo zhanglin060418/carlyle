@@ -51,7 +51,7 @@
 <!--          <img src="static/assets/image/logo.png" alt=""/>-->
           <carousel :elements="item.coverImages.split(',').map(item => imgBaseUrl + item)" style="width: 111px;"/>
           <div class="title">
-            <h2>{{$t('dw.t196')}}</h2>
+            <h2>Added value wallet</h2>
             <p><strong> {{ $t('dw.t168') }} :  {{ item.dailyInterest }}%</strong></p>
           </div>
         </div>
