@@ -107,16 +107,13 @@
     </div>
     <div class="desc" style="background: #eaeeff;">
       <div class="ql-editor" >
-        <p>{{ $t('dw.t210') }}<span style="color: red">{{ childCrowdRatio }}%</span>{{ $t('dw.t211') }}, {{ $t('dw.t212') }}<span style="color: red">{{ grandCrowdRatio }}%</span>{{ $t('dw.t211') }}, {{ $t('dw.t213') }}<span style="color: red">{{ greatGrandCrowdRatio }}%</span>{{ $t('dw.t211') }}. <br/>{{ $t('dw.t214') }}<span style="color: red">{{ firstPurchaseCommissionRatio }}%</span>{{ $t('dw.t215') }}<span style="color: red">{{ purchaseTreasureRate }}%</span>{{ $t('dw.t2150') }}<span style="color: red">{{ rewardProductDailyInterest }}%</span>{{ $t('dw.t2151') }}</p>
+          <p class="ql-editor" v-html="invitationText.descriptionEn" />
       </div>
     </div>
 
     <h2 class="p-title">{{ $t('dw.t175') }}</h2>
     <div class="desc" style="background: #eaeeff;">
-      <div v-for="item in treatmentText">
-        <p v-if="$i18n.locale=='zh_CN'" class="ql-editor" v-html="item.description" />
-        <p v-else class="ql-editor" v-html="item.descriptionEn" />
-      </div>
+        <p class="ql-editor" v-html="treatmentText.descriptionEn" />
     </div>
     <sharePopup :show="showShare" @close="close" :code="userInfo.inviteCode">
     </sharePopup>
@@ -178,6 +175,7 @@ export default {
       finishCount: 1, // 领取数量
       barWidth: 0,
       treatmentText: '',
+      invitationText: '',
       childCrowdRatio: 0,
       grandCrowdRatio: 0,
       greatGrandCrowdRatio: 0,
@@ -234,7 +232,17 @@ export default {
     }),
     async getTreatmentText() {
       await this.getTeamTreatmentText().then(res => {
-        this.treatmentText = res.data
+          if(res.data.length>0){
+              for (let item of res.data) {
+                  if(item.remark.includes('Invitation')){
+                      this.invitationText = item;
+                  }
+                  if(item.remark.includes('Treatment')) {
+                      this.treatmentText = item;
+                  }
+
+              }
+          }
       })
     },
     async getData() {

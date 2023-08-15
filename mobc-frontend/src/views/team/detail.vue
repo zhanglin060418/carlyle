@@ -55,34 +55,44 @@ export default {
     },
     setText(text) {
       switch (text) {
-        case 'Buy_Product_Balance':
-          return this.$t('bill.buyProduct')
-        case 'Buy_Product_Online':
-          return this.$t('bill.buyProductByOnline')
-        case 'Withdraw':
-          return this.$t('bill.withdraw')
         case 'Recharge':
-          return this.$t('bill.recharge')
-        case 'Product_Daily_Interest':
-          return this.$t('bill.productDailyInterest')
-        case 'Commission_A_Reward':
-          return this.$t('bill.commissionAReward')
-        case 'Commission_B_Reward':
-          return this.$t('bill.commissionBReward')
-        case 'Commission_C_Reward':
-          return this.$t('bill.commissionCReward')
-        case 'Treasure_Transfer_In':
-          return this.$t('bill.treasureRecharge')
+          return this.$t('transType.Recharge')
+        case 'Withdraw':
+          return this.$t('transType.Withdraw')
         case 'Treasure_Reward':
-          return this.$t('bill.treasureReward')
-        case 'Treasure_Transfer_Out':
-          return this.$t('bill.treasureWithdraw')
-        case 'Child_First_Purchase_Reward':
-          return this.$t('bill.firstPurchaseReward')
-        case 'Reward_Product':
-          return this.$t('bill.giftProduct')
+          return this.$t('transType.Treasure_Reward')
+        case 'Product_Daily_Interest':
+          return this.$t('transType.Product_Daily_Interest')
         case 'Principal_Return':
-          return this.$t('bill.principalReturn')
+          return this.$t('transType.Principal_Return')
+        case 'Buy_Product_Balance':
+          return this.$t('transType.Buy_Product_Balance')
+        case 'Buy_Product_Online':
+          return this.$t('transType.Buy_Product_Online')
+        case 'Child_First_Purchase_Reward':
+          return this.$t('transType.Child_First_Purchase_Reward')
+        case 'Reward_Product':
+          return this.$t('transType.Reward_Product')
+        case 'Commission_A_Reward':
+          return this.$t('transType.Commission_A_Reward')
+        case 'Commission_B_Reward':
+          return this.$t('transType.Commission_B_Reward')
+        case 'Commission_C_Reward':
+          return this.$t('transType.Commission_C_Reward')
+        case 'Treasure_Transfer_In':
+          return this.$t('transType.Treasure_Transfer_In')
+        case 'Treasure_Transfer_Out':
+          return this.$t('transType.Treasure_Transfer_Out')
+        case 'Salary_Subsidy_Bonus':
+          return this.$t('transType.Salary_Subsidy_Bonus')
+        case 'Register_Reward':
+          return this.$t('transType.Register_Reward')
+        case 'Manual_Adjustment':
+          return this.$t('transType.Manual_Adjustment')
+        case 'SignIn_Reward':
+          return this.$t('transType.SignIn_Reward')
+        case 'Manual_Reward_Product':
+          return this.$t('transType.Manual_Reward_Product')
       }
     },
   },

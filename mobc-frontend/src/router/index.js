@@ -21,7 +21,7 @@ const routes = [{
                     component: () =>
                         import ('@/views/home'),
                     meta: {
-                        title: 'Home',
+                        title: 'Carlyle',
                         keepAlive: false,
                         scrollToTop: true,
                     },
