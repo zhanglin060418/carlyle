@@ -22,9 +22,9 @@ spring:
         druid:
             # 主库数据源
             master:
-             url: jdbc:mysql://47.91.78.231:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+             url: jdbc:mysql://8.211.1.96:3369/ry_carlyle?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
              username: root
-             password: A;sldkfjgh!@#456
+             password: ai@Carlyle
 
             # 从库数据源
             slave:
