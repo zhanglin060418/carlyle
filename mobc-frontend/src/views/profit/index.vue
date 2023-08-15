@@ -321,10 +321,10 @@ export default {
 
         //如果dev测试环境另外算
         if(process.env.NODE_ENV === 'development'){
-          _downUrl = process.env.NODE_ENV_URL+"/profile/upload/apk/fdbc.apk"
+          _downUrl = process.env.NODE_ENV_URL+"/profile/upload/apk/carlyle.apk"
         }else{
           //这里其实可以查询最新的版本的，后续补充，哎一地鸡毛
-          _downUrl = currUrl+"/prod-api/profile/upload/apk/fdbc.apk"
+          _downUrl = currUrl+"/prod-api/profile/upload/apk/carlyle.apk"
         }
       }
 
