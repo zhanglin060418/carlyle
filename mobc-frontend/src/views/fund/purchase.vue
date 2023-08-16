@@ -28,7 +28,7 @@
 
     <div class="t-box bot" v-if="item.fundType == '区间'">
       <p v-if="item.name != $t('dw.t196')">
-        {{ $t('payDetail.text37') }} ( {{ $t('dw.t192') }} : {{ parseFloat(item.minimumBuy/100 )}}
+        {{ $t('payDetail.text370') }} ( {{ $t('dw.t192') }} : {{ parseFloat(item.minimumBuy/100 )}}
           - {{ parseFloat(this.item.maximumBuy/100) }} )
       </p>
       <div class="reqMoney line05">

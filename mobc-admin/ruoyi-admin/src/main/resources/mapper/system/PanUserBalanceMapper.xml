@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="lockBalance"    column="lock_balance"    />
         <result property="transitAmt"    column="transit_amt"    />
         <result property="assetBalance" column="asset_balance" />
+        <result property="rewardAmt" column="reward_amt" />
         <result property="username" column="user_name" />
         <result property="updateAt" column="update_at" />
         <result property="topId"    column="top_id"    />
@@ -23,12 +24,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPanUserBalanceVo">
-		select user_balance_id, user_id, balance,transit_amt,lock_balance, available_amt, transit_amt,asset_balance from pan_user_balance
+		select user_balance_id, user_id,reward_amt, balance,transit_amt,lock_balance, available_amt, transit_amt,asset_balance from pan_user_balance
 
     </sql>
 
     <sql id="selectPanUserBalanceListDetailVo">
-        select u.user_id, u.user_name user_name, if (pub.balance is null, 0, pub.balance) balance, if (pua.balance is null, 0, pua.balance) asset from sys_user u
+        select u.user_id, u.user_name user_name,reward_amt, if (pub.balance is null, 0, pub.balance) balance, if (pua.balance is null, 0, pua.balance) asset from sys_user u
         	left join pan_user_balance pub on u.user_id = pub.user_id
             left join pan_user_asset pua on u.user_id = pua.user_id
             where u.user_type != '00'
@@ -43,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pub.lock_balance,
             pub.asset_balance,
             pub.transit_amt,
+            pub.reward_amt,
             pub.user_balance_id,
             pub.update_at,
             u.user_name,
@@ -106,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sys_user.user_name user_name,
             transit_amt,
             balance,
+            reward_amt,
             lock_balance,
             available_amt,
             transit_amt,
@@ -127,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pu.user_balance_id,
             pu.user_id,
             pu.balance,
+            pu.reward_amt,
             pu.available_amt,
             pu.lock_balance,
             pu.asset_balance,
@@ -145,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="balance != null">balance,</if>
             <if test="lockBalance != null">lock_balance,</if>
             <if test="transitAmt != null">transit_amt,</if>
+            <if test="rewardAmt != null">reward_amt,</if>
             <if test="assetBalance != null">asset_balance,</if>
             <if test="availableAmt != null">available_amt,</if>
             update_at
@@ -154,6 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="balance != null">#{balance},</if>
             <if test="lockBalance != null">#{lockBalance},</if>
             <if test="transitAmt != null">#{transitAmt},</if>
+            <if test="rewardAmt != null">#{rewardAmt},</if>
             <if test="assetBalance != null">#{assetBalance},</if>
             <if test="availableAmt != null">#{availableAmt},</if>
             now()
@@ -168,6 +174,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transitAmt != null">transit_amt = #{transitAmt},</if>
             <if test="assetBalance != null">asset_balance = #{assetBalance},</if>
             <if test="availableAmt != null">available_amt = #{availableAmt},</if>
+            <if test="rewardAmt != null">reward_amt = #{rewardAmt},</if>
             update_at = now()
         </trim>
         <where>

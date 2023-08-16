@@ -7,7 +7,7 @@
 <!--    </div>-->
     <div class="ban-box">
       <div class="h-banner" @click="$router.push('/fund')">
-        <img src="https://www.carlyle.com/themes/carlyle_2020/logo.svg" alt="" class="logo" />
+        <img src="" alt="" class="logo" />
       </div>
     </div>
     <div class="home-content">

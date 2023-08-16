@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.math.BigDecimal;
+
 /**
  * 用户余额对象 pan_user_balance
  *
@@ -59,6 +61,15 @@ public class TeamOverview extends BaseEntity
 
 	private String transType;
 	private Long  transAmt;
+	private BigDecimal rewardAmt;
+
+	public BigDecimal getRewardAmt() {
+		return rewardAmt;
+	}
+
+	public void setRewardAmt(BigDecimal rewardAmt) {
+		this.rewardAmt = rewardAmt;
+	}
 
 	public String getTransType() {
 		return transType;

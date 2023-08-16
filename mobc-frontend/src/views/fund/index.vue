@@ -86,7 +86,7 @@
           </div>
         </div>
         <div v-if="item.isVisible == 0 && item.showProgressBar == 0" class="pro-progress">
-          <div class="progress-bar" :style="{ width: item.progress+'%' }"></div>
+          <div class="progress-bar" :style="{ width: item.progress+'%' }"><sapn class="percentage">{{item.progress}}%</sapn></div>
         </div>
       </div>
     </div>

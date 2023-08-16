@@ -4,6 +4,7 @@ import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ruoyi.common.utils.sign.Base64;
 import org.springframework.util.FastByteArrayOutputStream;
 
@@ -20,16 +21,15 @@ import java.util.Hashtable;
  * Created by HFY on 2023/6/6
  */
 public class MyQrCodeUtil {
-    //宽高 单位像素
-    private static final int CODE_WIDTH = 180;
-    private static final int CODE_HEIGHT = 180;
+    private static final int CODE_WIDTH = 125;
+    private static final int CODE_HEIGHT = 125;
     private static final String CODE_CHERSET = "UTF-8";
 
     public static BufferedImage createImage(String content){
         Hashtable hints = new Hashtable();
-        hints.put("ERROR_CORRECTION", 1);
-        hints.put("CHARACTER_SET", "UTF-8");
-        hints.put( "MARGIN", 1);
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        hints.put(EncodeHintType.MARGIN, 0);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
         BitMatrix bitMatrix = null;
         try {
             bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE,CODE_WIDTH , CODE_HEIGHT, // 修改二维码底部高度

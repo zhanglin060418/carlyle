@@ -45,9 +45,6 @@ public class TransServiceImpl implements ITransService {
     private PanUserBalanceMapper userBalanceMapper;
 
     @Autowired
-    private PanAgentBalanceMapper agentBalanceMapper;
-
-    @Autowired
     private PurchaseMapper purchaseMapper;
 
     @Autowired
@@ -55,6 +52,9 @@ public class TransServiceImpl implements ITransService {
 
     @Autowired
     private PanBindCardMapper panBindCardMapper;
+
+    @Autowired
+    private PanAgentBalanceMapper agentBalanceMapper;
 
     @Autowired
     private PanUserAssetMapper userAssetMapper;
@@ -126,8 +126,8 @@ public class TransServiceImpl implements ITransService {
             purchaseBalance.setEndDate(DateUtils.getSomeDayLaterDate(purchaseBalance.getCycle()));
             PanUserBalance panUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBalance.getBuyer());
 
-            BigDecimal balanceBefore = panUserBalance.getAvailableAmt();
-            BigDecimal balanceAfter = panUserBalance.getAvailableAmt().subtract(purchaseBalance.getAmount());
+            BigDecimal balanceBefore = panUserBalance.getBalance();
+            BigDecimal balanceAfter = panUserBalance.getBalance().subtract(purchaseBalance.getAmount());
             PanTransactionHistory panTransactionHistory = new PanTransactionHistory();
             panTransactionHistory.setAmount(purchaseBalance.getAmount());
             panTransactionHistory.setOrOrderId(purchaseBalance.getOrderNo());
@@ -179,8 +179,8 @@ public class TransServiceImpl implements ITransService {
 
 
         if(requestUserBalance.getBillType().equals(BillType.IN.toString())){
-            BigDecimal inBalanceBefore = currUserBalance.getAvailableAmt();
-            BigDecimal inBalanceAfter = currUserBalance.getAvailableAmt().add(currAmount);
+            BigDecimal inBalanceBefore = currUserBalance.getBalance();
+            BigDecimal inBalanceAfter = currUserBalance.getBalance().add(currAmount);
             panTransactionHistory.setIsIncome(IsIncome.Y.toString());
             panTransactionHistory.setBillType(BillType.IN.toString());
             panTransactionHistory.setAmountBefore(inBalanceBefore);
@@ -193,8 +193,8 @@ public class TransServiceImpl implements ITransService {
             currUserBalance.setBalance(currUserBalance.getBalance().add(currAmount));
             logger.info("****交易管理-修改用户余额-UserBalance:{}", JSONObject.toJSONString(currUserBalance));
         }else if (requestUserBalance.getBillType().equals(BillType.OUT.toString())){
-            BigDecimal outBalanceBefore = currUserBalance.getAvailableAmt();
-            BigDecimal outBalanceAfter = currUserBalance.getAvailableAmt().subtract(currAmount);
+            BigDecimal outBalanceBefore = currUserBalance.getBalance();
+            BigDecimal outBalanceAfter = currUserBalance.getBalance().subtract(currAmount);
             panTransactionHistory.setIsIncome(IsIncome.N.toString());
             panTransactionHistory.setBillType(BillType.OUT.toString());
             panTransactionHistory.setTransactionType(TransType.Manual_Adjustment.toString());
@@ -230,8 +230,8 @@ public class TransServiceImpl implements ITransService {
         if (recharge.getStatus().equals(TransStatus.COMPLETED)) {
             PanUserBalance panUserBalance = userBalanceMapper.getPanUserBalanceByUserId(recharge.getUserId());
 
-            BigDecimal balanceBefore = panUserBalance.getAvailableAmt();
-            BigDecimal balanceAfter = panUserBalance.getAvailableAmt().add(recharge.getAmount());
+            BigDecimal balanceBefore = panUserBalance.getBalance();
+            BigDecimal balanceAfter = panUserBalance.getBalance().add(recharge.getAmount());
             PanTransactionHistory panTransactionHistory = new PanTransactionHistory();
             panTransactionHistory.setOrOrderId(recharge.getRequestNo());
             panTransactionHistory.setOrUserId(recharge.getUserId());
@@ -274,8 +274,8 @@ public class TransServiceImpl implements ITransService {
         PanUserBalance panUserBalance = userBalanceMapper.getPanUserBalanceByUserId(withdraw.getUserId());
         if (withdraw.getStatus().equals(TransStatus.COMPLETED)) {
             // 完成
-            BigDecimal withdrawBefore = panUserBalance.getAvailableAmt();
-            BigDecimal withdrawAfter = panUserBalance.getAvailableAmt();
+            BigDecimal withdrawBefore = panUserBalance.getBalance();
+            BigDecimal withdrawAfter = panUserBalance.getBalance().subtract(withdraw.getAmount()).subtract(withdraw.getFee());
             PanTransactionHistory panTransactionHistory = new PanTransactionHistory();
             panTransactionHistory.setOrOrderId(withdraw.getRequestNo());
             panTransactionHistory.setOrUserId(withdraw.getUserId());
@@ -324,14 +324,14 @@ public class TransServiceImpl implements ITransService {
             userPurchase.setStatus(TransStatus.SUCCESS);
             List<Purchase> userPurchaseList = purchaseMapper.selectPurchaseListForBuy(userPurchase);
             if (userPurchaseList.size() == 0) {
-                //首单，赠送金额，赠送产品
+                //首单，赠送金额
                 logger.info("****交易管理-首单-Strat********");
                 // 首单赠送比例
                 Double firstPurchaseCommissionARate = Double.parseDouble(sysConfigService.selectConfigByKey("first_purchase_commission_A_ratio"));
                 BigDecimal firstPurchaseCommission = panPurchase.getAmount().multiply(new BigDecimal(firstPurchaseCommissionARate)).divide(new BigDecimal(100));
                 PanUserBalance parentUser = userBalanceMapper.getUserBalanceByUserId(currUser.getParentId());
-                BigDecimal firstPurchaseBefore = parentUser.getAvailableAmt();
-                BigDecimal firstPurchaseAfter = parentUser.getAvailableAmt().add(firstPurchaseCommission);
+                BigDecimal firstPurchaseBefore = parentUser.getBalance();
+                BigDecimal firstPurchaseAfter = parentUser.getBalance().add(firstPurchaseCommission);
 
                 PanTransactionHistory panParentTransactionHistory = new PanTransactionHistory();
                 panParentTransactionHistory.setAmount(firstPurchaseCommission);
@@ -349,7 +349,7 @@ public class TransServiceImpl implements ITransService {
                 transHistoryMapper.insertPanTransactionHistory(panParentTransactionHistory);
 
                 parentUser.setBalance(parentUser.getBalance().add(firstPurchaseCommission));
-                parentUser.setAvailableAmt(parentUser.getAvailableAmt().add(firstPurchaseCommission));
+                parentUser.setRewardAmt(parentUser.getRewardAmt().add(firstPurchaseCommission));
                 logger.info("****交易管理-首单-UserBalance :{}", JSONObject.toJSONString(parentUser));
                 userBalanceMapper.updatePanUserBalance(parentUser);
 
@@ -388,8 +388,8 @@ public class TransServiceImpl implements ITransService {
                 purchaseMapper.insertPurchase(rewardPurchase);
 
 
-                BigDecimal balanceBefore = currParentUser.getAvailableAmt();
-                BigDecimal balanceAfter = currParentUser.getAvailableAmt();
+                BigDecimal balanceBefore = currParentUser.getBalance();
+                BigDecimal balanceAfter = currParentUser.getBalance().add(rewardAmt);
 
                 PanTransactionHistory panTransHistory = new PanTransactionHistory();
                 panTransHistory.setAmount(rewardAmt);
@@ -419,8 +419,8 @@ public class TransServiceImpl implements ITransService {
             // 返佣金额
             BigDecimal commssionA = panPurchase.getAmount().multiply(new BigDecimal(commissionAShareRatio)).divide(new BigDecimal(100));
 
-            BigDecimal parentCurrBefore = parentUser.getAvailableAmt();
-            BigDecimal parentCurrAfter = parentUser.getAvailableAmt().add(commssionA);
+            BigDecimal parentCurrBefore = parentUser.getBalance();
+            BigDecimal parentCurrAfter = parentUser.getBalance().add(commssionA);
 
             PanTransactionHistory transactionHistory = new PanTransactionHistory();
             transactionHistory.setAmount(commssionA);
@@ -438,7 +438,7 @@ public class TransServiceImpl implements ITransService {
             transHistoryMapper.insertPanTransactionHistory(transactionHistory);
 
             parentUser.setBalance(parentUser.getBalance().add(commssionA));
-            parentUser.setAvailableAmt(parentUser.getAvailableAmt().add(commssionA));
+            parentUser.setRewardAmt(parentUser.getRewardAmt().add(commssionA));
 
             logger.info("****交易管理-A级返佣-UserBalance:{}", JSONObject.toJSONString(parentUser));
             userBalanceMapper.updatePanUserBalance(parentUser);
@@ -451,8 +451,8 @@ public class TransServiceImpl implements ITransService {
             Double commissionBShareRatio = Double.parseDouble(sysConfigService.selectConfigByKey("commission_B_share_ratio"));
             BigDecimal commssionB = panPurchase.getAmount().multiply(new BigDecimal(commissionBShareRatio)).divide(new BigDecimal(100));
 
-            BigDecimal grandBefore = grandUser.getAvailableAmt();
-            BigDecimal grandAfter = grandUser.getAvailableAmt().add(commssionB);
+            BigDecimal grandBefore = grandUser.getBalance();
+            BigDecimal grandAfter = grandUser.getBalance().add(commssionB);
 
             PanTransactionHistory panGrandTransactionHistory = new PanTransactionHistory();
             panGrandTransactionHistory.setAmount(commssionB);
@@ -470,7 +470,7 @@ public class TransServiceImpl implements ITransService {
             transHistoryMapper.insertPanTransactionHistory(panGrandTransactionHistory);
 
             grandUser.setBalance(grandUser.getBalance().add(commssionB));
-            grandUser.setAvailableAmt(grandUser.getAvailableAmt().add(commssionB));
+            grandUser.setRewardAmt(grandUser.getRewardAmt().add(commssionB));
 
             logger.info("****交易管理-B级返佣-UserBalance:{}", JSONObject.toJSONString(grandUser));
             userBalanceMapper.updatePanUserBalance(grandUser);
@@ -483,8 +483,8 @@ public class TransServiceImpl implements ITransService {
             Double commissionCShareRatio = Double.parseDouble(sysConfigService.selectConfigByKey("commission_C_share_ratio"));
             BigDecimal commssionC = panPurchase.getAmount().multiply(new BigDecimal(commissionCShareRatio)).divide(new BigDecimal(100));
 
-            BigDecimal reatGrandBefore = greatGrandUser.getAvailableAmt();
-            BigDecimal reatGrandAfter = greatGrandUser.getAvailableAmt().add(commssionC);
+            BigDecimal reatGrandBefore = greatGrandUser.getBalance();
+            BigDecimal reatGrandAfter = greatGrandUser.getBalance().add(commssionC);
 
             PanTransactionHistory greatGrandTrans = new PanTransactionHistory();
             greatGrandTrans.setAmount(commssionC);
@@ -502,7 +502,7 @@ public class TransServiceImpl implements ITransService {
             transHistoryMapper.insertPanTransactionHistory(greatGrandTrans);
 
             greatGrandUser.setBalance(greatGrandUser.getBalance().add(commssionC));
-            greatGrandUser.setAvailableAmt(greatGrandUser.getAvailableAmt().add(commssionC));
+            greatGrandUser.setRewardAmt(greatGrandUser.getRewardAmt().add(commssionC));
 
             logger.info("****交易管理-C级返佣-UserBalance :{}", JSONObject.toJSONString(greatGrandUser));
             userBalanceMapper.updatePanUserBalance(greatGrandUser);
@@ -524,8 +524,8 @@ public class TransServiceImpl implements ITransService {
         PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(panUserAsset.getUserId());
         PanUserAsset currAssetBalance = userAssetMapper.selectPanUserAssetByUserId(panUserAsset.getUserId());
 
-        BigDecimal balanceBefore = userBalance.getAvailableAmt();
-        BigDecimal balanceAfter = userBalance.getAvailableAmt().subtract(panUserAsset.getAmount());
+        BigDecimal balanceBefore = userBalance.getBalance();
+        BigDecimal balanceAfter = userBalance.getBalance();
 
         PanTransactionHistory transHistory = new PanTransactionHistory();
         transHistory.setAmount(panUserAsset.getAmount());
@@ -567,8 +567,8 @@ public class TransServiceImpl implements ITransService {
         PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(panUserAsset.getUserId());
         PanUserAsset currAssetBalance = userAssetMapper.selectPanUserAssetByUserId(panUserAsset.getUserId());
 
-        BigDecimal balanceBefore = userBalance.getAvailableAmt();
-        BigDecimal balanceAfter = userBalance.getAvailableAmt().add(panUserAsset.getAmount());
+        BigDecimal balanceBefore = userBalance.getBalance();
+        BigDecimal balanceAfter = userBalance.getBalance();
 
         PanTransactionHistory transHistory = new PanTransactionHistory();
         transHistory.setAmount(panUserAsset.getAmount());
@@ -592,7 +592,7 @@ public class TransServiceImpl implements ITransService {
         currAssetBalance.setBalance(currAssetBalance.getBalance().subtract(panUserAsset.getAmount()));
 
         logger.info("****交易管理-增值宝转出-AssetBalance:" + JSONObject.toJSONString(currAssetBalance));
-       int i = userAssetMapper.updatePanUserAsset(currAssetBalance);
+        int i = userAssetMapper.updatePanUserAsset(currAssetBalance);
         if (i < 1) {
             msg = MessageStatus.ERROR;
         }
@@ -614,15 +614,14 @@ public class TransServiceImpl implements ITransService {
         }
         PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(panSignRecord.getUserId());
         // 签到奖励金额
-        // 签到奖励金额
         int dailySignInAmount = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmount"));
         int dailySignInAmountMax = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmountMax"));
         // int ax = (int) (dailySignInAmount + Math.random() * ((dailySignInAmountMax-dailySignInAmount)+1));
         int ax  = DateUtils.getProportionRandom(dailySignInAmount,dailySignInAmountMax);
-
         BigDecimal transAmount =  new BigDecimal(ax).multiply(new BigDecimal(100));
-        BigDecimal balanceBefore = userBalance.getAvailableAmt();
-        BigDecimal balanceAfter = userBalance.getAvailableAmt().add(transAmount);
+
+        BigDecimal balanceBefore = userBalance.getBalance();
+        BigDecimal balanceAfter = userBalance.getBalance().add(transAmount);
 
         PanTransactionHistory transHistory = new PanTransactionHistory();
         transHistory.setAmount(transAmount);
@@ -652,7 +651,6 @@ public class TransServiceImpl implements ITransService {
     }
 
     @Override
-    @Transactional
     public String editAgentBalance(PanAgentBalance requestAgentBalance) {
         logger.info("****交易管理-修改代理余额-Start********");
         String msg = MessageStatus.SUCCESS;
@@ -722,8 +720,8 @@ public class TransServiceImpl implements ITransService {
         logger.info("****交易管理-人工赠送产品-Purchase：{}", JSONObject.toJSONString(rewardPurchase));
         purchaseMapper.insertPurchase(rewardPurchase);
 
-        BigDecimal balanceBefore = currParentUser.getAvailableAmt();
-        BigDecimal balanceAfter = currParentUser.getAvailableAmt();
+        BigDecimal balanceBefore = currParentUser.getBalance();
+        BigDecimal balanceAfter = currParentUser.getBalance().add(currAmount);
 
         PanTransactionHistory panTransHistory = new PanTransactionHistory();
         panTransHistory.setAmount(currAmount);
@@ -750,5 +748,45 @@ public class TransServiceImpl implements ITransService {
             result = MessageStatus.ERROR;
         }
         return result;
+    }
+
+    /***
+     * 返佣余额转出
+     * @param rewardBalance
+     * @return
+     */
+    @Override
+    @Transactional
+    public String rewardTransferOut(PanUserBalance rewardBalance) {
+        logger.info("****交易管理-返佣余额转出-Start********");
+        String msg = MessageStatus.SUCCESS;
+        PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(rewardBalance.getUserId());
+
+        BigDecimal balanceBefore = userBalance.getBalance();
+        BigDecimal balanceAfter = userBalance.getBalance();
+
+        PanTransactionHistory transHistory = new PanTransactionHistory();
+        transHistory.setAmount(rewardBalance.getAmount());
+        transHistory.setUserId(rewardBalance.getUserId());
+        transHistory.setTransactionType(TransType.Reward_Transfer_Out.toString());
+        transHistory.setIsIncome(IsIncome.N.toString());
+        transHistory.setBillType(BillType.IN.toString());
+        transHistory.setAmountBefore(balanceBefore);
+        transHistory.setAmountAfter(balanceAfter);
+        transHistory.setRemark("返佣余额转出");
+
+        logger.info("****交易管理-返佣余额转出-TransInfo:" + JSONObject.toJSONString(transHistory));
+        transHistoryMapper.insertPanTransactionHistory(transHistory);
+
+        userBalance.setAvailableAmt(userBalance.getAvailableAmt().add(rewardBalance.getAmount()));
+        userBalance.setRewardAmt(userBalance.getRewardAmt().subtract(rewardBalance.getAmount()));
+
+        logger.info("****交易管理-返佣余额转出-UserBalance:" + JSONObject.toJSONString(transHistory));
+        int i = userBalanceMapper.updatePanUserBalance(userBalance);
+
+        if (i < 1) {
+            msg = MessageStatus.ERROR;
+        }
+        return msg;
     }
 }

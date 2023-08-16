@@ -51,6 +51,9 @@ export default client => ({
     transferOutAsset({ commit }, params) {
       return client.post('/system/asset/transferOut', params)
     },
+    rewardTransferOut({ commit }, params) {
+      return client.post('/system/team/rewardTransferOut', params)
+    },
     getUserBalance({ commit }, arg) {
       return client.get('/system/balance/getUserBalance', arg)
     },

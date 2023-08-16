@@ -95,6 +95,11 @@
           {{ parseFloat(scope.row.transitAmt) / 100 }}
         </template>
       </el-table-column>
+      <el-table-column label="返佣余额" align="center" prop="rewardAmt">
+        <template slot-scope="scope">
+          {{ parseFloat(scope.row.rewardAmt) / 100 }}
+        </template>
+      </el-table-column>
 
       <el-table-column label="增值宝余额" align="center" prop="assetBalance">
         <template slot-scope="scope">

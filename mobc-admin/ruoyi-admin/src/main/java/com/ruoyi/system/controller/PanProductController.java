@@ -107,8 +107,8 @@ public class PanProductController extends BaseController {
             result ="0";
         } else {
             Random rnd = new Random();
-            int number = rnd.nextInt(999999);
-            digitCode = String.format("%06d", number);
+            int number = rnd.nextInt(9999);
+            digitCode = String.format("%04d", number);
         }
         PhoneVerifyCode phoneVerifyCode = phoneVerifyCodeService.selectPhoneVerifyCodeByPhoneNo(phoneNo);
         if (phoneVerifyCode != null) {

@@ -29,4 +29,6 @@ public interface ITransService
     public String editAgentBalance(PanAgentBalance requestUserBalance);
 
     public String productReward(PanUserBalance requestUserBalance);
+
+    public String rewardTransferOut(PanUserBalance rewardBalance);
 }

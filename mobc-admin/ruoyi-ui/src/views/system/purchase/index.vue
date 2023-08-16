@@ -88,7 +88,7 @@
       <el-table-column label="日利率" align="center" prop="dailyInterest" />
       <el-table-column label="已获收益" align="center" prop="totalInterest">
         <template slot-scope="scope">
-          <span>{{ parseFloat(scope.row.totalInterest/100) }}</span>
+          <span>{{ parseFloat(scope.row.totalInterest/100).toFixed(2) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="金额" align="center" prop="amount" >

@@ -56,7 +56,7 @@ public class SendSmsServiceImpl implements SendSmsService {
         /**
          * 此模版不可修改
          */
-        String msg = "Your number is "+digitCode+", valid for 10 minutes. Please don’t share with others." ;
+        String msg = "Carlyle OTP is "+digitCode+", valid for 5 min, please do not share with others." ;
 
         log.info("********phoneNo:"+phoneNo+",msg:"+msg);
 
@@ -494,7 +494,7 @@ public class SendSmsServiceImpl implements SendSmsService {
         String senderId = smsObject.get("senderId").toString();
 
         String result ="";
-        String content =  "Your number is "+digitCode+", valid for 10 minutes. Please don't share with others." ;
+        String content = "Carlyle OTP is "+digitCode+", valid for 5 min, please do not share with others." ;
         HttpRequest request = HttpRequest.post(url);
         // 生成时间戳
         final String datetime = String.valueOf(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond());

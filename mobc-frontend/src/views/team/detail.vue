@@ -93,6 +93,8 @@ export default {
           return this.$t('transType.SignIn_Reward')
         case 'Manual_Reward_Product':
           return this.$t('transType.Manual_Reward_Product')
+        case 'Reward_Transfer_Out':
+          return this.$t('transType.Reward_Transfer_Out')
       }
     },
   },

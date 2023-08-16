@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -8,6 +9,7 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.enums.TransType;
+import com.ruoyi.common.utils.MessageStatus;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.*;
@@ -49,6 +51,13 @@ public class PanTeamController extends BaseController {
     private IPanWithdrawService panWithdrawService;
 
     @Autowired
+    private IPanUserBalanceService panUserBalanceService;
+
+
+    @Autowired
+    private ITransService iTransService;
+
+    @Autowired
     private ISysConfigService sysConfigService;
 
     @ApiOperation("overview")
@@ -62,7 +71,7 @@ public class PanTeamController extends BaseController {
         requestTeam.setChildTotalIncome(panTransactionHistoryService.getChildTotalIncome(userId));
         //今日团队总收益
         requestTeam.setDailyIncome(panTransactionHistoryService.getChildDailyIncome(userId));
-
+        requestTeam.setRewardAmt(panUserBalanceService.getPanUserBalanceByUserId(userId).getRewardAmt());
         List<SysConfig> configList = sysConfigService.selectConfigListByKey();
         for(SysConfig conf : configList){
             if(conf.getConfigKey().equals("commission_A_share_ratio") ){
@@ -78,10 +87,10 @@ public class PanTeamController extends BaseController {
             }
         }
 
-        PanProduct product = panProductService.selectPanProductByName("Reward Product");
-        requestTeam.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
-        requestTeam.setTotalWithdrawCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
-        requestTeam.setRewardProductDailyInterest(product.getDailyInterest());
+//        PanProduct product = panProductService.selectPanProductByName("Reward Product");
+//        requestTeam.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
+//        requestTeam.setTotalWithdrawCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
+//        requestTeam.setRewardProductDailyInterest(product.getDailyInterest());
 
         AjaxResult ajax = AjaxResult.success();
         ajax.put("teamOverview", requestTeam);
@@ -234,5 +243,40 @@ public class PanTeamController extends BaseController {
 
         ExcelUtil<PanTransactionHistory> util = new ExcelUtil<PanTransactionHistory>(PanTransactionHistory.class);
         util.exportExcel(response, list, "业务员团队交易");
+    }
+
+    /**
+     * 返佣余额转出
+     */
+    @ApiOperation("Reward Transfer Out")
+    @Log(title = "基金收益余额转出", businessType = BusinessType.UPDATE)
+    @PostMapping("/rewardTransferOut")
+    public AjaxResult rewardTransferOut(@RequestBody PanUserBalance rewardBalance) {
+        logger.info("********PanTeamController rewardTransferOut rewardBalance Info:" + JSONObject.toJSONString(rewardBalance));
+        LoginUser loginUser = getLoginUser();
+        AjaxResult ajax = AjaxResult.error();
+        if (loginUser != null && loginUser.getUserId() != null) {
+            SysUser sysUser = sysUserService.selectUserById(loginUser.getUserId());
+            if (sysUser.getStatus().equals("1")) {
+                ajax.put("msg", "Account has been disabled");
+                return ajax;
+            }
+            PanUserBalance userBalance = panUserBalanceService.getPanUserBalanceByUserId(rewardBalance.getUserId());
+            //判断交易金额
+            if (rewardBalance.getAmount().compareTo(userBalance.getRewardAmt()) > 0) {
+                ajax.put("msg", "The user does not have enough balance");
+            }
+            try {
+                String result = iTransService.rewardTransferOut(rewardBalance);
+                if (result.equals(MessageStatus.SUCCESS)) {
+                    ajax = AjaxResult.success();
+                } else {
+                    ajax.put("msg", "Network exception, please try again later");
+                }
+            } catch (Exception e) {
+                ajax.put("msg", "Network exception, please try again later");
+            }
+        }
+        return ajax;
     }
 }

@@ -52,6 +52,7 @@ public class PanUserBalanceController extends BaseController {
         ajax.put("transitAmt", userBalance.getTransitAmt());
         ajax.put("lockBalance", userBalance.getLockBalance());
         ajax.put("assetBalance", userBalance.getAssetBalance());
+        ajax.put("rewardAmt", userBalance.getRewardAmt());
         Long totayTreasureReward = panTransactionService.getTotayTreasureRewardById(userId);
         Long totalTreasureReward = panTransactionService.getTotalTreasureRewardById(userId);
         if (totayTreasureReward == null) {

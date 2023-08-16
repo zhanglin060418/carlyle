@@ -34,6 +34,8 @@ public class PanUserBalance extends BaseEntity
      */
     private BigDecimal lockBalance;
 
+    private BigDecimal rewardAmt;
+
     /**
      * 增值宝(asset balance)
      */
@@ -215,5 +217,13 @@ public class PanUserBalance extends BaseEntity
 
     public void setIsRebate(String isRebate) {
         this.isRebate = isRebate;
+    }
+
+    public BigDecimal getRewardAmt() {
+        return rewardAmt;
+    }
+
+    public void setRewardAmt(BigDecimal rewardAmt) {
+        this.rewardAmt = rewardAmt;
     }
 }

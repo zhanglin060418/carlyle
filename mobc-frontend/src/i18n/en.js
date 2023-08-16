@@ -71,7 +71,8 @@ export default {
     treasureWithdrawSuccess: 'You have successfully deposited your treasure balance into your account balance',
     failedOperation: 'Operation failed. Please try it again.',
     uploadSuccess: 'You have successfully uploaded your profile image',
-    cardErr: 'This Card Number has been already exists'
+    cardErr: 'This Card Number has been already exists',
+    RewardTransferSuccess: 'You have successfully deposited your Reward balance into your account balance',
   },
   dialog: {
     regSuccess: 'Registration successful! ',
@@ -262,7 +263,8 @@ export default {
     Register_Reward: 'Register Reward',
     Manual_Adjustment: 'Manual Adjustment',
     SignIn_Reward :'Sign In Reward',
-    Manual_Reward_Product :'Manual Reward Product'
+    Manual_Reward_Product :'Manual Reward Product',
+    Reward_Transfer_Out :'Reward Transfer Out',
   },
   //支付详情
   payDetail: {
@@ -294,8 +296,10 @@ export default {
     text35: 'Withdrawal amount cannot be greater than',
     text3401: 'Recharge amount cannot be less than',
     text3501: 'Recharge amount cannot be greater than',
+    text3502: 'Transfer Out amount cannot be greater than',
     text36: 'Not within the withdrawal time',
     text37: 'Withdrawal Amount',
+    text370: 'Fund Amount',
     text38: 'Arrival amount',
     text39: 'Balance',
     text40: 'Withdraw cash with new card',
@@ -643,7 +647,7 @@ export default {
     t60: 'Deal price',
     t61: 'Transaction successful',
     t62: 'Balance is low, please buy energy first',
-    t63: 'Purchase was successful Viewable in [Purchase detail]',
+    t63: 'Welcome to Carlyle, congratulations, you are now a member of the Carlyle Fund',
     t64: 'Item is sold out Please come early next time',
     t65: 'Energy redemption has been successful, waiting for payment',
     t66: 'Cancellation success',
@@ -838,6 +842,7 @@ export default {
     t224: 'Naira and can withdraw at any time',
     t225: 'Total Income',
     t227: 'Check In',
-    t228: 'Today income'
+    t228: 'Today income',
+    rewardBalance: 'Reward Balance'
   },
 }

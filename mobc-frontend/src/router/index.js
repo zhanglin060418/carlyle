@@ -21,7 +21,7 @@ const routes = [{
                     component: () =>
                         import ('@/views/home'),
                     meta: {
-                        title: 'Carlyle',
+                        title: 'CARLYLE',
                         keepAlive: false,
                         scrollToTop: true,
                     },
@@ -83,6 +83,15 @@ const routes = [{
             meta: {
                 title: 'Fund detail',
                 assetstitle: 'Treasure detail',
+            },
+        },
+        {
+            path: '/transferInviteFeeOut',
+            name: 'transferInviteFeeOut',
+            component: () =>
+                import ('@/views/transferout/transferInviteFeeOut'),
+            meta: {
+                title: 'Transfer Out',
             },
         },
         {

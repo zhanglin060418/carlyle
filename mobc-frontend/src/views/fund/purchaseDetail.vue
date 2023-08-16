@@ -10,7 +10,7 @@
             <p v-else>{{list.item.nameEn}} </p>
             <p>{{ $t('dw.t168') }}: {{list.item.dailyInterest}}%</p>
             <p>{{ $t('dw.t185') }}: {{list.item.cycle}} {{ $t('dw.t7') }}</p>
-            <p>{{ $t('dw.t180') }}: {{ list.totalInterest/100 }}</p>
+            <p>{{ $t('dw.t180') }}: {{ parseFloat(list.totalInterest/100).toFixed(2) }}</p>
             <p v-if="list.status != 'In progress'">{{ $t('dw.t189') }}: {{ list.endDate }}</p>
           </div>
           <div class="r-price">

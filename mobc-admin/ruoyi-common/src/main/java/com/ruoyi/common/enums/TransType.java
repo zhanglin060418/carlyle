@@ -109,5 +109,10 @@ public enum TransType {
      * 手工赠送产品
      * Prepaid Recharge
      */
-    Manual_Reward_Product
+    Manual_Reward_Product,
+    /**
+     * 佣金转出
+     * Reward Transfer Out
+     */
+    Reward_Transfer_Out
 }

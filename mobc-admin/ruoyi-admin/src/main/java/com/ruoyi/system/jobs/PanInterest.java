@@ -115,8 +115,8 @@ public class PanInterest {
         if (userBalance.getIsRebate().equals("0")) {
             //今日收益
             BigDecimal dailyReward = new BigDecimal(currPurchase.getDailyInterest()).multiply(currPurchase.getAmount()).divide(new BigDecimal(100));
-            BigDecimal beforeBalance = userBalance.getAvailableAmt();
-            BigDecimal afterBalance = userBalance.getAvailableAmt().add(dailyReward);
+            BigDecimal beforeBalance = userBalance.getBalance();
+            BigDecimal afterBalance = userBalance.getBalance().add(dailyReward);
             // 更新今日收益
             currPurchase.setTotalInterest(currPurchase.getTotalInterest().add(dailyReward));
 
@@ -145,8 +145,8 @@ public class PanInterest {
             currPurchase.setPayBack("1");
             PanTransactionHistory transHistoryToday = new PanTransactionHistory();
             BigDecimal amount = currPurchase.getAmount();
-            BigDecimal beforeReturnBalance = userBalance.getAvailableAmt();
-            BigDecimal afterReturnBalance = userBalance.getAvailableAmt().add(amount);
+            BigDecimal beforeReturnBalance = userBalance.getBalance();
+            BigDecimal afterReturnBalance = userBalance.getBalance().add(amount);
 
             transHistoryToday.setOrUserId(currPurchase.getBuyer());
             transHistoryToday.setOrOrderId(currPurchase.getOrderNo());
@@ -186,8 +186,8 @@ public class PanInterest {
             // 增值宝今日收益
             BigDecimal todyReward = new BigDecimal(treasureRate).multiply(curr.getBalance()).divide(new BigDecimal(100));
 
-            BigDecimal beforeBalance = panUserBalance.getAvailableAmt();
-            BigDecimal afterBalance = panUserBalance.getAvailableAmt();
+            BigDecimal beforeBalance = panUserBalance.getBalance();
+            BigDecimal afterBalance = panUserBalance.getBalance();
 
             PanTransactionHistory transInfo = new PanTransactionHistory();
             transInfo.setAmount(todyReward);

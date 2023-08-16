@@ -1,20 +1,7 @@
 <template>
   <div class="sell-energy team-main">
     <div class="t-box">
-      <div class="income-box">
-        <p class="money">{{ totalRechargeCount/100 }}</p>
-        <span>
-          <!-- 充值总额 -->
-          {{ $t('dw.t208') }}({{ sym }})
-        </span>
-      </div>
-      <div class="income-box">
-        <p class="money">{{ totalWithdrawCount/100 }}</p>
-        <span>
-          <!-- 提现总额 -->
-          {{ $t('dw.t209') }}({{ sym }})
-        </span>
-      </div>
+
       <div class="income-box">
         <p class="money">{{ parseFloat(treeData.childTotalIncome)/100 }}</p>
         <span>
@@ -30,18 +17,20 @@
         </span>
       </div>
       <div class="income-box">
-        <p>{{ treeData.totalPeople }}</p>
+        <p>{{ parseFloat(rewardAmt)/100  }}</p>
         <span>
           <!-- 总人数 -->
-          {{ $t('dw.t171')}}
+          {{ $t('dw.rewardBalance')}}
         </span>
       </div>
       <div class="income-box">
-        <p>{{ treeData.createdToday }}</p>
-        <span>{{ $t('dw.t169') }}</span>
+          <div class="copy-btn" style="margin: 10px 0px; display: flex;justify-content:flex-start;align-items: center; color:#ffffff;border-radius: 6px; background:linear-gradient(180deg, #5d86a1 0%, #3376c4 100%); width: 100%; height:100%;" @click="goTransferOut">
+              <span style ='margin-bottom: 5px; width: 100%; text-align: center; font-size: 18px'>{{ $t('btn.t33') }}</span>
+          </div>
       </div>
     </div>
-    <h2 class="p-title">{{ $t('dw.t80') }}</h2>
+      <show-invite :show="showShare" @close="close" :code="userInfo.inviteCode">
+      </show-invite>
     <div class="my-index-middle-box">
       <div class="my-index-middle" >
         <div class="arrow-wrap" >
@@ -99,12 +88,11 @@
         </div>
       </div>
     </div>
-
+<!--    <div class="invite-btn" @click="share">-->
+<!--      <img class="img-money" src="static/assets/image/wind/icon_nook.png" alt="" />-->
+<!--      {{ $t('sa.txt72') }}-->
+<!--    </div>-->
     <h2 class="p-title">{{ $t('dw.t174') }}</h2>
-    <div class="invite-btn" @click="share">
-      <img class="img-money" src="static/assets/image/wind/money-gif.gif" alt="" />
-      {{ $t('sa.txt72') }}
-    </div>
     <div class="desc" style="background: #eaeeff;">
       <div class="ql-editor" >
           <p class="ql-editor" v-html="invitationText.descriptionEn" />
@@ -135,9 +123,11 @@ import { bus } from '@/utils/bus'
 import rule from './rule'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import mixinsSerivce from '@/mixins/service'
+import ShowInvite from "../../components/showInvite";
 export default {
   mixins: [mixinsSerivce],
   components: {
+    ShowInvite,
     rule,
   },
   data() {
@@ -178,6 +168,7 @@ export default {
       invitationText: '',
       childCrowdRatio: 0,
       grandCrowdRatio: 0,
+      rewardAmt: 0,
       greatGrandCrowdRatio: 0,
       totalRechargeCount: 0,
       totalWithdrawCount: 0,
@@ -245,6 +236,11 @@ export default {
           }
       })
     },
+      goTransferOut(){
+          this.$router.push({
+              path: '/transferInviteFeeOut',
+          })
+      },
     async getData() {
       this.isLoading = true
       const user_id = this.userInfo.user_id
@@ -276,6 +272,7 @@ export default {
       this.firstPurchaseCommissionRatio = this.list.firstPurchaseCommissionRatio || 0
       this.purchaseTreasureRate = this.list.purchaseTreasureRate || 0
       this.rewardProductDailyInterest = this.list.rewardProductDailyInterest || 0
+      this.rewardAmt = this.list.rewardAmt || 0
       this.isLoading = false
     },
     toMore(level) {

@@ -69,7 +69,8 @@ export default {
         treasureWithdrawSuccess: '您已成功将您的宝物余额存入账户余额',
         failedOperation: '手术失败。 请再试一次。',
         uploadSuccess: '您已成功上传个人资料图片',
-        cardErr: '该卡号已经存在'
+        cardErr: '该卡号已经存在',
+        RewardTransferSuccess: '您已成功将您的返佣余额存入账户余额',
     },
     dialog: {
         regSuccess: '注册成功！',
@@ -254,7 +255,8 @@ export default {
         Register_Reward: '注册奖励',
         Manual_Adjustment: '手工调账',
         SignIn_Reward :'签到奖励',
-        Manual_Reward_Product :'手工赠送产品'
+        Manual_Reward_Product :'手工赠送产品',
+        Reward_Transfer_Out :'返佣金额转出'
     },
     //支付详情
     payDetail: {
@@ -286,8 +288,10 @@ export default {
         text35: '提款金额不能大于',
         text3401: '充值金额不能少于',
         text3501: '充值金额不能大于',
+        text3502: '转出金额不能大于',
         text36: '不在提款时间内',
         text37: '提款金额',
+        text370: '产品金额',
         text38: '实际金额',
         text39: '账户余额',
         text40: '使用新卡提现',
@@ -751,6 +755,7 @@ export default {
         t224: '奈拉 随时可以提现',
         t225: '总收益',
         t227: '签到',
-        t228: '今日收益'
+        t228: '今日收益',
+        rewardBalance: '返佣余额'
     },
 }
