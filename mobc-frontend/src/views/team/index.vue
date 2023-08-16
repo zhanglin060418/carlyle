@@ -275,22 +275,22 @@ export default {
       this.rewardAmt = this.list.rewardAmt || 0
       this.isLoading = false
     },
-    toMore(level) {
-      this.$router.push({
-        path: '/more',
-        query: {
-          level,
-        },
-      })
-    },
-    toDetail(level) {
-      this.$router.push({
-        path: '/detail',
-        query: {
-          level,
-        },
-      })
-    },
+      toMore(level) {
+          this.$router.push({
+              path: '/more',
+              query: {
+                  data:level,
+              },
+          })
+      },
+      toDetail(level) {
+          this.$router.push({
+              path: '/detail',
+              query: {
+                  data:level,
+              },
+          })
+      },
 
     //获取当前奖励
     getAwardData() {

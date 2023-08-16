@@ -141,7 +141,6 @@ const routes = [{
                 import ('@/views/team/more'),
             meta: {
                 title: i18n.tc('user.more'),
-                keepAlive: true,
             },
         },
       {

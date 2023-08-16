@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       sym: '',
+      userId:'',
       active: 0,
       total: 0,
       list: [],
@@ -84,8 +85,14 @@ export default {
     next()
   },
   created() {
-    this.itemClick(0)
-    this.sym = localStorage.getItem('localCurrency') || 'NGN'
+      let token = localStorage.getItem('token') || null
+      if (token == null) {
+          this.errDialog(this.$t('msg.loginFirst'))
+          return this.$router.push("/login")
+      }
+      this.userId = localStorage.getItem('userId') || null
+      this.sym = localStorage.getItem('localCurrency') || 'NGN'
+      this.itemClick(0)
   },
   methods: {
     parseTime,
@@ -156,8 +163,7 @@ export default {
     },
     async getData() {
       this.isShowLoadding = true
-      const user_id = this.userInfo.user_id
-      // this.params.uidList = [this.userInfo.id]
+      const user_id = this.userId
       if(this.type == 0)
         this.getTransactionHistoryToday({userId: user_id}).then(res =>{
           this.isShowLoadding = false

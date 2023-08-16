@@ -41,6 +41,7 @@ export default {
       productList: [],
       total: 0,
       sym: '',
+      userId:'',
       currencyShape: '',
       params: {
         start: '',
@@ -51,8 +52,14 @@ export default {
     }
   },
   created() {
-    this.getList()
+    let token = localStorage.getItem('token') || null
+    if (token == null) {
+      this.errDialog(this.$t('msg.loginFirst'))
+      return this.$router.push("/login")
+    }
+    this.userId = localStorage.getItem('userId') || null
     this.sym = localStorage.getItem("localCurrency") || 'NGN'
+    this.getList()
     if(this.sym == 'NGN')
       this.currencyShape = '₦'
     else this.currencyShape = '¥'
@@ -68,7 +75,7 @@ export default {
       listProduct: 'listProduct'
     }),
     async getList() {
-      const user_id = this.userInfo.user_id
+      const user_id = this.userId
       let res = await this.getPurchaseHistory({
         userId: user_id
       })

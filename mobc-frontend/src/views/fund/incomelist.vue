@@ -29,6 +29,7 @@ export default {
       purchasedList: [],
       total: 0,
       sym: '',
+      userId: '',
       showMoreInfo:false,
       showAllInfo:false,
       isLoading: false,
@@ -38,9 +39,15 @@ export default {
     }
   },
   created() {
+    let token = localStorage.getItem('token') || null
+    if (token == null) {
+      this.errDialog(this.$t('msg.loginFirst'))
+      return this.$router.push("/login")
+    }
     this.orderNo = this.$route.query.data
-    this.getList()
+    this.userId = localStorage.getItem('userId') || null
     this.sym = localStorage.getItem("localCurrency") || 'NGN'
+    this.getList()
     if (this.sym == 'NGN')
       this.currencyShape = '₦'
     else this.currencyShape = '¥'
@@ -56,7 +63,7 @@ export default {
     }),
     async getList() {
       this.currentPage = 0;
-      const user_id = this.userInfo.user_id;
+      const user_id = this.userId;
       let res = await this.getPurchaseInterestList({
         orderNo: this.orderNo,
         userId:user_id,
@@ -72,7 +79,7 @@ export default {
     },
     loadMore(orderNo){
       this.isLoading = true;
-      const user_id = this.userInfo.user_id;
+      const user_id = this.userId;
       const startPage = (this.currentPage + 1) * this.pageSize;
       this.getPurchaseInterestList({orderNo: orderNo,userId:user_id, currentPage: startPage, pageSize:this.pageSize}).then(response => {
         if(response.code==200){

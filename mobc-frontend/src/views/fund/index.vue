@@ -209,7 +209,7 @@ export default {
           this.getList()
           this.interval = setInterval(() => {
             this.getNewsPurchase()
-          }, 40000)
+          }, 60000)
         } else {
           clearInterval(this.interval)
         }

@@ -99,22 +99,18 @@ public class PanTeamController extends BaseController {
 
     @GetMapping("/incomeOverview")
     public AjaxResult getTeamIncomeOverview(@RequestParam Long userId, @RequestParam Long teamLevel) {
-
         AjaxResult ajax = AjaxResult.success();
-
         PanTeamIncomeFilter teamIncomeFilter = new PanTeamIncomeFilter();
         teamIncomeFilter.setUserId(userId);
-
-        List<TeamIncomeOverview> teamIncomeOverviewList = new ArrayList<TeamIncomeOverview>();
-        teamIncomeOverviewList = panTransactionHistoryService.getGreatGrandIncomOverview(userId);
+        List<TeamIncomeOverview> teamIncomeOverview = new ArrayList<TeamIncomeOverview>();
         if (teamLevel == 0) {
-            ajax.put("teamIncomeOverview", panTransactionHistoryService.getChildIncomeOverview(userId));
+            teamIncomeOverview = panTransactionHistoryService.getChildIncomeOverview(userId);
         } else if (teamLevel == 1) {
-            ajax.put("teamIncomeOverview", panTransactionHistoryService.getGrandIncomOverview(userId));
+            teamIncomeOverview = panTransactionHistoryService.getGrandIncomOverview(userId);
         } else if (teamLevel == 2) {
-            ajax.put("teamIncomeOverview", panTransactionHistoryService.getGreatGrandIncomOverview(userId));
+            teamIncomeOverview = panTransactionHistoryService.getGreatGrandIncomOverview(userId);
         }
-        ajax.put("123123", teamIncomeOverviewList);
+        ajax.put("teamIncomeOverview", teamIncomeOverview);
         return ajax;
     }
 

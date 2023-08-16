@@ -167,7 +167,7 @@ export default {
       await this.rewardTransferOut(formData).then(res =>{
         if(res.code == 200) {
           this.isLoading = false
-          this.errDialog(this.$t('msg.InterestTransferSuccess'))
+          this.errDialog(this.$t('msg.RewardTransferSuccess'))
           this.$router.push({
             path: '/team',
           })

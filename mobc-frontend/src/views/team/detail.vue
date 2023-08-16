@@ -3,7 +3,7 @@
     <div v-if="list && list.length" >
       <div class="person-detail">
         <div class="list-header">
-          <p style="width: 100px; align-items: center">{{ $t('sa.txt477') }}</p>
+          <p style="width: 100px; align-items: center;">{{ $t('sa.txt477') }}</p>
           <p>{{ $t('dw.t207') }}</p>
           <p>{{ $t('dw.t118') }}</p>
         </div>
@@ -11,7 +11,7 @@
           <div class="info-box">
             <p class="name">{{ item.username }}</p>
             <p class="type" >{{ setText(item.transactionType) }}</p>
-            <p class="profit"> {{ parseInt(item.amount)/100 }}</p>
+            <p class="profit">{{ parseInt(item.amount)/100 }}</p>
           </div>
         </div>
       </div>
@@ -20,39 +20,55 @@
   </modMain>
 </template>
 <script>
-import { bus } from '@/utils/bus'
-import {mapActions, mapGetters} from 'vuex'
-export default {
-  data() {
-    return {
-      list: [],
-      index: 0,
-      tempId: "",
-      tempAmount: 0,
-      type: -1
-    }
-  },
-  mounted() {
-  },
-  computed: {
-    ...mapGetters({
-      userInfo: "user/userInfo"
-    }),
-  },
-  methods: {
-    ...mapActions({
-      incomeOverview: 'user/incomeOverview',
-      rewardHistory: 'user/rewardHistory'
-    }),
-    async getData() {
-      const user_id = this.userInfo.user_id
-      await this.rewardHistory({
-        userId: user_id,
-        teamLevel: this.type
-      }).then(res =>{
-        this.list = res.teamIncomeList
-      })
+  import {mapActions, mapGetters} from "vuex";
+  import PullList from "../../components/pullList.vue";
+  export default {
+    components: {PullList},
+    data() {
+      return {
+        list: [],
+        userId:'',
+        index: 0,
+        tempId: "",
+        tempAmount: 0,
+        teamLevel:'',
+      }
     },
+    created() {
+      let token = localStorage.getItem('token') || null
+      if (token == null) {
+        this.errDialog(this.$t('msg.loginFirst'))
+        return this.$router.push("/login")
+      }
+      this.teamLevel = this.$route.query.data
+      this.userId = localStorage.getItem('userId') || null
+      this.sym = localStorage.getItem("localCurrency") || 'NGN'
+      this.getList()
+      if (this.sym == 'NGN')
+        this.currencyShape = '₦'
+      else this.currencyShape = '¥'
+    },
+
+    computed: {
+      ...mapGetters({
+        userInfo: "user/userInfo"
+      }),
+    },
+    methods: {
+      ...mapActions({
+        incomeOverview: 'user/incomeOverview',
+        rewardHistory: 'user/rewardHistory'
+      }),
+      async getList() {
+        const user_id = this.userId
+        await this.rewardHistory({
+          userId: user_id,
+          teamLevel: this.teamLevel
+        }).then(res =>{
+          this.list = res.teamIncomeList
+        })
+      },
+
     setText(text) {
       switch (text) {
         case 'Recharge':
@@ -98,16 +114,6 @@ export default {
       }
     },
   },
-  watch: {
-    "$route": {
-      immediate: true,
-      handler(val) {
-        if(val.name !== "detail") return;
-        const type = val.query.level;
-        this.type = type
-        this.getData()
-      }
-    }
-  }
+
 }
 </script>
