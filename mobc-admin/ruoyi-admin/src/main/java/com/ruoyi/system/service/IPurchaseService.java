@@ -96,4 +96,6 @@ public interface IPurchaseService
     public Purchase getPurchaseCount(Purchase purchase);
 
     public List<Purchase> getTotalPurchase(Purchase purchase);
+
+    public  List<Purchase> selectPurchaseListByUser(Purchase purchase);
 }

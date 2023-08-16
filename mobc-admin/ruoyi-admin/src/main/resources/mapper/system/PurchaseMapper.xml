@@ -364,4 +364,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(id) from pan_purchase where current_date >= date(end_at) and status = 'Success'
     </select>
 
+    <select id="selectPurchaseListByUser" parameterType="Purchase" resultMap="PurchaseResult">
+        SELECT
+            pan_purchase.id id,
+            buyer,
+            product,
+            pan_purchase.cycle,
+            pan_purchase.daily_interest,
+            total_interest,
+            amount,
+            pay_back,
+            pan_purchase.STATUS,
+            end_at,
+            pan_purchase.create_time,
+            pd.NAME product_name,
+            order_no,
+            begin_date,
+            end_date,
+            pd.id pd_id,
+            pd.NAME NAME,
+            pd.name_in name_in,
+            pd.name_en name_en,
+            pd.cover_images cover_images,
+            pd.minimum_buy minimum_buy,
+            pd.cycle cycle,
+            pd.progress progress,
+            pd.show_progress_bar show_progress_bar,
+            pd.description description,
+            pd.description_en description_en
+        FROM
+            pan_purchase
+            LEFT JOIN pan_product pd ON pan_purchase.product = pd.id
+        WHERE
+            pan_purchase.buyer = #{buyer}
+            order by pan_purchase.create_time desc
+    </select>
 </mapper>

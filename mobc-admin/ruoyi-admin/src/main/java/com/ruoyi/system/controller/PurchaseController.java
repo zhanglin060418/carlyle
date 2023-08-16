@@ -81,7 +81,7 @@ public class PurchaseController extends BaseController {
     public AjaxResult getPurchaseHistory(@RequestParam Long userId) {
         Purchase purchase = new Purchase();
         purchase.setBuyer(userId);
-        List<Purchase> list = purchaseService.selectPurchaseList(purchase);
+        List<Purchase> list = purchaseService.selectPurchaseListByUser(purchase);
         AjaxResult ajax = AjaxResult.success();
         ajax.put(AjaxResult.DATA_TAG, list);
         return ajax;

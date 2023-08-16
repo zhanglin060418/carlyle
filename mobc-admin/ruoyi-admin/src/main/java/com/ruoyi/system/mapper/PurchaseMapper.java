@@ -98,4 +98,6 @@ public interface PurchaseMapper
     public List<Purchase> selectPurchaseListForBuy(Purchase userPurchase);
 
     public List<Purchase> getTotalPurchase(Purchase userPurchase);
+
+    public List<Purchase> selectPurchaseListByUser(Purchase purchase);
 }

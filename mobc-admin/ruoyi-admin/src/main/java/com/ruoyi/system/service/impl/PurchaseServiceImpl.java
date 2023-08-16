@@ -202,4 +202,9 @@ public class PurchaseServiceImpl implements IPurchaseService
     public List<Purchase> selectPurchaseJobList(){
         return purchaseMapper.selectPurchaseJobList();
     }
+
+    @Override
+    public List<Purchase> selectPurchaseListByUser(Purchase purchase) {
+        return purchaseMapper.selectPurchaseListByUser(purchase);
+    }
 }
