@@ -380,9 +380,6 @@ public class TransServiceImpl implements ITransService {
                 rewardPurchase.setBeginDate(DateUtils.getTomorrowDate());
                 rewardPurchase.setEndDate(DateUtils.getSomeDayLaterDate(rewardProduct.getCycle()));
 
-                rewardProduct.setCurrFund(new BigDecimal(rewardProduct.getCurrFund()).subtract(rewardAmt.divide(new BigDecimal(100))).doubleValue());
-                rewardProduct.setProgress(((rewardProduct.getTotalFund() - rewardProduct.getCurrFund()) / rewardProduct.getTotalFund()) * 100);
-                panProductMapper.updatePanProduct(rewardProduct);
 
                 logger.info("****交易管理-赠送产品-Purchase：{}", JSONObject.toJSONString(rewardPurchase));
                 purchaseMapper.insertPurchase(rewardPurchase);
