@@ -31,6 +31,10 @@
     </div>
       <show-invite :show="showShare" @close="close" :code="userInfo.inviteCode">
       </show-invite>
+      <div class="invite-btn" @click="share">
+          <img class="img-money" src="static/assets/image/wind/money-gif.gif" alt="" />
+          {{ $t('sa.txt72') }}
+      </div>
     <div class="my-index-middle-box">
       <div class="my-index-middle" >
         <div class="arrow-wrap" >
@@ -88,10 +92,6 @@
         </div>
       </div>
     </div>
-<!--    <div class="invite-btn" @click="share">-->
-<!--      <img class="img-money" src="static/assets/image/wind/icon_nook.png" alt="" />-->
-<!--      {{ $t('sa.txt72') }}-->
-<!--    </div>-->
     <h2 class="p-title">{{ $t('dw.t174') }}</h2>
     <div class="desc" style="background: #eaeeff;">
       <div class="ql-editor" >

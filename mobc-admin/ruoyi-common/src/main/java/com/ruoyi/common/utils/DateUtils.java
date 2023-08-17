@@ -316,7 +316,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static int getProportionRandom(int min, int max) {
         double rate0 = 0.8;
-        double proportion = 0.6;
+        double proportion = 0.7;
         double randomNumber = Math.random();
         int ax = 10;
         if (randomNumber > 0 && rate0 >= randomNumber) {

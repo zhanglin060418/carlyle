@@ -323,7 +323,7 @@ public class TransServiceImpl implements ITransService {
             userPurchase.setBuyer(currUser.getUserId());
             userPurchase.setStatus(TransStatus.SUCCESS);
             List<Purchase> userPurchaseList = purchaseMapper.selectPurchaseListForBuy(userPurchase);
-            if (userPurchaseList.size() == 0) {
+            if (userPurchaseList.size() <1) {
                 //首单，赠送金额
                 logger.info("****交易管理-首单-Strat********");
                 // 首单赠送比例
@@ -344,7 +344,6 @@ public class TransServiceImpl implements ITransService {
                 panParentTransactionHistory.setRemark("A级首单奖金");
                 panParentTransactionHistory.setAmountBefore(firstPurchaseBefore);
                 panParentTransactionHistory.setAmountAfter(firstPurchaseAfter);
-
                 logger.info("****交易管理-首单-TransInfo:{}", JSONObject.toJSONString(panParentTransactionHistory));
                 transHistoryMapper.insertPanTransactionHistory(panParentTransactionHistory);
 
@@ -352,63 +351,58 @@ public class TransServiceImpl implements ITransService {
                 parentUser.setRewardAmt(parentUser.getRewardAmt().add(firstPurchaseCommission));
                 logger.info("****交易管理-首单-UserBalance :{}", JSONObject.toJSONString(parentUser));
                 userBalanceMapper.updatePanUserBalance(parentUser);
-
-                /**
-                 * 赠送产品
-                 */
-                //赠送比例
-                Double rewardRate = Double.parseDouble(sysConfigService.selectConfigByKey("purchase_treasure_rate"));
-                PanProduct rewardProduct = panProductMapper.selectPanProductByName("Reward Product");
-
-                PanUserBalance currParentUser = userBalanceMapper.getUserBalanceByUserId(currUser.getParentId());
-                //产品日费率
-                Double rewardProductDailyRate = rewardProduct.getDailyInterest();
-                BigDecimal rewardAmt = panPurchase.getAmount().multiply(new BigDecimal(rewardRate)).divide(new BigDecimal(100));
-
-                Purchase rewardPurchase = new Purchase();
-                String orderNo = DateUtils.createOrderId("P");
-                rewardPurchase.setOrderNo(orderNo);
-                rewardPurchase.setBuyer(parentUser.getUserId());
-                rewardPurchase.setProduct(rewardProduct.getId());
-                rewardPurchase.setProductName(rewardProduct.getName());
-                rewardPurchase.setAmount(rewardAmt);
-                rewardPurchase.setCycle(rewardProduct.getCycle());
-                rewardPurchase.setDailyInterest(rewardProductDailyRate);
-                rewardPurchase.setTotalInterest(new BigDecimal(0));
-                rewardPurchase.setPayBack("0");
-                rewardPurchase.setStatus(TransStatus.SUCCESS);
-                rewardPurchase.setBeginDate(DateUtils.getTomorrowDate());
-                rewardPurchase.setEndDate(DateUtils.getSomeDayLaterDate(rewardProduct.getCycle()));
-
-
-                logger.info("****交易管理-赠送产品-Purchase：{}", JSONObject.toJSONString(rewardPurchase));
-                purchaseMapper.insertPurchase(rewardPurchase);
-
-
-                BigDecimal balanceBefore = currParentUser.getBalance();
-                BigDecimal balanceAfter = currParentUser.getBalance().add(rewardAmt);
-
-                PanTransactionHistory panTransHistory = new PanTransactionHistory();
-                panTransHistory.setAmount(rewardAmt);
-                panTransHistory.setUserId(currParentUser.getUserId());
-                panTransHistory.setOrOrderId(panPurchase.getOrderNo());
-                panTransHistory.setOrUserId(panPurchase.getBuyer());
-                panTransHistory.setTransactionType(TransType.Reward_Product.toString());
-                panTransHistory.setIsIncome(IsIncome.Y.toString());
-                panTransHistory.setBillType(BillType.BAL.toString());
-                panTransHistory.setRemark("赠送产品");
-                panTransHistory.setAmountBefore(balanceBefore);
-                panTransHistory.setAmountAfter(balanceAfter);
-
-                logger.info("****交易管理-赠送产品-TransInfo:{}", JSONObject.toJSONString(panTransHistory));
-                transHistoryMapper.insertPanTransactionHistory(panTransHistory);
-
-                currParentUser.setBalance(currParentUser.getBalance().add(rewardAmt));
-                currParentUser.setLockBalance(currParentUser.getLockBalance().add(rewardAmt));
-
-                logger.info("****交易管理-赠送产品-UserBalance:{}", JSONObject.toJSONString(currParentUser));
-                userBalanceMapper.updatePanUserBalance(currParentUser);
             }
+
+            /**
+             * 赠送产品
+             */
+            //赠送比例
+            Double rewardRate = Double.parseDouble(sysConfigService.selectConfigByKey("purchase_treasure_rate"));
+            PanProduct rewardProduct = panProductMapper.selectPanProductByName("Reward Product");
+
+            PanUserBalance currParentUser = userBalanceMapper.getUserBalanceByUserId(currUser.getParentId());
+            //产品日费率
+            Double rewardProductDailyRate = rewardProduct.getDailyInterest();
+            BigDecimal rewardAmt = panPurchase.getAmount().multiply(new BigDecimal(rewardRate)).divide(new BigDecimal(100));
+
+            Purchase rewardPurchase = new Purchase();
+            String orderNo = DateUtils.createOrderId("P");
+            rewardPurchase.setOrderNo(orderNo);
+            rewardPurchase.setBuyer(currUser.getParentId());
+            rewardPurchase.setProduct(rewardProduct.getId());
+            rewardPurchase.setProductName(rewardProduct.getName());
+            rewardPurchase.setAmount(rewardAmt);
+            rewardPurchase.setCycle(rewardProduct.getCycle());
+            rewardPurchase.setDailyInterest(rewardProductDailyRate);
+            rewardPurchase.setTotalInterest(new BigDecimal(0));
+            rewardPurchase.setPayBack("0");
+            rewardPurchase.setStatus(TransStatus.SUCCESS);
+            rewardPurchase.setBeginDate(DateUtils.getTomorrowDate());
+            rewardPurchase.setEndDate(DateUtils.getSomeDayLaterDate(rewardProduct.getCycle()));
+            logger.info("****交易管理-赠送产品-Purchase：{}", JSONObject.toJSONString(rewardPurchase));
+            purchaseMapper.insertPurchase(rewardPurchase);
+
+            BigDecimal balanceBefore = currParentUser.getBalance();
+            BigDecimal balanceAfter = currParentUser.getBalance().add(rewardAmt);
+
+            PanTransactionHistory panTransHistory = new PanTransactionHistory();
+            panTransHistory.setAmount(rewardAmt);
+            panTransHistory.setUserId(currParentUser.getUserId());
+            panTransHistory.setOrOrderId(panPurchase.getOrderNo());
+            panTransHistory.setOrUserId(panPurchase.getBuyer());
+            panTransHistory.setTransactionType(TransType.Reward_Product.toString());
+            panTransHistory.setIsIncome(IsIncome.Y.toString());
+            panTransHistory.setBillType(BillType.BAL.toString());
+            panTransHistory.setRemark("赠送产品");
+            panTransHistory.setAmountBefore(balanceBefore);
+            panTransHistory.setAmountAfter(balanceAfter);
+            logger.info("****交易管理-赠送产品-TransInfo:{}", JSONObject.toJSONString(panTransHistory));
+            transHistoryMapper.insertPanTransactionHistory(panTransHistory);
+
+            currParentUser.setBalance(currParentUser.getBalance().add(rewardAmt));
+            currParentUser.setLockBalance(currParentUser.getLockBalance().add(rewardAmt));
+            logger.info("****交易管理-赠送产品-UserBalance:{}", JSONObject.toJSONString(currParentUser));
+            userBalanceMapper.updatePanUserBalance(currParentUser);
 
             // A级返佣
             PanUserBalance parentUser = userBalanceMapper.getUserBalanceByUserId(currUser.getParentId());

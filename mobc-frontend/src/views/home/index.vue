@@ -1,13 +1,8 @@
 <template>
   <div class="task" ref="scrollbox">
-<!--    <div class="ban-header">-->
-<!--      <span class="leftImg"><img src="/static/assets/image/logo.png" alt="" class="logo" /></span>-->
-<!--      <h3>carlyle</h3>-->
-<!--      <span class="secondImg"><img src="/static/assets/image/icon_selected_circle@2x.png" alt="" class="logo"/></span>-->
-<!--    </div>-->
     <div class="ban-box">
       <div class="h-banner" @click="$router.push('/fund')">
-        <img src="" alt="" class="logo" />
+        <img src="https://www.carlyle.com/themes/carlyle_2020/logo.svg" alt="" class="logo" />
       </div>
     </div>
     <div class="home-content">
@@ -38,7 +33,7 @@
           <div class="left">
             <img class="noticeImg" src="static/assets/image/logo.png" alt="" />
             <div class="title">
-              Notice
+              Carlyle
             </div>
           </div>
           <div class="right">
