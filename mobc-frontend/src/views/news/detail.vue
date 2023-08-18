@@ -6,7 +6,7 @@
           item.noticeTitle
         }}
       </h2>
-      <div class="post-time">{{item.createTime}}</div>
+      <div class="post-time">{{parseEnDateTime(item.createTime)}}</div>
       <div class="ql-snow">
         <div class="ql-snow ql-editor" v-html="item.noticeContent" />
         <p><br /></p>
@@ -15,6 +15,7 @@
   </modMain>
 </template>
 <script>
+import {parseEnDateTime} from "../../utils/parseEnDateTime";
 export default {
   data() {
     return {
@@ -24,6 +25,9 @@ export default {
   },
   created() {
     this.item = JSON.parse(this.$route.query.data)
+  },
+  methods:{
+    parseEnDateTime
   }
 }
 </script>

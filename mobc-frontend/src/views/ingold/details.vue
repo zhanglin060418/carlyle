@@ -25,7 +25,7 @@
     </div>
      <div class="info-box">
       <p class="tip">{{ $t('bill.date') }}</p>
-      <p class="value">{{ parseTime(detail.createTime) }}</p>
+      <p class="value">{{ parseEnDateTime(detail.createTime) }}</p>
     </div>
     <div class="info-box">
       <p class="tip">{{ $t('bill.orderNo') }}</p>
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import {parseTime} from "../../utils/parseTime";
+import {parseEnDateTime} from "../../utils/parseEnDateTime";
 
 export default {
   props: {
@@ -77,7 +77,7 @@ export default {
     this.sym = localStorage.getItem('localCurrency') || 'NGN'
   },
   methods: {
-    parseTime,
+    parseEnDateTime,
     cashText({ cashType, payMethodName }) {
       switch (cashType) {
         case 'PAYMENT_COIN':

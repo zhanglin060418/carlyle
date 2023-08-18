@@ -8,7 +8,7 @@
       <ul class="income-list income-body" v-for="list in purchasedList">
         <li class="income-item">
           {{ currencyShape }} {{ list.amount / 100 }}</li>
-        <li class="income-item income-right">{{ list.transactionDate }}</li>
+        <li class="income-item income-right">{{ formatDate(list.transactionDate) }}</li>
       </ul>
       <p v-show="showMoreInfo" class="load-more" @click="loadMore(orderNo)">Load more</p>
       <p v-show="showAllInfo" class="load-all">No more</p>
@@ -96,7 +96,24 @@ export default {
         }
         this.isLoading = false;
       })
-    }
+    },
+    formatDate(val) {
+      if (val == null)
+        return
+      const now = new Date(val)
+      var year = now.getFullYear();       //年
+      var month = now.getMonth() + 1;     //月
+      var day = now.getDate();            //日
+      var clock = '';
+      if(day < 10)
+        clock += "0";
+      clock += day + "/";
+      if(month < 10)
+        clock += "0";
+      clock += month + "/";
+      clock += year
+      return(clock);
+    },
   }
 }
 </script>

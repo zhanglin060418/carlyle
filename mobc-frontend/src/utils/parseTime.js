@@ -37,3 +37,4 @@ export function parseTime(time, pattern) {
   })
   return time_str
 }
+

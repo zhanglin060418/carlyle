@@ -23,7 +23,7 @@
                 {{ sym }}
                 {{ getTotalAmount(item) }}
               </p>
-              <p class="time">{{ parseTime(item.createTime) }}</p>
+              <p class="time">{{ parseEnDateTime(item.createTime) }}</p>
             </div>
             <div
               class="right-state"
@@ -49,7 +49,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from 'vuex'
 import detailInfo from './details'
-import {parseTime} from "../../utils/parseTime";
+import {parseEnDateTime} from "../../utils/parseEnDateTime";
 export default {
   components: {
     detailInfo,
@@ -97,7 +97,7 @@ export default {
     }
   },
   methods: {
-    parseTime,
+    parseEnDateTime,
     ...mapActions('user', {
       paymentList: 'paymentList', // 充值记录
       withdrawList: 'withdrawList', // 提币记录

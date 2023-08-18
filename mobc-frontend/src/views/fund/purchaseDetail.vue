@@ -11,7 +11,7 @@
             <p>{{ $t('dw.t168') }}: {{list.item.dailyInterest}}%</p>
             <p>{{ $t('dw.t185') }}: {{list.item.cycle}} {{ $t('dw.t7') }}</p>
             <p>{{ $t('dw.t180') }}: {{ parseFloat(list.totalInterest/100).toFixed(2) }}</p>
-            <p v-if="list.status != 'In progress'">{{ $t('dw.t189') }}: {{ list.endDate }}</p>
+            <p v-if="list.status != 'In progress'">{{ $t('dw.t189') }}: {{ formatDate(list.endDate) }}</p>
           </div>
           <div class="r-price">
             <p class="price" style="text-align: center">{{ currencyShape }}{{ list.amount/100 }}</p>
@@ -88,6 +88,24 @@ export default {
           data: data,
         },
       })
+    },
+    formatDate(val) {
+      if (val == null)
+        return
+      const now = new Date(val)
+      var year = now.getFullYear();       //年
+      var month = now.getMonth() + 1;     //月
+      var day = now.getDate();            //日
+
+      var clock = '';
+      if(day < 10)
+        clock += "0";
+      clock += day + "/";
+      if(month < 10)
+        clock += "0";
+      clock += month + "/";
+      clock += year
+      return(clock);
     },
   }
 }

@@ -15,7 +15,7 @@
               </div>
               <div class="bot">
 <!--                <p>{{ item.remark }}</p>-->
-                <p>{{ parseTime(item.transactionDate)}}</p>
+                <p>{{ parseEnDateTime(item.transactionDate)}}</p>
 <!--                <span :class="ifNe(item.type) ? 'red' : 'green'">
                   {{ ifNe(item.type) ? '-' : ''
                   }}{{ $utils.getkStr(item.amount, 2) }}</span>-->
@@ -29,6 +29,7 @@
   </modMain>
 </template>
 <script>
+import {parseEnDateTime} from "../../utils/parseEnDateTime";
 import { mapGetters, mapActions } from 'vuex'
 import {parseTime} from "../../utils/parseTime";
 export default {
@@ -95,7 +96,7 @@ export default {
       this.itemClick(0)
   },
   methods: {
-    parseTime,
+      parseEnDateTime,
     ...mapActions({
       queryStatementPage: 'user/queryStatementPage',
       getTransactionHistoryToday: 'user/getTransactionHistoryToday',

@@ -23,7 +23,7 @@
               <div class="right line05">
                 <div class="desc">
                   <p class="title">{{ d.noticeTitle }}</p>
-                  <p class="time">{{ d.createTime }}</p>
+                  <p class="time">{{ parseEnDateTime(d.createTime) }}</p>
                 </div>
                 <div class="r-arrow">&nbsp;<van-icon name="arrow" /></div>
               </div>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import {parseEnDateTime} from "../../utils/parseEnDateTime";
 import { mapGetters, mapActions } from 'vuex'
 import mixinsSerivce from '@/mixins/service'
 export default {
@@ -76,6 +77,7 @@ export default {
     this.getData()
   },
   methods: {
+    parseEnDateTime,
     ...mapActions({
       queryStatementPage: 'user/queryStatementPage',
       getNoticeNews: 'user/getNoticeNews'
