@@ -268,7 +268,6 @@ export default {
       let rememberInput = document.getElementsByName("remember")[0];
       if(rememberInput.checked){
         localStorage.setItem('logo_username', this.form.username);
-        window.alert(this.form.password)
         localStorage.setItem('password', this.form.password);
       }else{
         localStorage.removeItem('logo_username');
