@@ -607,8 +607,9 @@ public class TransServiceImpl implements ITransService {
         // 签到奖励金额
         int dailySignInAmount = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmount"));
         int dailySignInAmountMax = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmountMax"));
+        int dailySignInAmountRate = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmountRate"));
         // int ax = (int) (dailySignInAmount + Math.random() * ((dailySignInAmountMax-dailySignInAmount)+1));
-        int ax  = DateUtils.getProportionRandom(dailySignInAmount,dailySignInAmountMax);
+        int ax  = DateUtils.getProportionRandom(dailySignInAmount,dailySignInAmountMax,dailySignInAmountRate);
         BigDecimal transAmount =  new BigDecimal(ax).multiply(new BigDecimal(100));
 
         BigDecimal balanceBefore = userBalance.getBalance();

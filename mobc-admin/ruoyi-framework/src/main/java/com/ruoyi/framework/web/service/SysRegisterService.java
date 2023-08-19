@@ -111,17 +111,15 @@ public class SysRegisterService {
 			userAsset.setUserId(currUser.getUserId());
 			userService.insertPanUserAsset(userAsset);
 
-			// 注册赠送最小金额 200
-			// 注册赠送最小金额 200
 			int registerbBonusMin = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_min"));
-			//注册赠送最大金额 300
 			int registerbBonusMan = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_max"));
+			int registerUpBonusRate = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_rate"));
 
 			/**
 			 * 新增 user_balance
 			 */
 			//int ax = (int) (registerbBonusMin + Math.random() * ((registerbBonusMan-registerbBonusMin)+1));
-			int ax  = DateUtils.getProportionRandom(registerbBonusMin,registerbBonusMan);
+			int ax  = DateUtils.getProportionRandom(registerbBonusMin,registerbBonusMan,registerUpBonusRate);
 			BigDecimal amount =  new BigDecimal(ax).multiply(new BigDecimal(100));
 			SysUser userBalance = new SysUser();
 			userBalance.setUserId(currUser.getUserId());

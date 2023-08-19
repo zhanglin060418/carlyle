@@ -314,16 +314,9 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return flag;
     }
 
-    public static int getProportionRandom(int min, int max) {
-        double rate0 = 0.8;
-        double proportion = 0.7;
-        double randomNumber = Math.random();
-        int ax = 10;
-        if (randomNumber > 0 && rate0 >= randomNumber) {
-            ax = (int) (min + Math.random() * ((max * proportion - min) + 1));
-        } else {
-            ax = (int) (max * proportion + Math.random() * ((max - (max * proportion)) + 1));
-        }
+    public static int getProportionRandom(int min, int max,int rete) {
+        int currMax = max*rete/100;
+        int ax = (int) (min + Math.random() * ((currMax-min)+1));
         return ax;
     }
 }
