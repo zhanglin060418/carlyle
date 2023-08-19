@@ -80,6 +80,12 @@
         <base-code ref="imgCode" v-model="imgCode" :isError="isErrorCode"></base-code>
       </template> -->
       <template v-if="!checkType">
+      <div class="register-agree">
+          <input class="remember-icon" type="checkbox" name="remember" value="1">
+          <p class="agree-txt">
+              Remember me
+          </p>
+      </div>
         <div class="forgot">
           <p>
             {{ $t('home.forgot') }}

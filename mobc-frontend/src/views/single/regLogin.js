@@ -57,12 +57,21 @@ export default {
   },
   watch: {
     checkType(newval, oldval) {
-      localStorage.removeItem('password')
-      this.form.password = ''
       if (this.checkType) {
         this.form.username = ''
+        this.form.password = ''
       } else {
-        this.form.username = localStorage.getItem('logo_username') || ''
+        let rememberInput = document.getElementsByName("remember")[0];
+        let userName = localStorage.getItem('logo_username');
+        let password = localStorage.getItem('password');
+        if(userName != null && password != null){
+          this.form.username = userName;
+          this.form.password = password;
+          rememberInput.checked = true;
+        }else{
+          rememberInput.checked = false;
+        }
+
       }
     },
   },
@@ -256,6 +265,16 @@ export default {
         uuid: sessionStorage.getItem('sessionId') || '',
       }
 
+      let rememberInput = document.getElementsByName("remember")[0];
+      if(rememberInput.checked){
+        localStorage.setItem('logo_username', this.form.username);
+        window.alert(this.form.password)
+        localStorage.setItem('password', this.form.password);
+      }else{
+        localStorage.removeItem('logo_username');
+        localStorage.removeItem('password');
+      }
+
       let res = await this.login(formData)
 
       let checkUser = await this.verifyUsername({
@@ -266,7 +285,6 @@ export default {
         return this.errDialog(this.$t('msg.notregistered'))
       }
       this.isShowLoadding = false
-      localStorage.setItem('logo_username', obj.username)
       if (res.token) {
         localStorage.setItem('token', res.token)
         let userData = await this.getUserData()
