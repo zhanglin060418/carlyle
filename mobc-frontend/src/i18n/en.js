@@ -562,7 +562,7 @@ export default {
     t12: 'Buy',
     t13: 'Cancel ordel',
     t14: 'Go to recharge',
-    t15: 'View',
+    t15: 'Check',
     t16: 'View history',
     t17: 'Sell Now',
     t18: 'Cancel ordel now',
@@ -581,7 +581,8 @@ export default {
     t31: 'Add a bank card',
     t32: 'Transfer in',
     t33: 'Transfer out',
-    t34: 'Details'
+    t34: 'Details',
+    t35: 'Done',
   },
   dw: {
     t1: 'Rush time',
@@ -648,7 +649,7 @@ export default {
     t61: 'Transaction successful',
     t62: 'Balance is low, please buy energy first',
     t63: 'Welcome to Carlyle, congratulations, you are now a member of the Carlyle Fund',
-    t631: 'Purchase was successful',
+    t631: 'Purchase successful',
     t64: 'Item is sold out Please come early next time',
     t65: 'Energy redemption has been successful, waiting for payment',
     t66: 'Cancellation success',

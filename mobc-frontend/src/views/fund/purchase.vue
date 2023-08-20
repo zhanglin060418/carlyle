@@ -206,6 +206,7 @@ export default {
       postNum: null,
       balance: 0,
       assetBalance: 0,
+      pList:[],
       type: '',
       showBank: false,
       selectedBalance: true,
@@ -250,7 +251,9 @@ export default {
       getUserBalance: 'user/getUserBalance',
       getBankCard: 'bankCard/getBankCard',
       recharge: 'user/recharge',
-      verifyPayPassword: 'user/verifyPayPassword'
+      verifyPayPassword: 'user/verifyPayPassword',
+      getPurchaseListForBuy: 'user/getPurchaseListForBuy'
+
     }),
     ...mapMutations('user', {
       setAccount: 'SET_ACCOUNT',
@@ -259,6 +262,10 @@ export default {
       await this.getUserBalance({userId: this.userId}).then(res => {
         this.balance = res.availableAmt || 0
         this.assetBalance = res.assetBalance || 0
+      })
+
+      await this.getPurchaseListForBuy().then(response => {
+        this.pList = response.data;
       })
     },
     chooseMoney(num) {
@@ -399,10 +406,16 @@ export default {
                 window.location.href = _url
               }
             }
+
             this.$router.push({
               path: 'fund',
             })
-            bus.$emit('openDialog', 1)
+            if(this.pList.length<1){
+              bus.$emit('openDialog', 1)
+            }else{
+              bus.$emit('openDialog', 5)
+            }
+
           }
           else {
             if(res.msg == 'Not enough Copies')

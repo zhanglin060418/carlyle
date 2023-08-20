@@ -65,6 +65,9 @@ export default {
       } else if (type == 4) {
         d.btnTxt = this.$t('btn.t10')
         d.contentTxt = this.$t('dw.t66')
+      } else if (type == 5) {
+        d.btnTxt = this.$t('btn.t35')
+        d.contentTxt = this.$t('dw.t631')
       }
       this.pData = d
       this.$refs.showResult.show = true
