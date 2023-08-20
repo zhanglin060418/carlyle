@@ -103,13 +103,13 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-<!--      <div class="team-cell line05" @click="toGo('/helpcenter')">-->
-<!--        <img src="static/assets/image/wind/icon/icon-service.png" alt="" />-->
-<!--        <div class="info">-->
-<!--          <p>FAQ</p>-->
-<!--        </div>-->
-<!--        <van-icon name="arrow r-arr" />-->
-<!--      </div>-->
+     <div class="team-cell line05" @click="toGo('/helpcenter')">
+        <img src="static/assets/image/wind/icon/icon-service.png" alt="" />
+        <div class="info">
+         <p>FAQ</p>
+        </div>
+        <van-icon name="arrow r-arr" />
+      </div>
       <div class="team-cell " @click="toPersonCenter">
         <img src="static/assets/image/wind/icon/setting.png" alt="" />
         <div class="info">

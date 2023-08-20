@@ -26,6 +26,16 @@ public class TableDataInfo implements Serializable
 
     private Long amountCount;
 
+    private String environment;
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
     public Long getAmountCount() {
         return amountCount;
     }

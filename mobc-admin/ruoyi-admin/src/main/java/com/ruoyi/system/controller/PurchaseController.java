@@ -313,5 +313,16 @@ public class PurchaseController extends BaseController {
         return toAjax(purchaseService.deletePurchaseByIds(ids));
     }
 
-
+    @GetMapping("/getPurchaseListForBuy")
+    public AjaxResult selectPurchaseListForBuy() {
+        Purchase userPurchase = new Purchase();
+        LoginUser currentUser = getLoginUser();
+        logger.info("********PurchaseController selectPurchaseListForBuy userId:" + currentUser.getUserId());
+        userPurchase.setBuyer(currentUser.getUserId());
+        userPurchase.setStatus(TransStatus.SUCCESS);
+        List<Purchase> userPurchaseList = purchaseService.selectPurchaseListForBuy(userPurchase);
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put(AjaxResult.DATA_TAG, userPurchaseList);
+        return ajax;
+    }
 }

@@ -133,6 +133,15 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:recharge:query']"
           >查看</el-button>
+
+          <el-button
+            v-if="environment=='TEST'&&scope.row.status!='Completed'"
+            size="mini"
+            type="text"
+            icon="el-icon-money"
+            @click="handleStatus(scope.row,'Approve')"
+            v-hasPermi="['system:recharge:query']"
+          >处理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -184,7 +193,7 @@
 </template>
 
 <script>
-import { listRecharge, getRecharge, delRecharge, addRecharge, updateRecharge } from "@/api/system/recharge";
+import { listRecharge, getRecharge, delRecharge, addRecharge, updateRecharge,handleChangeStatus } from "@/api/system/recharge";
 import UserInfo from "@/components/UserInfo/index.js";
 import CardInfo from "@/components/CardInfo/index.js";
 
@@ -205,6 +214,7 @@ export default {
       // 总条数
       total: 0,
       amountCount: 0,
+      environment:'',
       // 充值表格数据
       rechargeList: [],
       dateRange: [],
@@ -264,6 +274,7 @@ export default {
         this.rechargeList = response.rows;
         this.total = response.total;
         this.amountCount = response.amountCount;
+        this.environment = response.environment;
         this.loading = false;
       });
     },
@@ -342,15 +353,19 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const rechargeIds = row.rechargeId || this.ids;
-      this.$modal.confirm('是否确认删除充值编号为"' + rechargeIds + '"的数据项？').then(function() {
-        return delRecharge(rechargeIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+
+
+    handleStatus(row, str) {
+      if (str == 'Approve') {
+        this.$modal.confirm('您确定要完成这笔充值吗？').then(function () {
+          return handleChangeStatus(row)
+        }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("成功");
+        }).catch(() => {
+        });
+        return
+      }
     },
     /** 导出按钮操作 */
     handleExport() {

@@ -42,3 +42,10 @@ export function delRecharge(rechargeId) {
     method: 'delete'
   })
 }
+export function handleChangeStatus(data) {
+  return request({
+    url: '/system/recharge/changeStatus',
+    method: 'put',
+    data: data
+  })
+}

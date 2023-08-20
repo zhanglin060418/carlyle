@@ -98,4 +98,6 @@ public interface IPurchaseService
     public List<Purchase> getTotalPurchase(Purchase purchase);
 
     public  List<Purchase> selectPurchaseListByUser(Purchase purchase);
+
+    public List<Purchase> selectPurchaseListForBuy(Purchase userPurchase);
 }

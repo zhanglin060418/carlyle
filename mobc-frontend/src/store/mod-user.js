@@ -81,6 +81,11 @@ export default client => ({
     getPurchaseInterestList({ commit }, arg) {
       return client.get('/system/purchase/getPurchaseInterestList', arg)
     },
+
+    getPurchaseListForBuy() {
+      return client.get('/system/purchase/getPurchaseListForBuy')
+    },
+
     addSignRecord({ commit }, arg) {
       return client.post('/system/signRecord/addSignRecord', arg)
     },

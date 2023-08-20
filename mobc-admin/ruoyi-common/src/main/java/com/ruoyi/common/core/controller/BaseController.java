@@ -90,7 +90,6 @@ public class BaseController
         rspData.setTotal(new PageInfo(list).getTotal());
         return rspData;
     }
-
     /**
      * 响应请求分页数据
      */
@@ -103,6 +102,22 @@ public class BaseController
         rspData.setRows(list);
         rspData.setTotal(new PageInfo(list).getTotal());
         rspData.setAmountCount(amountCount);
+        return rspData;
+    }
+
+    /**
+     * 响应请求分页数据
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected TableDataInfo getDataTable(List<?> list,long amountCount,String environment)
+    {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(list);
+        rspData.setTotal(new PageInfo(list).getTotal());
+        rspData.setAmountCount(amountCount);
+        rspData.setEnvironment(environment);
         return rspData;
     }
 

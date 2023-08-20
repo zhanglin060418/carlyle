@@ -648,6 +648,7 @@ export default {
     t61: 'Transaction successful',
     t62: 'Balance is low, please buy energy first',
     t63: 'Welcome to Carlyle, congratulations, you are now a member of the Carlyle Fund',
+    t631: 'Purchase was successful',
     t64: 'Item is sold out Please come early next time',
     t65: 'Energy redemption has been successful, waiting for payment',
     t66: 'Cancellation success',

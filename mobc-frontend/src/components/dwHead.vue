@@ -1,7 +1,7 @@
 <template>
   <div class="dw-head" :class="{ 'h-head': $route.path == '/home' }">
-    <div class="person" @click="toPersonCenter">
-      <div class="avatar">
+    <div class="person">
+      <div class="avatar" @click="toPersonCenter">
         <img v-if="isLogin && userInfo.headImg" :src="imgBaseUrl + userInfo.headImg" alt="" />
         <img v-else src="static/assets/image/logo.png" alt="" />
       </div>
@@ -9,9 +9,9 @@
         <div class="c-login" v-if="false">{{ $t('dw.t139') }}</div>
         <div class="infos" v-else>
           <div class="username ell">
-            {{ isLogin ? userInfo.username : '--' }}
+            <span> {{ userName }} <img id="dis" @click="showAnHide" alt="" /></span>
           </div>
-          <span>UID:C{{ isLogin ? userInfo.user_id : '--' }}</span>
+          <span class="uId">UID:C{{ isLogin ? userInfo.user_id : '--' }}</span>
         </div>
       </div>
     </div>
@@ -31,6 +31,8 @@ export default {
     return {
       sym: '',
       userId: '',
+      userName:'',
+      flag:false,
       balanceData: null,
       totalWithdrawalBalance: 0,
       assetBalance: 0
@@ -48,6 +50,7 @@ export default {
   created() {
     this.sym = localStorage.getItem('localeCurrency') || 'NGN'
     this.userId = localStorage.getItem('userId') || null
+    this.userName = this.userInfo.username;
     this.getUserTotalBalance()
   },
   methods: {
@@ -93,6 +96,18 @@ export default {
         this.$router.push('/login')
       }
     },
+    showAnHide() {
+        let dis = document.querySelector('#dis')
+        this.flag = !this.flag;
+        let minName = this.userInfo.username.substring(0, 3)+'*******'+this.userInfo.username.substring(this.userInfo.username.length-3, this.userInfo.username.length);
+        if (this.flag) {
+          dis.className = 'hover'
+          this.userName = minName
+        } else {
+          dis.className = ''
+          this.userName = this.userInfo.username;
+        }
+      }
   },
 }
 </script>

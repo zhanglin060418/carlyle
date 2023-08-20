@@ -3,6 +3,7 @@ package com.ruoyi.system.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.indo.payment.IndoPaymentService;
 import com.indo.payment.IndoRechargeResult;
+import com.indo.payment.IndoWithdrawResult;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
@@ -11,6 +12,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.user.UserNotExistsException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
@@ -20,10 +22,12 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.domain.PanRecharge;
+import com.ruoyi.system.domain.PanWithdraw;
 import com.ruoyi.system.domain.RechargeCreate;
 import com.ruoyi.system.service.IPanRechargeService;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.ITransService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,8 @@ public class PanRechargeController extends BaseController {
     @Autowired
     private IndoPaymentService indoPaymentService;
 
+    @Autowired
+    private ITransService iTransService;
 
     @Autowired
     private ISysConfigService sysConfigService;
@@ -180,8 +186,9 @@ public class PanRechargeController extends BaseController {
         startPage();
 
         List<PanRecharge> list = panRechargeService.selectPanRechargeList(panRecharge);
+        String currEnvironment = sysConfigService.selectConfigByKey("Current_Environment");
         Long amountCount = panRechargeService.selectPanRechargeListCount(panRecharge);
-        return getDataTable(list, amountCount);
+        return getDataTable(list, amountCount,currEnvironment);
     }
 
     /**
@@ -213,6 +220,26 @@ public class PanRechargeController extends BaseController {
     @GetMapping(value = "/{rechargeId}")
     public AjaxResult getInfo(@PathVariable("rechargeId") Long rechargeId) {
         return success(panRechargeService.selectPanRechargeByRechargeId(rechargeId));
+    }
+
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody PanRecharge panRecharge) {
+        logger.info("****用户充值-回调 start****");
+        PanRecharge curr = panRechargeService.selectPanRechargeByRechargeId(panRecharge.getRechargeId());
+        LoginUser currentUser = getLoginUser();
+        panRecharge.setUpdateBy(currentUser.getUsername());
+        AjaxResult ajax = AjaxResult.success();
+        try {
+            if (!curr.getStatus().equals(TransStatus.COMPLETED)) {
+                curr.setStatus(TransStatus.COMPLETED);//Completed
+                iTransService.recharge(curr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e.getMessage());
+        }
+
+        return ajax;
     }
 
 }
