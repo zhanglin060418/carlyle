@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 
 /**
  * 通用常量信息
- * 
+ *
  * @author ruoyi
  */
 public class Constants
@@ -63,11 +63,11 @@ public class Constants
      * 登录失败
      */
     public static final String LOGIN_FAIL = "Error";
- 
+
     /**
      * 验证码有效期（分钟）
      */
-    public static final Integer CAPTCHA_EXPIRATION = 2;
+    public static final Integer CAPTCHA_EXPIRATION = 10;
 
     /**
      * 令牌
