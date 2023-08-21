@@ -215,9 +215,10 @@ public class PanWithdrawController extends BaseController {
         panWithdraw.setFee(currWithdraw.getFee());
         LoginUser currentUser = getLoginUser();
         panWithdraw.setUpdateBy(currentUser.getUsername());
-        if (null == redisCache.getCacheObject(panWithdraw.getRequestNo())) {
+        String key  =redisCache.getCacheObject(panWithdraw.getRequestNo());
+        if (null == key) {
             redisCache.setCacheObject(panWithdraw.getRequestNo(), panWithdraw.getRequestNo());
-            redisCache.expire(panWithdraw.getRequestNo(), 5, TimeUnit.SECONDS);
+            redisCache.expire(panWithdraw.getRequestNo(), 5L, TimeUnit.SECONDS);
         } else {
             ajax = AjaxResult.error();
             ajax.put("msg", "请勿重复提交");
@@ -316,11 +317,6 @@ public class PanWithdrawController extends BaseController {
 
         AjaxResult ajax = AjaxResult.success();
         if (panWithdraw != null) {
-            String requestNo = DateUtils.createOrderId("W");
-            LoginUser currentUser = getLoginUser();
-            panWithdraw.setUpdateBy(currentUser.getUsername());
-            panWithdraw.setRequestNo(requestNo);
-            panWithdrawService.updatePanWithdraw(panWithdraw);
             PanWithdraw curr = panWithdrawService.selectPanWithdrawByWithdrawId(panWithdraw.getWithdrawId());
 
             BigDecimal withdrawAmt = curr.getAmount().add(curr.getFee());
@@ -328,6 +324,38 @@ public class PanWithdrawController extends BaseController {
                 ajax = AjaxResult.error();
                 ajax.put("msg", "余额不足，请充值后再尝试");
                 return ajax;
+            }
+            String withdrawId = String.valueOf(panWithdraw.getWithdrawId());
+            String key =redisCache.getCacheObject(withdrawId);
+            if (null == key) {
+                redisCache.setCacheObject(withdrawId, withdrawId);
+                redisCache.expire(withdrawId, 120L, TimeUnit.MINUTES);
+            } else {
+                ajax = AjaxResult.error();
+                ajax.put("msg", "请勿重复提交");
+                return ajax;
+            }
+
+            if(!curr.getStatus().equals(TransStatus.FAILED)){
+                ajax = AjaxResult.error();
+                ajax.put("msg", "处理中，请勿再次重试");
+                return ajax;
+            }
+
+            String requestNo = "";
+            if(StringUtils.isBlank(curr.getOrderNo())){
+                requestNo = curr.getRequestNo();
+            }else{
+                if(curr.getRequestNo().contains("WRR")){
+                    ajax = AjaxResult.error();
+                    ajax.put("msg", "此订单多次异常，请勿再次重试");
+                    return ajax;
+                }
+                requestNo = curr.getRequestNo().replace("W","WR");
+                LoginUser currentUser = getLoginUser();
+                panWithdraw.setUpdateBy(currentUser.getUsername());
+                panWithdraw.setRequestNo(requestNo);
+                panWithdrawService.updatePanWithdraw(panWithdraw);
             }
 
             IndoWithdrawResult indoWithdrawResult = indoPaymentService.withdraw(
@@ -342,7 +370,7 @@ public class PanWithdrawController extends BaseController {
             } else {
                 panWithdraw.setStatus(TransStatus.FAILED);
             }
-            logger.info("****用户提现重试 changeStatusRetry withdraw:" + JSONObject.toJSONString(panWithdraw));
+            logger.info("****用户提现重试完成 changeStatusRetry withdraw:" + JSONObject.toJSONString(panWithdraw));
             panWithdrawService.updatePanWithdraw(panWithdraw);
         }
         return ajax;

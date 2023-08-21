@@ -102,7 +102,8 @@ public class PanPaymentListeningController extends BaseController {
              * 验签是否通过
              */
             if (isVerify) {
-                if(null == redisCache.getCacheObject(orderNo)){
+                String key=redisCache.getCacheObject(orderNo);
+                if(null == key){
                     redisCache.setCacheObject(orderNo,orderNo);
                     redisCache.expire(orderNo,5L, TimeUnit.MINUTES);
                 }else{

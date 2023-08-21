@@ -45,10 +45,10 @@ const myValidMixins = {
             let idx = 0
             if (type == 'tggroup') {
                 if(this.userInfo.clerkTelegram) {
-                    _url = 'https://t.me/+' + this.userInfo.clerkTelegram
+                    _url = 'https://t.me/' + this.userInfo.clerkTelegram
                 }
                 else if(this.userInfo.telegram) {
-                    _url = 'https://t.me/+' + this.userInfo.telegram
+                    _url = 'https://t.me/' + this.userInfo.telegram
                 }
                 else _url = 'https://t.me/+qjWLk9N-uQ5lOGE1'
             } else if (type == 'tgSiaran') {
