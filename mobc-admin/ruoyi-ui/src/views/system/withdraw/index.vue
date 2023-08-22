@@ -17,10 +17,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商户单号" prop="orderNo">
+      <el-form-item label="通道订单号" prop="orderNo">
         <el-input
           v-model="queryParams.orderNo"
-          placeholder="请输入商户单号"
+          placeholder="请输入通道订单号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -129,7 +129,7 @@
     <el-table v-loading="loading" :data="withdrawList" @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection"  width="50" align="center" :selectable="selectable" />
       <el-table-column label="订单号" align="center" prop="requestNo" />
-      <el-table-column label="商户订单号" align="center" prop="orderNo" />
+      <el-table-column label="通道订单号" align="center" prop="orderNo" />
       <el-table-column label="用户" align="center" prop="userName"/>
       <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
       <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
@@ -152,7 +152,7 @@
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
           <span v-if="scope.row.status == 'Pending'" style="color: #093bf6">待审核</span>
-          <span v-if="scope.row.status == 'In progress'" style="color: #ffba00">进行中</span>
+          <span v-if="scope.row.status == 'In progress'" style="color: #ffba00">出款中</span>
           <span v-else-if="scope.row.status == 'Completed'" style="color: #71e2a3">已完成</span>
           <span v-else-if="scope.row.status == 'Failed'" style="color: #fc0000">异常</span>
           <span v-else-if="scope.row.status == 'Declined'" style="color: #fe5900">审核不通过</span>
@@ -374,13 +374,13 @@ export default {
         ],
       },
       statusOptions: [{
-        "label": "待办的",
+        "label": "待审核",
         "value": "Pending"
       }, {
         "label": "已完成",
         "value": "Completed"
       }, {
-        "label": "审核通过",
+        "label": "出款中",
         "value": "In progress"
       }, {
         "label" : "审核不通过",

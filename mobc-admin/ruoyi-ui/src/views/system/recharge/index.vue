@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="80px">
       <el-form-item label="用戶账号" prop="userName">
         <el-input
           v-model="queryParams.userName"
@@ -17,10 +17,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商户单号" prop="orderNo">
+      <el-form-item label="通道订单号" prop="orderNo">
         <el-input
           v-model="queryParams.orderNo"
-          placeholder="请输入商户单号"
+          placeholder="请输入通道订单号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -104,7 +104,7 @@
 
     <el-table v-loading="loading" :data="rechargeList" @selection-change="handleSelectionChange">
       <el-table-column label="订单号" align="center" prop="requestNo" />
-      <el-table-column label="商户订单号" align="center" prop="orderNo" />
+      <el-table-column label="通道订单号" align="center" prop="orderNo" />
       <el-table-column label="用户账户" align="center" prop="userName"/>
       <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
       <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
