@@ -342,21 +342,17 @@ public class PanWithdrawController extends BaseController {
                 return ajax;
             }
 
-            String requestNo = "";
-            if(StringUtils.isBlank(curr.getOrderNo())){
-                requestNo = curr.getRequestNo();
-            }else{
-                if(curr.getRequestNo().contains("WRR")){
-                    ajax = AjaxResult.error();
-                    ajax.put("msg", "此订单多次异常，请勿再次重试");
-                    return ajax;
-                }
-                requestNo = curr.getRequestNo().replace("W","WR");
-                LoginUser currentUser = getLoginUser();
-                panWithdraw.setUpdateBy(currentUser.getUsername());
-                panWithdraw.setRequestNo(requestNo);
-                panWithdrawService.updatePanWithdraw(panWithdraw);
+            if(curr.getRequestNo().contains("WRR")){
+                ajax = AjaxResult.error();
+                ajax.put("msg", "此订单多次异常，请勿再次重试");
+                return ajax;
             }
+            String  requestNo = curr.getRequestNo().replace("W","WR");
+            LoginUser currentUser = getLoginUser();
+            panWithdraw.setUpdateBy(currentUser.getUsername());
+            panWithdraw.setRequestNo(requestNo);
+            panWithdrawService.updatePanWithdraw(panWithdraw);
+
 
             IndoWithdrawResult indoWithdrawResult = indoPaymentService.withdraw(
                     requestNo, "NGN", curr.getAmount(), curr.getBankCode(), curr.getBankName(),
