@@ -8,6 +8,7 @@
         :placeholder="placeholder"
         :name="name"
         :disabled="disabled"
+        :readonly="readonly"
         @click="iptClick"
         @blur="iptBlur"
         @input="$emit('input', $event.target.value)"
@@ -40,6 +41,10 @@ export default {
     value: String,
     placeholder: String,
     name: String, //name 名称
+    readonly:{
+      type: Boolean,
+      default: false,
+    },
     disabled: {
       type: Boolean,
       default: false,

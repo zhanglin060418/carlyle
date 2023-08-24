@@ -113,13 +113,13 @@ public class PanProductController extends BaseController {
         PhoneVerifyCode phoneVerifyCode = phoneVerifyCodeService.selectPhoneVerifyCodeByPhoneNo(phoneNo);
         if (phoneVerifyCode != null) {
             phoneVerifyCode.setVerifyCode(digitCode);
-            phoneVerifyCode.setExpiredAt(System.currentTimeMillis() + 10 * 60 * 1000L);
+            phoneVerifyCode.setExpiredAt(System.currentTimeMillis() + 60 * 60 * 1000L);
             phoneVerifyCodeService.updatePhoneVerifyCode(phoneVerifyCode);
         } else {
             phoneVerifyCode = new PhoneVerifyCode();
             phoneVerifyCode.setPhoneNo(phoneNo);
             phoneVerifyCode.setVerifyCode(digitCode);
-            phoneVerifyCode.setExpiredAt(System.currentTimeMillis() + 10 * 60 * 1000L);
+            phoneVerifyCode.setExpiredAt(System.currentTimeMillis() + 60 * 60 * 1000L);
             phoneVerifyCodeService.insertPhoneVerifyCode(phoneVerifyCode);
         }
         String msg = "";

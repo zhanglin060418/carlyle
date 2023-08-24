@@ -67,6 +67,7 @@
       <template v-if="checkType">
         <base-input
             v-model.trim="form.inviteCode"
+            :readonly="true"
             :placeholder="$t('home.enterInviteCode')"
         ></base-input>
       </template>

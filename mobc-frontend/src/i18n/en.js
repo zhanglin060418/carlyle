@@ -787,8 +787,8 @@ export default {
     t169: 'Added today',
     t170: 'Total income',
     t171: 'Total menbers',
-    t172: 'Team menbers',
-    t173: 'Total income',
+    t172: 'Members',
+    t173: 'Income',
     t174: 'My invitation',
     t175: 'Team treatment',
     t176: 'Salary System',
@@ -808,7 +808,7 @@ export default {
     t190: 'Initial amount',
     t191: 'Introduction to the Fund',
     t192: 'Range',
-    t193: 'Enter the top-up amount',
+    t193: 'Enter the amount',
     t194: 'Introduction about the Added value wallet',
     t195: 'More',
     t196: 'Treasure',
@@ -845,6 +845,8 @@ export default {
     t225: 'Total Income',
     t227: 'Check In',
     t228: 'Today income',
-    rewardBalance: 'Reward Balance'
+    rewardBalance: 'Reward Balance',
+    t229: 'Recharge',
+    t230: 'Total Recharge member'
   },
 }

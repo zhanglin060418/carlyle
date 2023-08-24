@@ -29,8 +29,8 @@
             {{ $t('dw.t183') }}
           </div>
         </div>
-      </div>
-    </div>
+
+    </div></div>
     <div class="today-earnings" style="">
       <p class="p-title line05">{{ $t('dw.t184') }}</p>
       <template v-if="newPurchase!=''">

@@ -26,6 +26,7 @@
         {{ sym }}
         <input
           type="number"
+          id="inputMoney"
           v-model.trim="reqNum"
           :placeholder="$t('dw.t193')"
         />
@@ -156,7 +157,7 @@ export default {
         let arr = this.currentitem.selection.split(',')
         return arr.map(d => Number(d))
       }
-      return [200000, 500000, 1000000]
+      return [3000, 5000, 10000,200000, 500000, 1000000]
     },
   },
   created() {
@@ -165,6 +166,7 @@ export default {
     this.sym = localStorage.getItem('localCurrency') || 'NGN'
     this.hasPayPwd = localStorage.getItem('payment_password')
     this.getPaymentRule()
+    this.guangbiao()
   },
   methods: {
     ...mapActions({
@@ -191,6 +193,13 @@ export default {
           this.selectChannel = this.channelList[0].channelId;
       }
     },
+    async guangbiao(){
+          setTimeout(function (){
+              let onFocus = document.querySelector('#inputMoney');
+              onFocus.focus()
+          },1000)
+      },
+
     chooseMethod() {
       this.currentShow = true
     },
@@ -200,7 +209,8 @@ export default {
     chooseChannel(channel) {
 
     },
-    buyClick() {
+
+buyClick() {
       this.reqMoney = this.reqNum * 100
       if(this.reqNum == null) {
         this.errDialog(this.$t('dw.t193'))

@@ -494,7 +494,7 @@ public class SendSmsServiceImpl implements SendSmsService {
         String senderId = smsObject.get("senderId").toString();
 
         String result ="";
-        String content = "Carlyle OTP is "+digitCode+", valid for 5 min, please do not share with others." ;
+        String content = "Carlyle OTP is "+digitCode+", valid for 1 hour, please do not share with others." ;
         HttpRequest request = HttpRequest.post(url);
         // 生成时间戳
         final String datetime = String.valueOf(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond());

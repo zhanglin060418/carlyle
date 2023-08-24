@@ -63,6 +63,10 @@ public class TeamOverview extends BaseEntity
 	private Long  transAmt;
 	private BigDecimal rewardAmt;
 
+	private Long childRechargePeople;
+	private Long grandRechargePeople;
+	private Long greatGrandRechargePeople;
+
 	public BigDecimal getRewardAmt() {
 		return rewardAmt;
 	}
@@ -292,5 +296,29 @@ public class TeamOverview extends BaseEntity
 
 	public void setChildTotalIncome(Long childTotalIncome) {
 		this.childTotalIncome = childTotalIncome;
+	}
+
+	public Long getChildRechargePeople() {
+		return childRechargePeople;
+	}
+
+	public void setChildRechargePeople(Long childRechargePeople) {
+		this.childRechargePeople = childRechargePeople;
+	}
+
+	public Long getGrandRechargePeople() {
+		return grandRechargePeople;
+	}
+
+	public void setGrandRechargePeople(Long grandRechargePeople) {
+		this.grandRechargePeople = grandRechargePeople;
+	}
+
+	public Long getGreatGrandRechargePeople() {
+		return greatGrandRechargePeople;
+	}
+
+	public void setGreatGrandRechargePeople(Long greatGrandRechargePeople) {
+		this.greatGrandRechargePeople = greatGrandRechargePeople;
 	}
 }

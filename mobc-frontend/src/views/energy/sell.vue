@@ -42,12 +42,10 @@
       <div class="reqMoney line05">
         {{ sym }}
         <!-- <input type="text" v-model.trim="reqMoney" placeholder="Silakan masukkan jumlah penarikan" /> -->
-        <van-field
+        <input
           v-model="reqMoney"
-          type="digit"
-          label=""
+          type="number"
           :placeholder="$t('payDetail.text50')"
-          :border="false"
         />
       </div>
       <!------- Fee ------>

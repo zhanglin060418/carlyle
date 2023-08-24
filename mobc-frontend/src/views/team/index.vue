@@ -17,16 +17,21 @@
         </span>
       </div>
       <div class="income-box">
-        <p>{{ parseFloat(rewardAmt)/100  }}</p>
+        <p>{{ treeData.totalPeople}}</p>
+        <span>
+          <!-- 总人数 -->
+          {{ $t('dw.t230')}}
+        </span>
+      </div>
+      <div class="income-box">
+        <p>{{ parseFloat(rewardAmt)/100 }}</p>
         <span>
           <!-- 总人数 -->
           {{ $t('dw.rewardBalance')}}
         </span>
       </div>
-      <div class="income-box">
-          <div class="copy-btn" style="margin: 10px 0px; display: flex;justify-content:flex-start;align-items: center; color:#ffffff;border-radius: 6px; background:linear-gradient(180deg, #5d86a1 0%, #3376c4 100%); width: 100%; height:100%;" @click="goTransferOut">
-              <span style ='margin-bottom: 5px; width: 100%; text-align: center; font-size: 18px'>{{ $t('btn.t33') }}</span>
-          </div>
+      <div class="copy-btn" style="margin: 10px 0px; display: flex;justify-content:flex-start;align-items: center; color:#ffffff;border-radius: 6px; background:linear-gradient(180deg, #5d86a1 0%, #3376c4 100%); width: 100%; height:40px;" @click="goTransferOut">
+        <span style ='margin-bottom: 5px; width: 100%; text-align: center; font-size: 18px'>{{ $t('btn.t33') }}</span>
       </div>
     </div>
       <show-invite :show="showShare" @close="close" :code="userInfo.inviteCode">
@@ -38,58 +43,69 @@
     <div class="my-index-middle-box">
       <div class="my-index-middle" >
         <div class="arrow-wrap" >
+          <p>{{ childCrowdRatio }}%</p>
           <strong>A</strong>
         </div>
         <div class="middle-item" @click="toMore(0)">
-          <span>{{ $t('dw.t172') }}</span>
+          <span class="underline">{{ $t('dw.t172') }}</span>
           <p>{{ firstNode.totalPeople }}</p>
         </div>
         <div class="middle-item" @click="toDetail(0)">
-          <span>{{ $t('dw.t173') }}</span>
+          <span class="underline">{{ $t('dw.t173') }}</span>
           <p>
-<!--            {{ $utils.getPstr(treeData.totalProfit) }}-->
             {{ parseFloat(firstNode.totalProfit)/100 }}
           </p>
         </div>
-        <div class="profit-item" @click="toDetail(0)">
-          <span>{{ childCrowdRatio }}%</span>
-        </div>
+          <div class="middle-item">
+              <span>{{ $t('dw.t229') }}</span>
+              <p>
+                  {{ firstNode.rechargePeople }}
+              </p>
+          </div>
       </div>
       <div class="my-index-middle" >
         <div class="arrow-wrap" >
+          <p>{{ grandCrowdRatio }}%</p>
           <strong>B</strong>
         </div>
         <div class="middle-item" @click="toMore(1)">
-          <span>{{ $t('dw.t172') }}</span>
+          <span class="underline">{{ $t('dw.t172') }}</span>
           <p>{{ secondNode.totalPeople }}</p>
         </div>
         <div class="middle-item" @click="toDetail(1)">
-          <span>{{ $t('dw.t173') }}</span>
+          <span class="underline">{{ $t('dw.t173') }}</span>
           <p>
             {{ secondNode.totalProfit/100 }}
           </p>
         </div>
-        <div class="profit-item" @click="toDetail(1)">
-          <span>{{ grandCrowdRatio }}%</span>
-        </div>
+          <div class="middle-item">
+              <span >{{ $t('dw.t229') }}</span>
+              <p>
+                  {{ secondNode.rechargePeople }}
+              </p>
+          </div>
       </div>
       <div class="my-index-middle" >
         <div class="arrow-wrap" >
+          <p>{{ greatGrandCrowdRatio }}%</p>
           <strong>C</strong>
         </div>
         <div class="middle-item" @click="toMore(2)">
-          <span>{{ $t('dw.t172') }}</span>
+          <span class="underline">{{ $t('dw.t172') }}</span>
           <p>{{ thirdNode.totalPeople }}</p>
         </div>
         <div class="middle-item" @click="toDetail(2)">
-          <span>{{ $t('dw.t173') }}</span>
+          <span class="underline">{{ $t('dw.t173') }}</span>
           <p>
             {{ thirdNode.totalProfit/100 }}
           </p>
         </div>
-        <div class="profit-item" @click="toDetail(2)">
-          <span>{{ greatGrandCrowdRatio }}%</span>
-        </div>
+          <div class="middle-item" >
+              <span>{{ $t('dw.t229') }}</span>
+              <p>
+                  {{ thirdNode.rechargePeople }}
+              </p>
+          </div>
       </div>
     </div>
     <h2 class="p-title">{{ $t('dw.t174') }}</h2>
@@ -145,14 +161,17 @@ export default {
       firstNode: {
         totalPeople: 0,
         totalProfit: 0,
+        rechargePeople:0,
       },
       secondNode: {
         totalPeople: 0,
         totalProfit: 0,
+        rechargePeople:0,
       },
       thirdNode: {
         totalPeople: 0,
         totalProfit: 0,
+        rechargePeople:0,
       },
       isLoading:false,
       animatedTop: false,
@@ -251,15 +270,18 @@ export default {
       this.list = res.teamOverview
       this.firstNode.totalPeople = this.list.childCount || 0;
       this.firstNode.totalProfit = this.list.childIncome || 0;
+      this.firstNode.rechargePeople = this.list.childRechargePeople || 0;
 
       this.secondNode.totalPeople = this.list.grandCount || 0;
       this.secondNode.totalProfit = this.list.grandIncome || 0;
+      this.secondNode.rechargePeople = this.list.grandRechargePeople || 0;
 
       this.thirdNode.totalPeople = this.list.greatGrandCount || 0;
       this.thirdNode.totalProfit = this.list.greatGrandIncome || 0;
+      this.thirdNode.rechargePeople = this.list.greatGrandRechargePeople || 0;
 
       this.treeData.childTotalIncome = this.list.childTotalIncome|| 0;
-      this.treeData.totalPeople = this.firstNode.totalPeople + this.secondNode.totalPeople + this.thirdNode.totalPeople
+      this.treeData.totalPeople = this.firstNode.rechargePeople + this.secondNode.rechargePeople + this.thirdNode.rechargePeople
       this.treeData.createdToday = this.list.todayChildCount || 0;
       this.treeData.dailyIncome = this.list.dailyIncome || 0;
 

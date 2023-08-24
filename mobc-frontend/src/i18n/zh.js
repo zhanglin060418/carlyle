@@ -758,6 +758,7 @@ export default {
         t225: '总收益',
         t227: '签到',
         t228: '今日收益',
-        rewardBalance: '返佣余额'
+        rewardBalance: '返佣余额',
+        t229: 'Recharge members'
     },
 }
