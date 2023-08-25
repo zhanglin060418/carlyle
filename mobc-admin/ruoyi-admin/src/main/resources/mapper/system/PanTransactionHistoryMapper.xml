@@ -1032,7 +1032,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type = 'Commission_C_Reward' ) greatGrandIncome,
 			(select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.parent_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as childRechargePeople,
             (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.grand_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as grandRechargePeople,
-            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.great_grand_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as grandRechargePeople
+            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.great_grand_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as greatGrandRechargePeople
         FROM
             sys_user
         WHERE
