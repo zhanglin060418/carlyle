@@ -9,9 +9,9 @@
 <!--            :placeholder="$t('home.enterMobile') "-->
 <!--        ></base-phone>-->
         <base-input disabled v-model.trim="phoneNo" name="inviteCode"></base-input>
-        <div style="width: 50px; height: 40px; border-radius: 12px; border:1px solid #3376c4; margin-left: 8px; display: flex; justify-content: center; align-items: center" >
-          <img v-if="clickedPhoneVerify" src="/static/assets/image/phone_verify.png" style="width: 100%; height: 100%" @click="btnVerifyPhone">
-          <img v-else src="/static/assets/image/phone_verify_disable.png" style="width: 100%; height: 100%">
+        <div style="width: 120px; height: 40px; border-radius: 12px; border:1px solid #3376c4; margin-left: 8px; display: flex; justify-content: center; align-items: center" >
+            <span v-if="clickedPhoneVerify" @click="btnVerifyPhone" style="color: #0a364a">Get OTP</span>
+            <span v-else >Please enter your OTP</span>
         </div>
       </div>
       <p v-if="hasPayPwd == 'true'"  class="ipt-title">{{ $t('home.verifyCode') }}</p>

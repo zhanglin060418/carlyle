@@ -1,30 +1,6 @@
 <template>
   <modMain :title="this.$route.query.type == 'withdraw' ? $route.meta.withdrawtitle : item.name == this.$t('dw.t196') ? $route.meta.title : 'Confirm Buy'">
   <div class="sell-energy energy">
-<!--    Choose Methods-->
-<!--    <div v-if="item.name != this.$t('dw.t196')" class="t-box top">-->
-<!--      <span>{{ $t('payDetail.text53') }}</span>-->
-<!--      <template>-->
-<!--        <div-->
-<!--            class="yinhangka has"-->
-<!--            @click="showBank = true"-->
-<!--        >-->
-<!--          <div class="card-info" v-if="selectedBalance == true">-->
-<!--            <img src="static/assets/image/dw/add-bank-l.png" alt="" />-->
-<!--            <div class="info">-->
-<!--              <p>{{ $t('payDetail.text54') }}</p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="card-info" v-else>-->
-<!--            <img src="static/assets/image/dw/add-bank-l.png" alt="" />-->
-<!--            <div class="info">-->
-<!--              <p>{{ $t('payDetail.text55') }}</p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <van-icon name="arrow" />-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </div>-->
 
     <div class="t-box bot" v-if="item.fundType == '区间'">
       <p v-if="item.name != $t('dw.t196')">
@@ -324,7 +300,11 @@ export default {
     // },
     toConfirmPaymentPwd() {
       this.showPurchaseDetailDlg = false
-      this.verifyPayDlgOpen = true
+      if(this.type== "withdraw"){
+        this.verifyPayDlgOpen = true
+      }else{
+        this.buy();
+      }
     },
     async verifyPaymentPassword(){
       this.isLoading = true
