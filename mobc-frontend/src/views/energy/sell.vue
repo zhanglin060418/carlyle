@@ -178,6 +178,7 @@ export default {
   mixins: [mixinsSerivce],
   data() {
     return {
+      hasPayPwd: false,
       withdrawFee: 0,
       isLoading: false,
       sym: '',
@@ -214,6 +215,7 @@ export default {
   },
   created() {
     this.sym = localStorage.getItem('localCurrency') || 'NGN'
+    this.hasPayPwd = localStorage.getItem('payment_password')
     this._getBankCard()
     this.getPaymentRule()
   },
@@ -279,7 +281,25 @@ export default {
         this.errDialog(this.$t('payDetail.text35') + ' ' + this.sym + ' ' + this.maxAmount/100)
         return
       }
-      this.verifyPayDlgOpen = true
+
+      if(this.hasPayPwd == 'false') {
+        this.$dialog
+                .confirm({
+                  title: '',
+                  message: this.$t('sys.setPaymentPwd'),
+                  cancelButtonText: this.$t('sys.cancel'),
+                  confirmButtonText: this.$t('sys.confirm'),
+                })
+                .then(() => {
+                  this.$router.push('/resetPayPwd')
+                })
+                .catch(() => {
+                  // on cancel
+                })
+      }else{
+        this.verifyPayDlgOpen = true
+      }
+
     },
     verifyPaymentPassword()
     {

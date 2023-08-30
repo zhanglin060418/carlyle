@@ -77,6 +77,16 @@
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button
+              type="primary"
+              plain
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+              v-hasPermi="['system:panUser:add']"
+            >新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
               type="success"
               plain
               icon="el-icon-edit"
@@ -201,19 +211,22 @@
 
     <!-- 添加或修改用户配置对话框 -->
     <el-dialog :title="title" :close-on-click-modal="false" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form v-loading="loadingForm" ref="form"  :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户账号"  prop="userName">
-              <el-input size="mini" readonly="readonly" v-model=" form.userName" />
+              <el-input size="mini" placeholder="输入234开头的用户账号" v-model=" form.userName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="邀请码"  prop="inviteCode">
-              <el-input size="mini" readonly="readonly" v-model=" form.inviteCode" />
+            <el-form-item v-if="form.userId == undefined" label="登录密码" prop="password">
+              <el-input size="mini" v-model="form.password" placeholder="请输入密码" type="password" maxlength="20" show-password/>
             </el-form-item>
           </el-col>
         </el-row>
+        <el-form-item v-if="form.userId == undefined" label="邀请码" prop="inviteCode">
+          <el-input size="mini" placeholder="邀请人邀请码" v-model="form.inviteCode"/>
+        </el-form-item>
         <el-form-item label="email" prop="email">
           <el-input size="mini" v-model=" form.email"/>
         </el-form-item>
@@ -263,7 +276,7 @@
 </template>
 
 <script>
-import { listUser, getUser, updateUser, resetUserPwd, changeUserStatus,changeUserIsWithdarw,changeUserIsRebate,changeUserIsInviteCode } from "@/api/system/panUser";
+import { listUser, getUser, addUser, updateUser, resetUserPwd, changeUserStatus,changeUserIsWithdarw,changeUserIsRebate,changeUserIsInviteCode } from "@/api/system/panUser";
 import { getToken } from "@/utils/auth";
 import data from "@/views/system/dict/data.vue";
 import ChildComponent from './userTeamInfo.vue'
@@ -283,6 +296,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      loadingForm: false,
       currentComponent: null,
       // 选中数组
       ids: [],
@@ -359,10 +373,10 @@ export default {
       rules: {
         userName: [
           { required: true, message: "用户名称不能为空", trigger: "blur" },
-          { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' }
+          { min: 10, max: 20, message: '用户名称长度必须介于 10 和 20 之间', trigger: 'blur' }
         ],
-        nickName: [
-          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+        inviteCode:[
+          { required: true, message: "邀请人邀请码不能为空", trigger: "blur" },
         ],
         password: [
           { required: true, message: "用户密码不能为空", trigger: "blur" },
@@ -374,14 +388,8 @@ export default {
             message: "请输入正确的邮箱地址",
             trigger: ["blur", "change"]
           }
-        ],
-        phonenumber: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "请输入正确的手机号码",
-            trigger: "blur"
-          }
         ]
+
       },
       statusOptions: [{
         "label": "启用",
@@ -531,6 +539,11 @@ export default {
           break;
       }
     },
+    handleAdd() {
+      this.reset();
+      this.open = true;
+      this.title = "添加用户";
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -560,11 +573,24 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.loading = true;
           if (this.form.userId != undefined) {
             updateUser(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
+              this.loading = false;
               this.getList();
+            });
+          }else {
+            addUser(this.form).then(response => {
+              if(response.code==200){
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.loading = false;
+                this.getList();
+              }else{
+                this.errDialog(response.msg)
+              }
             });
           }
         }

@@ -124,35 +124,12 @@ export default {
       getPurchaseHistory: 'getPurchaseHistory',
     }),
     async confirmPurchase(data) {
-      if(this.hasPayPwd == 'false') {
-        this.$dialog
-            .confirm({
-              title: '',
-              message: this.$t('sys.setPaymentPwd'),
-              cancelButtonText: this.$t('sys.cancel'),
-              confirmButtonText: this.$t('sys.confirm'),
-            })
-            .then(() => {
-              this.$router.replace({
-                path: '/resetPayPwd',
-                query: {
-                  type: this.$route.query.type,
-                  backPath: '/fund'
-                }
-              })
-            })
-            .catch(() => {
-              // on cancel
-            })
-      }
-      else {
         this.$router.push({
           path: '/confirmpurchase',
           query: {
             data: JSON.stringify(data),
           },
         })
-      }
     },
     confirmWithdraw(data) {
       this.$router.push({

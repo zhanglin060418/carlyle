@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderDate"    column="order_date" />
         <result property="topId"    column="top_id"    />
         <result property="topName"    column="top_name"    />
+        <result property="parentUsername"    column="parentUsername"    />
         <result property="managerName"    column="manager_name"  />
         <result property="agentId"    column="agent_id"  />
         <result property="agentName"    column="agent_name"  />
@@ -38,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             u2.user_name top_name,
             u3.user_name manager_name,
             u4.user_name agent_name,
+            u5.user_name parentUsername,
             amount,
             pan_recharge.STATUS,
             pan_recharge.create_time,
@@ -52,10 +54,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join sys_user u2 on sys_user.top_id = u2.user_id
         left join sys_user u3 on sys_user.manager_id  = u3.user_id
         LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        LEFT JOIN sys_user u5 ON u5.user_id = sys_user.parent_id
         <where>
             <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
             <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
             <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="parentUsername != null  and parentUsername != ''"> and u5.user_name = #{parentUsername} </if>
             <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
             <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
             <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
@@ -85,10 +89,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join sys_user u2 on sys_user.top_id = u2.user_id
         left join sys_user u3 on sys_user.manager_id  = u3.user_id
         LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        LEFT JOIN sys_user u5 ON u5.user_id = sys_user.parent_id
         <where>
             <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
             <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
             <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="parentUsername != null  and parentUsername != ''"> and u5.user_name = #{parentUsername} </if>
             <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
             <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
             <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>

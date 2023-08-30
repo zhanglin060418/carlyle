@@ -35,6 +35,14 @@ export function getUser(id) {
   })
 }
 
+// 新增用户
+export function addUser(data) {
+  return request({
+    url: '/system/panUser',
+    method: 'post',
+    data: data
+  })
+}
 
 // 修改用户
 export function updateUser(data) {

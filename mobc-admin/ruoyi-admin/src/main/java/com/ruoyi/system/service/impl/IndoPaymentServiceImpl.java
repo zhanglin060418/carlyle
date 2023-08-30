@@ -254,8 +254,8 @@ public class IndoPaymentServiceImpl implements IndoPaymentService {
         boolean isVerify = verify(getSignatureStr(responseMap), responseMap.get("signature").toString(), getPublicKey(pub_key), "UTF-8");
         JSONObject jsonObject = new JSONObject();
         if(isVerify){
-            jsonObject .put("balance",responseMap.get("avaBal"));
-            jsonObject .put("freezebalance",responseMap.get("avaFreezeBal"));
+            jsonObject .put("balance",responseMap.get("cwcBal"));
+            jsonObject .put("freezebalance",responseMap.get("cwcFreezeBal"));
         }else{
             return null;
         }

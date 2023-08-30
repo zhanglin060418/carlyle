@@ -248,7 +248,6 @@ export default {
       this.reqNum = num
     },
     buyClick() {
-
       this.postNum = this.reqNum * 100
       if (this.item.name == this.$t('dw.t196')) {
         if(this.$route.query.type == 'withdraw') {
@@ -278,7 +277,7 @@ export default {
         }
       }
       if ( this.item.name == this.$t('dw.t196') )
-        this.verifyPayDlgOpen = true
+        this.buy();
       else
         this.showPurchaseDetailDlg = true
       // this.verifyPayDlgOpen = true
@@ -300,11 +299,7 @@ export default {
     // },
     toConfirmPaymentPwd() {
       this.showPurchaseDetailDlg = false
-      if(this.type== "withdraw"){
-        this.verifyPayDlgOpen = true
-      }else{
-        this.buy();
-      }
+      this.buy();
     },
     async verifyPaymentPassword(){
       this.isLoading = true

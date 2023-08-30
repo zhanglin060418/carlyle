@@ -7,11 +7,15 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.entity.TransHistory;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BillType;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.enums.IsIncome;
 import com.ruoyi.common.enums.TransType;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -25,6 +29,7 @@ import com.ruoyi.web.controller.system.domain.ResetPwdPayload;
 import com.ruoyi.web.controller.system.domain.ResetUserPwdPayload;
 import com.ruoyi.web.controller.system.domain.SetPwdPayload;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +56,7 @@ public class PanUserController extends BaseController {
     private ISysUserService userService;
 
     @Autowired
-    private ISysRoleService roleService;
-
-    @Autowired
-    private ISysDeptService deptService;
-
-    @Autowired
-    private ISysPostService postService;
+    private ISysConfigService configService;
 
     @Autowired
     private IPanTransactionHistoryService transService;
@@ -377,50 +376,86 @@ public class PanUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysUser user) {
+        log.info("***********************新增用户" + user);
+        AjaxResult ajax = AjaxResult.success();
         LoginUser currentUser = getLoginUser();
-        log.info("***********************注册用户" + user);
+
         if (!userService.checkUserNameUnique(user)) {
-            return error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-        } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-            return error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            ajax = AjaxResult.error();
+            ajax.put("msg","新增用户" + user.getUserName() + "失败，账号已存在");
+            return ajax;
+        }
+
+        if (StringUtils.isBlank(user.getInviteCode())) {
+            ajax = AjaxResult.error();
+            ajax.put("msg","邀请码不能为空");
+            return ajax;
+        }
+        SysUser parentUser = userService.selectUserByInviteCode(user.getInviteCode());
+        if (parentUser == null) {
+            ajax = AjaxResult.error();
+            ajax.put("msg","邀请码不存在");
+            return ajax;
+        }
+        if(parentUser.getIsInviteCode().equals("1")){
+            ajax = AjaxResult.error();
+            ajax.put("msg","邀请码已被禁用");
+            return ajax;
         }
         user.setCreateBy(getUsername());
+        user.setTopId(parentUser.getTopId() == null ? parentUser.getUserId() : parentUser.getTopId());
+        user.setAgentId(parentUser.getAgentId());
+        user.setManagerId(parentUser.getManagerId());
+        user.setParentId(parentUser.getUserId());
+        user.setGrandId(parentUser.getParentId());
+        user.setGreatGrandId(parentUser.getGrandId());
+        user.setNickName(user.getUserName());
+        user.setInviteCode(RandomStringUtils.randomAlphabetic(10));
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
-
-        /**
-         * 新增user_balance表记录
-         *
-         */
-        if (currentUser.getUserType().equals("00") || currentUser.getUserType().equals("02")) {
-            return error("新增用户'" + user.getUserName() + "'失败，请到app注册用户");
-        }
         user.setUserType("10");
-        user.setTopId(currentUser.getUserId());
         user.setRoleIds(new Long[]{2L});
         user.setDeptId((long) 105);
         int i = userService.insertUser(user);
         if (i > 0) {
-            List<SysUser> userList = userService.selectUserList(user);
+            SysUser currUser = userService.selectUserByUserName(user.getUserName());
+            int registerbBonusMin = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_min"));
+            int registerbBonusMan = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_max"));
+            int registerUpBonusRate = Integer.parseInt(configService.selectConfigByKey("sign_up_bonus_rate"));
+
+            /**
+             * 新增 user_balance
+             */
+            int ax  = DateUtils.getProportionRandom(registerbBonusMin,registerbBonusMan,registerUpBonusRate);
+            BigDecimal amount =  new BigDecimal(ax).multiply(new BigDecimal(100));
             PanUserBalance userBalance = new PanUserBalance();
-            userBalance.setBalance(new BigDecimal(0));
-            userBalance.setLockBalance(new BigDecimal(0));
-            userBalance.setAssetBalance(new BigDecimal(0));
-            userBalance.setAvailableAmt(new BigDecimal(0));
-            userBalance.setTransitAmt(new BigDecimal(0));
-            userBalance.setUserId(userList.get(0).getUserId());
+            userBalance.setUserId(currUser.getUserId());
+            userBalance.setBalance(amount);
+            userBalance.setAvailableAmt(amount);
+            logger.info("******SysRegisterService UserBalance Info:"+ JSONObject.toJSONString(userBalance));
             iPanUserBalanceService.insertPanUserBalance(userBalance);
+
+            TransHistory transHistory = new TransHistory();
+            transHistory.setOrUserId(currUser.getUserId());
+            transHistory.setAmount(amount);
+            transHistory.setUserId(currUser.getUserId());
+            transHistory.setTransactionType(TransType.Register_Reward.toString());
+            transHistory.setIsIncome(IsIncome.Y.toString());
+            transHistory.setBillType(BillType.IN.toString());
+            transHistory.setRemark("注册奖励");
+            transHistory.setAmountBefore(new BigDecimal(0));
+            transHistory.setAmountAfter(amount);
+            logger.info("******SysRegisterService TransHistory Info:"+ JSONObject.toJSONString(transHistory));
+            userService.insertTransHistory(transHistory);
             /**
              * 新增user_asset表记录
              *
              */
             PanUserAsset userAsset = new PanUserAsset();
-            userAsset.setUserId(userList.get(0).getUserId());
+            userAsset.setUserId(currUser.getUserId());
             userAsset.setBalance(new BigDecimal(0));
             iPanUserAssetService.insertPanUserAsset(userAsset);
         }
-        return toAjax(i);
+        return ajax;
     }
 
     /**

@@ -218,7 +218,7 @@ public class PanWithdrawController extends BaseController {
         String key  =redisCache.getCacheObject(panWithdraw.getRequestNo());
         if (null == key) {
             redisCache.setCacheObject(panWithdraw.getRequestNo(), panWithdraw.getRequestNo());
-            redisCache.expire(panWithdraw.getRequestNo(), 5L, TimeUnit.SECONDS);
+            redisCache.expire(panWithdraw.getRequestNo(), 600L, TimeUnit.SECONDS);
         } else {
             ajax = AjaxResult.error();
             ajax.put("msg", "请勿重复提交");
@@ -246,8 +246,6 @@ public class PanWithdrawController extends BaseController {
                     panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
                     panWithdraw.setStatus(TransStatus.PROGRESS);
                     panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
-                } else {
-                    panWithdraw.setStatus(TransStatus.FAILED);
                 }
                 logger.info("****用户提现-审核通过 info:" + JSONObject.toJSONString(panWithdraw));
                 panWithdrawService.updatePanWithdraw(panWithdraw);
@@ -281,6 +279,21 @@ public class PanWithdrawController extends BaseController {
         LoginUser currentUser = getLoginUser();
         panWithdraw.setUpdateBy(currentUser.getUsername());
         AjaxResult ajax = AjaxResult.success();
+        String withdrawId = String.valueOf(panWithdraw.getWithdrawId());
+        String key =  redisCache.getCacheObject(withdrawId);
+        if (null == key) {
+            redisCache.setCacheObject(withdrawId, withdrawId);
+            redisCache.expire(withdrawId, 120L, TimeUnit.MINUTES);
+        } else {
+            ajax = AjaxResult.error();
+            ajax.put("msg", "请勿重复提交");
+            return ajax;
+        }
+        if(!curr.getStatus().equals(TransStatus.PENDING)){
+            ajax = AjaxResult.error();
+            ajax.put("msg","请勿重复提交");
+            return ajax;
+        }
         try {
             BigDecimal withdrawAmt = curr.getAmount().add(curr.getFee());
             if (withdrawAmt.compareTo(panWithdrawService.getAgentBalance(curr.getAgentId())) > 0) {
@@ -296,12 +309,9 @@ public class PanWithdrawController extends BaseController {
                 panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
                 panWithdraw.setStatus(TransStatus.PROGRESS);
                 panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
-            } else {
-                panWithdraw.setStatus(TransStatus.FAILED);
+                panWithdrawService.updatePanWithdraw(panWithdraw);
             }
             logger.info("****用户提现-批准 withdraw:" + JSONObject.toJSONString(panWithdraw));
-
-            panWithdrawService.updatePanWithdraw(panWithdraw);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -363,11 +373,10 @@ public class PanWithdrawController extends BaseController {
                 panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
                 panWithdraw.setStatus(TransStatus.PROGRESS);
                 panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
-            } else {
-                panWithdraw.setStatus(TransStatus.FAILED);
+                panWithdrawService.updatePanWithdraw(panWithdraw);
             }
             logger.info("****用户提现重试完成 changeStatusRetry withdraw:" + JSONObject.toJSONString(panWithdraw));
-            panWithdrawService.updatePanWithdraw(panWithdraw);
+
         }
         return ajax;
     }
@@ -437,11 +446,10 @@ public class PanWithdrawController extends BaseController {
                 curr.setOrderNo(indoWithdrawResult.getOrderNo());
                 curr.setStatus(TransStatus.PROGRESS);
                 curr.setChannelId(indoWithdrawResult.getChannelId());
-            } else {
-                curr.setStatus(TransStatus.FAILED);
+                panWithdrawService.updatePanWithdraw(curr);
             }
             logger.info("****用户提现批量审核 withdraw:" + JSONObject.toJSONString(curr));
-            panWithdrawService.updatePanWithdraw(curr);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e.getMessage());

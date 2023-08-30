@@ -226,23 +226,25 @@ buyClick() {
         this.errDialog(this.$t('payDetail.text3501') + ' ' + this.sym + ' '+ this.inMaxAmount/100)
         return
       }
-      if(this.hasPayPwd == 'false') {
-        this.$dialog
-            .confirm({
-              title: '',
-              message: this.$t('sys.setPaymentPwd'),
-              cancelButtonText: this.$t('sys.cancel'),
-              confirmButtonText: this.$t('sys.confirm'),
-            })
-            .then(() => {
-              this.$router.push('/resetPayPwd')
-            })
-            .catch(() => {
-              // on cancel
-            })
-      }
-      else
-        this.verifyPayDlgOpen = true
+      // if(this.hasPayPwd == 'false') {
+      //   this.$dialog
+      //       .confirm({
+      //         title: '',
+      //         message: this.$t('sys.setPaymentPwd'),
+      //         cancelButtonText: this.$t('sys.cancel'),
+      //         confirmButtonText: this.$t('sys.confirm'),
+      //       })
+      //       .then(() => {
+      //         this.$router.push('/resetPayPwd')
+      //       })
+      //       .catch(() => {
+      //         // on cancel
+      //       })
+      // }
+      // else
+      //   this.verifyPayDlgOpen = true
+
+    this.buy()
     },
     async verifyPaymentPassword(){
       this.isLoading = true

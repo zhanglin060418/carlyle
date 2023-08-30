@@ -125,23 +125,7 @@ export default {
         this.errDialog(this.$t('payDetail.text3502') + ' ' + this.sym + ' '+ this.balance/100)
         return
       }
-      if(this.hasPayPwd == 'false') {
-        this.$dialog
-            .confirm({
-              title: '',
-              message: this.$t('sys.setPaymentPwd'),
-              cancelButtonText: this.$t('sys.cancel'),
-              confirmButtonText: this.$t('sys.confirm'),
-            })
-            .then(() => {
-              this.$router.push('/resetPayPwd')
-            })
-            .catch(() => {
-              // on cancel
-            })
-      }
-      else
-        this.verifyPayDlgOpen = true
+      this.buy();
     },
     async verifyPaymentPassword(){
       this.isLoading = true

@@ -31,6 +31,8 @@ public class PanRecharge extends BaseEntity
     private Long agentId;
     @Excel(name = "用户名")
     private String userName;
+    @Excel(name = "推荐人")
+    private String parentUsername;
     @Excel(name = "业务员")
     private String topName;
     private String managerName;
@@ -49,6 +51,16 @@ public class PanRecharge extends BaseEntity
     private String orderNo;
 
     private String payInfoUrl;
+
+
+
+    public String getParentUsername() {
+        return parentUsername;
+    }
+
+    public void setParentUsername(String parentUsername) {
+        this.parentUsername = parentUsername;
+    }
 
     /** 创建时间 */
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Excel.Type.EXPORT)

@@ -49,6 +49,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="推荐人" prop="parentUsername">
+        <el-input
+          size="mini" v-model="queryParams.parentUsername"
+          placeholder="推荐人"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select
           size="mini"
@@ -106,6 +114,7 @@
       <el-table-column label="订单号" align="center" prop="requestNo" />
       <el-table-column label="通道订单号" align="center" prop="orderNo" />
       <el-table-column label="用户账户" align="center" prop="userName"/>
+      <el-table-column label="推荐人" align="center" prop="parentUsername"/>
       <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
       <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
       <el-table-column label="代理商"  align="center" prop="agentName" v-if= "$auth.hasPermi('system:agent:edit')"/>
