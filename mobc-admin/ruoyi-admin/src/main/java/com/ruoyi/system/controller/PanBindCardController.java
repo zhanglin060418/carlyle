@@ -7,7 +7,9 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.PanBank;
 import com.ruoyi.system.domain.PanBindCard;
+import com.ruoyi.system.service.IPanBankService;
 import com.ruoyi.system.service.IPanBindCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,9 @@ import java.util.List;
 public class PanBindCardController extends BaseController {
     @Autowired
     private IPanBindCardService panBindCardService;
+
+    @Autowired
+    private IPanBankService panBankService;
 
     /**
      * 查询用户银行卡列表
@@ -94,8 +99,12 @@ public class PanBindCardController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:card:query')")
     @GetMapping(value = "/{cardId}")
     public AjaxResult getInfo(@PathVariable("cardId") Long cardId) {
-      PanBindCard card = panBindCardService.selectPanBindCardByCardId(cardId);
-      return success(card);
+        AjaxResult ajax = AjaxResult.success();
+        PanBindCard card = panBindCardService.selectPanBindCardByCardId(cardId);
+        List<PanBank> bankList = panBankService.getBankList();
+        ajax.put("data", card);
+        ajax.put("bankList", bankList);
+        return ajax;
     }
 
     /**
@@ -159,14 +168,14 @@ public class PanBindCardController extends BaseController {
         AjaxResult reviseAjax = AjaxResult.success();
         List<PanBindCard> cardList = panBindCardService.selectCardInfoByCardNo(panBindCard.getCardNo());
         if (cardList.size() > 0) {
-            if (!cardList.get(0).getUserId().equals(panBindCard.getUserId()) ) {
+            if (!cardList.get(0).getUserId().equals(panBindCard.getUserId())) {
                 reviseAjax = AjaxResult.error();
                 reviseAjax.put("msg", "number already exists");
             }
         }
 
         PanBindCard oldCard = panBindCardService.selectPanBindCardByCardId(panBindCard.getId());
-        PanBindCard panBindCardRecord = new  PanBindCard();
+        PanBindCard panBindCardRecord = new PanBindCard();
         panBindCardRecord.setUserId(panBindCard.getUserId());
         panBindCardRecord.setName(oldCard.getName());
         panBindCardRecord.setBankCode(oldCard.getBankCode());

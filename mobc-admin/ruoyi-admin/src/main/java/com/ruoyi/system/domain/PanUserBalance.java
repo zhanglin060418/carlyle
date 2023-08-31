@@ -64,6 +64,7 @@ public class PanUserBalance extends BaseEntity
     private BigDecimal amount;
 
     private String  billType;
+    private String transType;
     private String isRebate;
     public String getBillType() {
         return billType;
@@ -71,6 +72,14 @@ public class PanUserBalance extends BaseEntity
 
     public void setBillType(String billType) {
         this.billType = billType;
+    }
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public void setTransType(String transType) {
+        this.transType = transType;
     }
 
     @Override

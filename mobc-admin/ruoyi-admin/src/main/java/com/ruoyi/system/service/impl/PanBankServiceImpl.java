@@ -9,19 +9,19 @@ import com.ruoyi.system.service.IPanBankService;
 
 /**
  * 银行名单Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2023-04-09
  */
 @Service
-public class PanBankServiceImpl implements IPanBankService 
+public class PanBankServiceImpl implements IPanBankService
 {
     @Autowired
     private PanBankMapper panBankMapper;
 
     /**
      * 查询银行名单
-     * 
+     *
      * @param bankId 银行名单主键
      * @return 银行名单
      */
@@ -33,7 +33,7 @@ public class PanBankServiceImpl implements IPanBankService
 
     /**
      * 查询银行名单列表
-     * 
+     *
      * @param panBank 银行名单
      * @return 银行名单
      */
@@ -45,7 +45,7 @@ public class PanBankServiceImpl implements IPanBankService
 
     /**
      * 新增银行名单
-     * 
+     *
      * @param panBank 银行名单
      * @return 结果
      */
@@ -57,7 +57,7 @@ public class PanBankServiceImpl implements IPanBankService
 
     /**
      * 修改银行名单
-     * 
+     *
      * @param panBank 银行名单
      * @return 结果
      */
@@ -69,7 +69,7 @@ public class PanBankServiceImpl implements IPanBankService
 
     /**
      * 批量删除银行名单
-     * 
+     *
      * @param bankIds 需要删除的银行名单主键
      * @return 结果
      */
@@ -81,7 +81,7 @@ public class PanBankServiceImpl implements IPanBankService
 
     /**
      * 删除银行名单信息
-     * 
+     *
      * @param bankId 银行名单主键
      * @return 结果
      */
@@ -89,5 +89,10 @@ public class PanBankServiceImpl implements IPanBankService
     public int deletePanBankByBankId(Long bankId)
     {
         return panBankMapper.deletePanBankByBankId(bankId);
+    }
+
+    @Override
+    public List<PanBank> getBankList(){
+        return panBankMapper.getBankList();
     }
 }

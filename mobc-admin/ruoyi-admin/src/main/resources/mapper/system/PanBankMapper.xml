@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.PanBankMapper">
-    
+
     <resultMap type="PanBank" id="PanBankResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
@@ -17,18 +17,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPanBankList" parameterType="PanBank" resultMap="PanBankResult">
         <include refid="selectPanBankVo"/>
-        <where>  
+        <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
         </where>
     </select>
-    
+
     <select id="selectPanBankByBankId" parameterType="Long" resultMap="PanBankResult">
         <include refid="selectPanBankVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertPanBank" parameterType="PanBank" useGeneratedKeys="true" keyProperty="id">
         insert into pan_bank
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -58,9 +58,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deletePanBankByids" parameterType="String">
-        delete from pan_bank where id in 
+        delete from pan_bank where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+    <select id="getBankList" resultMap="PanBankResult">
+        select id, name, code from pan_bank order by name
+    </select>
 </mapper>

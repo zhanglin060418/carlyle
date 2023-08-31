@@ -185,8 +185,8 @@ public class TransServiceImpl implements ITransService {
             panTransactionHistory.setBillType(BillType.IN.toString());
             panTransactionHistory.setAmountBefore(inBalanceBefore);
             panTransactionHistory.setAmountAfter(inBalanceAfter);
-            panTransactionHistory.setTransactionType(TransType.Salary_Subsidy_Bonus.toString());
-            panTransactionHistory.setRemark("工资/补贴/奖金");
+            panTransactionHistory.setTransactionType(requestUserBalance.getTransType());
+            panTransactionHistory.setRemark("");
             logger.info("****交易管理-修改用户余额-TransInfo:{}", JSONObject.toJSONString(panTransactionHistory));
 
             currUserBalance.setAvailableAmt(currUserBalance.getAvailableAmt().add(currAmount));

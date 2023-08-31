@@ -77,14 +77,27 @@ public enum TransType {
      */
     Treasure_Transfer_Out,
     /**
-     * 工资/补贴/奖金
-     * Salary/Subsidy/Bonus
+     * 工资
+     * Salary
      */
-    Salary_Subsidy_Bonus,
+    Salary,
+    /**
+     * 补贴
+     * Subsidy
+     */
+    Subsidy,
+    /**
+     * 奖金
+     */
+    Bonus,
+    /**
+     * 线下充值
+     */
+    Offline_Recharge,
 
     /**
      * 人工调账
-     * Manual Adjustment
+     * Offline Deduction
      */
     Manual_Adjustment,
     /**

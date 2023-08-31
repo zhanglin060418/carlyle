@@ -94,8 +94,12 @@
           <span v-else-if="scope.row.transactionType == 'Treasure_Transfer_In'">增值宝转入</span>
           <span v-else-if="scope.row.transactionType == 'Treasure_Transfer_Out'">增值宝转出</span>
           <span v-else-if="scope.row.transactionType == 'Salary_Subsidy_Bonus'">工资/补贴/奖金</span>
+          <span v-else-if="scope.row.transactionType == 'Salary'">工资</span>
+          <span v-else-if="scope.row.transactionType == 'Subsidy'">补贴</span>
+          <span v-else-if="scope.row.transactionType == 'Bonus'">奖金</span>
+          <span v-else-if="scope.row.transactionType == 'Offline_Recharge'">线下充值</span>
           <span v-else-if="scope.row.transactionType == 'Register_Reward'">注册奖励</span>
-          <span v-else-if="scope.row.transactionType == 'Manual_Adjustment'">手工调账</span>
+          <span v-else-if="scope.row.transactionType == 'Manual_Adjustment'">线下扣费</span>
           <span v-else-if="scope.row.transactionType == 'SignIn_Reward'">签到奖励</span>
           <span v-else-if="scope.row.transactionType == 'Manual_Reward_Product'">手工赠送产品</span>
           <span v-else-if="scope.row.transactionType == 'Reward_Transfer_Out'">返佣金额转出</span>
@@ -230,10 +234,21 @@ export default {
           "label": "注册奖励",
           "value": "Register_Reward"
         }, {
-          "label": "工资/补贴/奖金",
-          "value": "Salary_Subsidy_Bonus"
+          "label": "工资",
+          "value": "Salary"
+        }, {
+          "label": "补贴",
+          "value": "Subsidy"
         },{
-          "label": "手工调账",
+          "label": "奖金",
+          "value": "Bonus"
+        },
+        {
+          "label": "线下充值",
+          "value": "Offline_Recharge"
+        },
+        {
+          "label": "线下扣费",
           "value": "Manual_Adjustment"
         },{
           "label": "签到奖励",

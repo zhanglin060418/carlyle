@@ -101,6 +101,14 @@
           return this.$t('transType.Treasure_Transfer_Out')
         case 'Salary_Subsidy_Bonus':
           return this.$t('transType.Salary_Subsidy_Bonus')
+        case 'Salary':
+          return this.$t('transType.Salary')
+        case 'Subsidy':
+          return this.$t('transType.Subsidy')
+        case 'Bonus':
+          return this.$t('transType.Bonus')
+        case 'Offline_Recharge':
+          return this.$t('transType.Offline_Recharge')
         case 'Register_Reward':
           return this.$t('transType.Register_Reward')
         case 'Manual_Adjustment':

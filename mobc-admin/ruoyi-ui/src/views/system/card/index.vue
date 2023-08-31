@@ -103,8 +103,16 @@
         <el-form-item label="卡名" prop="name">
           <el-input v-model="form.name" placeholder="请输入卡名" />
         </el-form-item>
-        <el-form-item label="银行代码" prop="bankCode">
-          <el-input v-model="form.bankCode" placeholder="银行代码" />
+        <el-form-item label="银行名称" prop="bankCode">
+          <el-select v-model="form.bankCode" placeholder="银行名称" style="width:100%">
+            <el-option
+              v-for="(item, index) in bankList"
+              :key="index"
+              :label="item.name"
+              :value="item.code"
+              :disabled="item.disabled">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="帐户" prop="cardNo">
           <el-input v-model="form.cardNo" placeholder="请输入帐户" />
@@ -126,6 +134,7 @@ export default {
   name: "Card",
   data() {
     return {
+      bankList:[],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -164,7 +173,7 @@ export default {
           { required: true, message: "卡名不能为空", trigger: "blur" }
         ],
         bankCode: [
-          { required: true, message: "用户ID不能为空", trigger: "blur" }
+          { required: true, message: "银行代码不能为空", trigger: "blur" }
         ],
         cardNo: [
           { required: true, message: "帐户不能为空", trigger: "blur" }
@@ -228,6 +237,12 @@ export default {
       const id = row.id || this.ids
       getCard(id).then(response => {
         this.form = response.data;
+        this.bankList = response.bankList;
+        const currBankCode = this.form.bankCode;
+        const curr = this.bankList.filter(item => item.code == currBankCode);
+        if(curr!=null&&curr.length>0){
+          this.form.bankCode = curr[0].code
+        }
         this.open = true;
         this.title = "修改用户银行卡";
       });

@@ -9,6 +9,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BillType;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.MessageStatus;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.TransStatus;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.PanUserBalance;
@@ -136,6 +137,13 @@ public class PanUserBalanceController extends BaseController {
             if(currAmount.compareTo(currUserBalance.getAvailableAmt())>0){
                 ajax = AjaxResult.error();
                 ajax.put("msg", "减少金额不能大于可用余额");
+                return ajax;
+            }
+        }
+        if(requestUserBalance.getBillType().equals(BillType.IN.toString())){
+            if(StringUtils.isBlank(requestUserBalance.getTransType())){
+                ajax = AjaxResult.error();
+                ajax.put("msg", "请输入交易类型");
                 return ajax;
             }
         }

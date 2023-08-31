@@ -473,11 +473,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getChildTotalIncome" parameterType="Long" resultType="Long">
-        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and is_income = 'Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and is_income = 'Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Offline_Recharge','Bonus','Salary','Subsidy','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
     </select>
 
     <select id="getChildDailyIncome" parameterType="Long" resultType="Long">
-        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d') =  CURDATE() and is_income='Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
+        select IFNULL(sum(amount),0) from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d') =  CURDATE() and is_income='Y' and transaction_type not in('SignIn_Reward','Register_Reward','Salary_Subsidy_Bonus','Offline_Recharge','Bonus','Salary','Subsidy','Product_Daily_Interest','Treasure_Reward','Manual_Reward_Product')
     </select>
 
     <select id="getChildIncome" parameterType="Long" resultType="Long">

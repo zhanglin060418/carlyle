@@ -667,8 +667,8 @@ public class SysUserController extends BaseController {
                     totalRewardProductAmt = totalRewardProductAmt + teamUser.getTransAmt();
                 }else if(teamUser.getTransType().equalsIgnoreCase(TransType.Register_Reward.name()) ){
                     totalRegisterRewardAmt =teamUser.getTransAmt();
-                }else if(teamUser.getTransType().equalsIgnoreCase(TransType.Salary_Subsidy_Bonus.name()) ){
-                    totalSalarySubsidyBonusAmt =teamUser.getTransAmt();
+                }else if(teamUser.getTransType().equalsIgnoreCase(TransType.Salary.name()) ||teamUser.getTransType().equalsIgnoreCase(TransType.Subsidy.name())||teamUser.getTransType().equalsIgnoreCase(TransType.Bonus.name())||teamUser.getTransType().equalsIgnoreCase(TransType.Offline_Recharge.name())){
+                    totalSalarySubsidyBonusAmt =totalSalarySubsidyBonusAmt+teamUser.getTransAmt();
                 }else if(teamUser.getTransType().equalsIgnoreCase(TransType.Manual_Adjustment.name()) ){
                     totalManualAdjustmentAmt =teamUser.getTransAmt();
                 }else if(teamUser.getTransType().equalsIgnoreCase(TransType.Treasure_Reward.name()) ){

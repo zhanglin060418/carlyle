@@ -140,12 +140,27 @@
         <el-form-item label="账务类型" prop="billType">
           <el-select
             v-model="form.billType"
-            placeholder="请输入交易类型"
+            placeholder="请输入账务类型"
             clearable
             @keyup.enter.native="handleQuery"
           >
             <el-option
               v-for="(item, index) in billTypeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="交易类型" prop="transType">
+          <el-select
+            v-model="form.transType"
+            placeholder="请选择交易类型"
+            clearable
+            @keyup.enter.native="handleQuery"
+          >
+            <el-option
+              v-for="(item, index) in transTypeOptions"
               :key="index"
               :label="item.label"
               :value="item.value">
@@ -236,6 +251,21 @@ export default {
         },{
           "label": "减少",
           "value": "OUT"
+        }],
+
+      transTypeOptions: [
+        {
+          "label": "工资",
+          "value": "Salary"
+        },,{
+          "label": "补贴",
+          "value": "Subsidy"
+        },{
+          "label": "奖金",
+          "value": "Bonus"
+        },{
+          "label": "线下充值",
+          "value": "Offline_Recharge"
         }],
     };
   },
@@ -351,6 +381,12 @@ export default {
             if(this.form.billType==='OUT'){
               if(this.form.amount>this.form.availableAmt){
                 this.$modal.msgWarning('可用余额不足');
+                return;
+              }
+            }
+            if(this.form.billType==='IN'){
+              if(this.form.transType==''||this.form.transType==null){
+                this.$modal.msgWarning('请选择交易类型!');
                 return;
               }
             }
