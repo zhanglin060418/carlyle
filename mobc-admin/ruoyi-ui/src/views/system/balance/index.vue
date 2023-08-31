@@ -143,7 +143,7 @@
             placeholder="请输入账务类型"
             clearable
             @keyup.enter.native="handleQuery"
-          >
+            style="width:100%">
             <el-option
               v-for="(item, index) in billTypeOptions"
               :key="index"
@@ -158,7 +158,7 @@
             placeholder="请选择交易类型"
             clearable
             @keyup.enter.native="handleQuery"
-          >
+            style="width:100%">
             <el-option
               v-for="(item, index) in transTypeOptions"
               :key="index"
@@ -257,7 +257,7 @@ export default {
         {
           "label": "工资",
           "value": "Salary"
-        },,{
+        },{
           "label": "补贴",
           "value": "Subsidy"
         },{
