@@ -215,10 +215,10 @@ public class PanWithdrawController extends BaseController {
         panWithdraw.setFee(currWithdraw.getFee());
         LoginUser currentUser = getLoginUser();
         panWithdraw.setUpdateBy(currentUser.getUsername());
-        String key  =redisCache.getCacheObject(panWithdraw.getRequestNo());
+        String key = redisCache.getCacheObject(panWithdraw.getRequestNo());
         if (null == key) {
             redisCache.setCacheObject(panWithdraw.getRequestNo(), panWithdraw.getRequestNo());
-            redisCache.expire(panWithdraw.getRequestNo(), 600L, TimeUnit.SECONDS);
+            redisCache.expire(panWithdraw.getRequestNo(), 300L, TimeUnit.SECONDS);
         } else {
             ajax = AjaxResult.error();
             ajax.put("msg", "请勿重复提交");
@@ -242,13 +242,22 @@ public class PanWithdrawController extends BaseController {
                         currWithdraw.getCardNo(), currWithdraw.getBeneficiaryNo(), currWithdraw.getBeneficiaryName(),
                         currWithdraw.getBeneficiaryMobile(), currWithdraw.getBeneficiaryEmail(), panWithdraw.getDomain());
 
-                if (StringUtils.isNotEmpty(indoWithdrawResult.getOrderNo())) {
-                    panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
-                    panWithdraw.setStatus(TransStatus.PROGRESS);
-                    panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
+                if (StringUtils.isNotEmpty(indoWithdrawResult.getRespCode())) {
+                    if (indoWithdrawResult.getRespCode().equals("0000") || indoWithdrawResult.getRespCode().equals("P000")) {
+                        currWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
+                        currWithdraw.setStatus(TransStatus.PROGRESS);
+                        currWithdraw.setChannelId(indoWithdrawResult.getChannelId());
+                        panWithdrawService.updatePanWithdraw(currWithdraw);
+                    } else {
+                        if (currWithdraw.getStatus().equals(TransStatus.PENDING)) {
+                            currWithdraw.setRespDesc(indoWithdrawResult.getRespDesc());
+                            currWithdraw.setStatus(TransStatus.FAILED);
+                            panWithdrawService.updatePanWithdraw(currWithdraw);
+                        }
+                    }
                 }
-                logger.info("****用户提现-审核通过 info:" + JSONObject.toJSONString(panWithdraw));
-                panWithdrawService.updatePanWithdraw(panWithdraw);
+                logger.info("****用户提现-审核通过-info:" + JSONObject.toJSONString(currWithdraw));
+
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new ServiceException(e.getMessage());
@@ -279,19 +288,19 @@ public class PanWithdrawController extends BaseController {
         LoginUser currentUser = getLoginUser();
         panWithdraw.setUpdateBy(currentUser.getUsername());
         AjaxResult ajax = AjaxResult.success();
-        String withdrawId = String.valueOf(panWithdraw.getWithdrawId());
-        String key =  redisCache.getCacheObject(withdrawId);
+        String requestNo = String.valueOf(curr.getRequestNo());
+        String key = redisCache.getCacheObject(requestNo);
         if (null == key) {
-            redisCache.setCacheObject(withdrawId, withdrawId);
-            redisCache.expire(withdrawId, 120L, TimeUnit.MINUTES);
+            redisCache.setCacheObject(requestNo, requestNo);
+            redisCache.expire(requestNo, 60L, TimeUnit.MINUTES);
         } else {
             ajax = AjaxResult.error();
             ajax.put("msg", "请勿重复提交");
             return ajax;
         }
-        if(!curr.getStatus().equals(TransStatus.PENDING)){
+        if (!curr.getStatus().equals(TransStatus.PENDING)) {
             ajax = AjaxResult.error();
-            ajax.put("msg","请勿重复提交");
+            ajax.put("msg", "请勿重复提交");
             return ajax;
         }
         try {
@@ -305,11 +314,19 @@ public class PanWithdrawController extends BaseController {
                     curr.getRequestNo(), "NGN", curr.getAmount(), curr.getBankCode(), curr.getBankName(),
                     curr.getCardNo(), curr.getBeneficiaryNo(), curr.getBeneficiaryName(),
                     curr.getBeneficiaryMobile(), curr.getBeneficiaryEmail(), panWithdraw.getDomain());
-            if (StringUtils.isNotEmpty(indoWithdrawResult.getOrderNo())) {
-                panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
-                panWithdraw.setStatus(TransStatus.PROGRESS);
-                panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
-                panWithdrawService.updatePanWithdraw(panWithdraw);
+            if (StringUtils.isNotEmpty(indoWithdrawResult.getRespCode())) {
+                if (indoWithdrawResult.getRespCode().equals("0000") || indoWithdrawResult.getRespCode().equals("P000")) {
+                    curr.setOrderNo(indoWithdrawResult.getOrderNo());
+                    curr.setStatus(TransStatus.PROGRESS);
+                    curr.setChannelId(indoWithdrawResult.getChannelId());
+                    panWithdrawService.updatePanWithdraw(curr);
+                } else {
+                    if (curr.getStatus().equals(TransStatus.PENDING)) {
+                        curr.setRespDesc(indoWithdrawResult.getRespDesc());
+                        curr.setStatus(TransStatus.FAILED);
+                        panWithdrawService.updatePanWithdraw(curr);
+                    }
+                }
             }
             logger.info("****用户提现-批准 withdraw:" + JSONObject.toJSONString(panWithdraw));
 
@@ -336,28 +353,28 @@ public class PanWithdrawController extends BaseController {
                 return ajax;
             }
             String withdrawId = String.valueOf(panWithdraw.getWithdrawId());
-            String key =redisCache.getCacheObject(withdrawId);
+            String key = redisCache.getCacheObject(withdrawId);
             if (null == key) {
                 redisCache.setCacheObject(withdrawId, withdrawId);
-                redisCache.expire(withdrawId, 120L, TimeUnit.MINUTES);
+                redisCache.expire(withdrawId, 60L, TimeUnit.MINUTES);
             } else {
                 ajax = AjaxResult.error();
                 ajax.put("msg", "请勿重复提交");
                 return ajax;
             }
 
-            if(!curr.getStatus().equals(TransStatus.FAILED)){
+            if (!curr.getStatus().equals(TransStatus.FAILED)) {
                 ajax = AjaxResult.error();
                 ajax.put("msg", "处理中，请勿再次重试");
                 return ajax;
             }
 
-            if(curr.getRequestNo().contains("WRR")){
+            if (curr.getRequestNo().contains("WRR")) {
                 ajax = AjaxResult.error();
                 ajax.put("msg", "此订单多次异常，请勿再次重试");
                 return ajax;
             }
-            String  requestNo = curr.getRequestNo().replace("W","WR");
+            String requestNo = curr.getRequestNo().replace("W", "WR");
             LoginUser currentUser = getLoginUser();
             panWithdraw.setUpdateBy(currentUser.getUsername());
             panWithdraw.setRequestNo(requestNo);
@@ -369,11 +386,18 @@ public class PanWithdrawController extends BaseController {
                     curr.getCardNo(), curr.getBeneficiaryNo(), curr.getBeneficiaryName(),
                     curr.getBeneficiaryMobile(), curr.getBeneficiaryEmail(), panWithdraw.getDomain());
 
-            if (StringUtils.isNotEmpty(indoWithdrawResult.getOrderNo())) {
-                panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
-                panWithdraw.setStatus(TransStatus.PROGRESS);
-                panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
-                panWithdrawService.updatePanWithdraw(panWithdraw);
+            if (StringUtils.isNotEmpty(indoWithdrawResult.getRespCode())) {
+                if (indoWithdrawResult.getRespCode().equals("0000") || indoWithdrawResult.getRespCode().equals("P000")) {
+                    panWithdraw.setOrderNo(indoWithdrawResult.getOrderNo());
+                    panWithdraw.setStatus(TransStatus.PROGRESS);
+                    panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
+                    panWithdrawService.updatePanWithdraw(panWithdraw);
+                } else {
+                    if (curr.getStatus().equals(TransStatus.FAILED)) {
+                        panWithdraw.setRespDesc(indoWithdrawResult.getRespDesc());
+                        panWithdrawService.updatePanWithdraw(panWithdraw);
+                    }
+                }
             }
             logger.info("****用户提现重试完成 changeStatusRetry withdraw:" + JSONObject.toJSONString(panWithdraw));
 
@@ -438,15 +462,26 @@ public class PanWithdrawController extends BaseController {
 
         try {
             PanWithdraw curr = panWithdrawService.selectPanWithdrawByWithdrawId(withId);
-            IndoWithdrawResult indoWithdrawResult = indoPaymentService.withdraw(
-                    curr.getRequestNo(), "NGN", curr.getAmount(), curr.getBankCode(), curr.getBankName(),
-                    curr.getCardNo(), curr.getBeneficiaryNo(), curr.getBeneficiaryName(),
-                    curr.getBeneficiaryMobile(), curr.getBeneficiaryEmail(), curr.getDomain());
-            if (StringUtils.isNotEmpty(indoWithdrawResult.getOrderNo())) {
-                curr.setOrderNo(indoWithdrawResult.getOrderNo());
-                curr.setStatus(TransStatus.PROGRESS);
-                curr.setChannelId(indoWithdrawResult.getChannelId());
-                panWithdrawService.updatePanWithdraw(curr);
+            if (curr.getStatus().equals(TransStatus.PENDING)) {
+                IndoWithdrawResult indoWithdrawResult = indoPaymentService.withdraw(
+                        curr.getRequestNo(), "NGN", curr.getAmount(), curr.getBankCode(), curr.getBankName(),
+                        curr.getCardNo(), curr.getBeneficiaryNo(), curr.getBeneficiaryName(),
+                        curr.getBeneficiaryMobile(), curr.getBeneficiaryEmail(), curr.getDomain());
+
+                if (StringUtils.isNotEmpty(indoWithdrawResult.getRespCode())) {
+                    if (indoWithdrawResult.getRespCode().equals("0000") || indoWithdrawResult.getRespCode().equals("P000")) {
+                        curr.setOrderNo(indoWithdrawResult.getOrderNo());
+                        curr.setStatus(TransStatus.PROGRESS);
+                        curr.setChannelId(indoWithdrawResult.getChannelId());
+                        panWithdrawService.updatePanWithdraw(curr);
+                    } else {
+                        if (curr.getStatus().equals(TransStatus.PENDING)) {
+                            curr.setRespDesc(indoWithdrawResult.getRespDesc());
+                            curr.setStatus(TransStatus.FAILED);
+                            panWithdrawService.updatePanWithdraw(curr);
+                        }
+                    }
+                }
             }
             logger.info("****用户提现批量审核 withdraw:" + JSONObject.toJSONString(curr));
 

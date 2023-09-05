@@ -115,7 +115,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="帐户" prop="cardNo">
-          <el-input v-model="form.cardNo" placeholder="请输入帐户" />
+          <el-input v-model="form.cardNo" type="number" placeholder="请输入帐户" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

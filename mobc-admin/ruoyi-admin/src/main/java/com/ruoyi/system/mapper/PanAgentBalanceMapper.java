@@ -1,9 +1,9 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.system.domain.PanAgentBalance;
-import com.ruoyi.system.domain.PanAgentBalanceDetail;
+        import com.ruoyi.system.domain.PanAgentBalance;
+        import com.ruoyi.system.domain.PanAgentBalanceDetail;
 
-import java.util.List;
+        import java.util.List;
 
 /**
  * 用户余额Mapper接口
@@ -23,5 +23,5 @@ public interface PanAgentBalanceMapper {
 
     public PanAgentBalance selectPanAgentBalanceByAgentId(Long agentId);
 
-    int insertAgentBalanceDetail(PanAgentBalanceDetail trans);
+    public int insertAgentBalanceDetail(PanAgentBalanceDetail trans);
 }

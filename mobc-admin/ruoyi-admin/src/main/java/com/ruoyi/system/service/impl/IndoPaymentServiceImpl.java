@@ -6,10 +6,10 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.github.pagehelper.util.StringUtil;
 import com.indo.payment.IndoPaymentService;
 import com.indo.payment.IndoRechargeResult;
 import com.indo.payment.IndoWithdrawResult;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.PanChannel;
 import com.ruoyi.system.service.ISysConfigService;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.yaml.snakeyaml.util.UriEncoder;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -202,16 +202,31 @@ public class IndoPaymentServiceImpl implements IndoPaymentService {
             sendMap.put("signature", getSign(sendMap,channelJsonParam));
             HttpRequest request = new HttpRequest(url);
             request.form(sendMap);
-            log.info("**********用户提现 resuestMap：" + JSONObject.toJSONString(sendMap));
+            log.info("**********用户提现-resuestMap：" + JSONObject.toJSONString(sendMap));
             HttpResponse response = request.execute();
-            log.info("**********用户提现 responseBody：" + JSONObject.toJSONString(response.body()));
+            log.info("**********用户提现-responseBody：" + JSONObject.toJSONString(response.body()));
             Map<String, Object> responseMap = respStr2Map(response.body());
-            log.info("**********用户提现 responseMap：" + JSONObject.toJSONString(responseMap));
+            log.info("**********用户提现-responseMap：" + JSONObject.toJSONString(responseMap));
 
             indoWithdrawResult.setRequestNo(requestNo);
-            if (responseMap.get("respCode").toString().equals("0000") || responseMap.get("respCode").toString().equals("P000")) {
-                indoWithdrawResult.setOrderNo(responseMap.get("orderNo").toString());
-                indoWithdrawResult.setChannelId(panChannel.getChannelId());
+            indoWithdrawResult.setChannelId(panChannel.getChannelId());
+
+            String respCode = "";
+            if(StringUtils.isNotNull(responseMap.get("respCode"))){
+                respCode = responseMap.get("respCode").toString();
+            }
+            indoWithdrawResult.setRespCode(respCode);
+            String respDesc = "";
+            if(StringUtils.isNotNull(responseMap.get("respDesc"))){
+                respDesc = UriEncoder.decode(responseMap.get("respDesc").toString());
+            }
+            indoWithdrawResult.setRespDesc(respDesc);
+            if(respCode.equals("0000")||respCode.equals("P000")){
+                String orderNo = "";
+                if(StringUtils.isNotNull(responseMap.get("orderNo"))){
+                    orderNo = responseMap.get("orderNo").toString();
+                }
+                indoWithdrawResult.setOrderNo(orderNo);
             }
 
         } catch (Exception e) {
@@ -296,7 +311,7 @@ public class IndoPaymentServiceImpl implements IndoPaymentService {
     }
     private void getUrlsByDomain(String domain, JSONObject channelJsonParam) {
         //因为只有生产才涉及多域名
-        if ("pro".equalsIgnoreCase(activeProfile) && !StringUtil.isEmpty(domain)) {
+        if ("pro".equalsIgnoreCase(activeProfile) && !StringUtils.isEmpty(domain)) {
             //domain = domain.split("\\.")[1]; // www.ngn.com - >  ngn 不再使用这种方式，这种方式不兼容非com的域名
             //"notify_url":"https://service.domain.com/system/payment/notifyUrl"
             String notify_url = channelJsonParam.getString("notify_url").replaceAll("domain", domain);
