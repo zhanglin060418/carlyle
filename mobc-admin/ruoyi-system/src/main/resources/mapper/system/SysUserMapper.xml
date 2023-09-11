@@ -191,6 +191,9 @@
 		<if test="loginIp != null and loginIp != ''">
 			AND u.login_ip = #{loginIp}
 		</if>
+		<if test="parentUsername != null and parentUsername != ''">
+			AND u2.user_name= #{parentUsername}
+		</if>
 		<if test="topName != null and topName != ''">
 			AND u5.user_name= #{topName}
 		</if>

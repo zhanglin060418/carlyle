@@ -17,6 +17,13 @@
               clearable
               @keyup.enter.native="handleQuery"/>
           </el-form-item>
+          <el-form-item label="推荐人" prop="parentUsername">
+            <el-input
+              size="mini" v-model="queryParams.parentUsername"
+              placeholder="请输入推荐人账户"
+              clearable
+              @keyup.enter.native="handleQuery"/>
+          </el-form-item>
           <el-form-item label="业务员" prop="topName" v-hasPermi="['system:user:edit']">
             <el-input
               v-model="queryParams.topName"

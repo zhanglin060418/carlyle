@@ -96,6 +96,16 @@ public class PanWithdraw extends BaseEntity
 
     private  Long channelId;
 
+    private int withdrawCount;
+
+    public int getWithdrawCount() {
+        return withdrawCount;
+    }
+
+    public void setWithdrawCount(int withdrawCount) {
+        this.withdrawCount = withdrawCount;
+    }
+
     public Long getChannelId() {
         return channelId;
     }

@@ -79,4 +79,6 @@ public interface IPanWithdrawService
     public Long getUserWithdrawInfoByIds(String withdrawIds);
 
     public BigDecimal getAgentBalance(Long agentId);
+
+    public PanWithdraw getTodayWithdrawCountByUserId(Long userId);
 }

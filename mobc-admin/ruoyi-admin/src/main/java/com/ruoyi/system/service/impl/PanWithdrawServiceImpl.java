@@ -155,6 +155,11 @@ public class PanWithdrawServiceImpl implements IPanWithdrawService
     }
 
     @Override
+    public PanWithdraw getTodayWithdrawCountByUserId(Long userId) {
+        return panWithdrawMapper.getTodayWithdrawCountByUserId(userId);
+    }
+
+    @Override
     public BigDecimal getAgentBalance(Long agentId) {
 
         BigDecimal agentBalance = new BigDecimal(0);

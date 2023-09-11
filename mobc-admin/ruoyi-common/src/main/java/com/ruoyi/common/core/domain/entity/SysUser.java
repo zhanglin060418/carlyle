@@ -40,7 +40,6 @@ public class SysUser extends BaseEntity
     private Long agentId;
     private String agentName;
     private String managerName;
-    private String parentUsername;
 
     private Long grandId;
     private String grandUsername;
@@ -66,6 +65,8 @@ public class SysUser extends BaseEntity
     @Excel(name = "登录名称")
     private String userName;
 
+    @Excel(name = "推荐人")
+    private String parentUsername;
     /** 用户昵称 */
     private String nickName;
 

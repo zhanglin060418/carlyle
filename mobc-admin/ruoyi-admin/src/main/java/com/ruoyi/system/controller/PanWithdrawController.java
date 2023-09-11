@@ -184,6 +184,14 @@ public class PanWithdrawController extends BaseController {
                         ajax.put("msg", "Not enough balance");
                         return ajax;
                     }
+
+                    PanWithdraw  todayWithdraw =  panWithdrawService.getTodayWithdrawCountByUserId(panWithdrawCreate.getUserId());
+                    int maxNumWithdrawalsDay = Integer.parseInt(sysConfigService.selectConfigByKey("max_num_withdrawals_day"));
+                    if(maxNumWithdrawalsDay-todayWithdraw.getWithdrawCount()<=0){
+                        ajax.put("msg", "The maximum number of withdrawals per day is "+maxNumWithdrawalsDay);
+                        return ajax;
+                    }
+
                     String result = iTransService.createWithdraw(panWithdrawCreate);
 
                     if (result.equals(MessageStatus.SUCCESS)) {

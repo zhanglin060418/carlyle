@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="agentId"    column="agent_id"  />
         <result property="agentName"    column="agent_name"  />
         <result property="channelId"    column="channel_id"  />
+        <result property="withdrawCount"    column="withdrawCount"  />
     </resultMap>
 
     <sql id="selectPanWithdrawVo">
@@ -268,6 +269,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM
         pan_withdraw
         where withdraw_id in (${withdrawIds})
+    </select>
+
+    <select id="getTodayWithdrawCountByUserId" parameterType="Long" resultMap="PanWithdrawResult">
+        select count(1) withdrawCount, IFNULL( sum( amount+fee ), 0 ) amount from pan_withdraw where user_id = #{userId} and DATE_FORMAT(create_time,'%Y-%m-%d') = CURDATE() and status != 'Declined'
     </select>
 
 </mapper>

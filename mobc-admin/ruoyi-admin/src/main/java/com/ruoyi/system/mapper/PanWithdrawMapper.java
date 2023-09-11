@@ -76,4 +76,6 @@ public interface PanWithdrawMapper
     public  PanWithdraw getTransitAmtByUser(Long agentId);
 
     public Long getUserWithdrawInfoByIds(String withdrawIds);
+
+    public PanWithdraw getTodayWithdrawCountByUserId(Long userId);
 }
