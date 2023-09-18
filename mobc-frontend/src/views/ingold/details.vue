@@ -99,7 +99,7 @@ export default {
         case 'Completed':
           return this.$t('status.SUCCESS') //'支付成功'
         case 'Failed':
-          return this.$t('status.FAIL') //'支付失败'
+          return this.$t('status.PENDING') //'支付失败'
         case 'Declined':
           return this.$t('status.DECLINED') //'支付失败'
       }

@@ -117,7 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM
             pan_product pd
                 LEFT JOIN ( SELECT count( pan.product ) cun, pan.product FROM pan_purchase pan WHERE pan.buyer = #{userId} GROUP BY pan.product ) pp ON pd.id = pp.product
-            where pd.name!='Treasure'
+            where pd.name!='Treasure' and pd.is_visible = '0'
                 ORDER BY pd.category
 
     </select>

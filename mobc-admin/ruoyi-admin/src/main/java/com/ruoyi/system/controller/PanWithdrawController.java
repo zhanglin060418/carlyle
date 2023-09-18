@@ -256,6 +256,10 @@ public class PanWithdrawController extends BaseController {
                         currWithdraw.setStatus(TransStatus.PROGRESS);
                         currWithdraw.setChannelId(indoWithdrawResult.getChannelId());
                         panWithdrawService.updatePanWithdraw(currWithdraw);
+                    }else if(indoWithdrawResult.getRespCode().equals("0023")){
+                        ajax = AjaxResult.error();
+                        ajax.put("msg", "订单已审核，请勿重复提交");
+                        return ajax;
                     } else {
                         if (currWithdraw.getStatus().equals(TransStatus.PENDING)) {
                             currWithdraw.setRespDesc(indoWithdrawResult.getRespDesc());
@@ -328,6 +332,10 @@ public class PanWithdrawController extends BaseController {
                     curr.setStatus(TransStatus.PROGRESS);
                     curr.setChannelId(indoWithdrawResult.getChannelId());
                     panWithdrawService.updatePanWithdraw(curr);
+                }else if(indoWithdrawResult.getRespCode().equals("0023")){
+                    ajax = AjaxResult.error();
+                    ajax.put("msg", "订单已审核，请勿重复提交");
+                    return ajax;
                 } else {
                     if (curr.getStatus().equals(TransStatus.PENDING)) {
                         curr.setRespDesc(indoWithdrawResult.getRespDesc());
@@ -400,7 +408,11 @@ public class PanWithdrawController extends BaseController {
                     panWithdraw.setStatus(TransStatus.PROGRESS);
                     panWithdraw.setChannelId(indoWithdrawResult.getChannelId());
                     panWithdrawService.updatePanWithdraw(panWithdraw);
-                } else {
+                } else if(indoWithdrawResult.getRespCode().equals("0023")){
+                    ajax = AjaxResult.error();
+                    ajax.put("msg", "订单已审核，请勿重复提交");
+                    return ajax;
+                }else {
                     if (curr.getStatus().equals(TransStatus.FAILED)) {
                         panWithdraw.setRespDesc(indoWithdrawResult.getRespDesc());
                         panWithdrawService.updatePanWithdraw(panWithdraw);
@@ -482,7 +494,9 @@ public class PanWithdrawController extends BaseController {
                         curr.setStatus(TransStatus.PROGRESS);
                         curr.setChannelId(indoWithdrawResult.getChannelId());
                         panWithdrawService.updatePanWithdraw(curr);
-                    } else {
+                    }else if(indoWithdrawResult.getRespCode().equals("0023")){
+                        logger.info("****订单已审核，请勿重复提交******");
+                    }  else {
                         if (curr.getStatus().equals(TransStatus.PENDING)) {
                             curr.setRespDesc(indoWithdrawResult.getRespDesc());
                             curr.setStatus(TransStatus.FAILED);

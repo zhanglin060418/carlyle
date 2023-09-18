@@ -19,7 +19,7 @@
         {{ $t('dw.t79') }}：{{ parseFloat(assetBalance)/100 }}
       </p>
       <p v-else-if="selectedBalance" class="shengyu">
-        {{ $t('payDetail.text39') }}：{{ parseFloat(balance/100)}}
+        <span class="showBalance">{{ $t('payDetail.text39') }}：{{ parseFloat(balance/100)}}</span> <span v-if="item.name == $t('dw.t196')" class="allIn" @click="goselectAll">All in</span>
       </p>
       <div class="buy-box">
         <div
@@ -246,6 +246,9 @@ export default {
     },
     chooseMoney(num) {
       this.reqNum = num
+    },
+    goselectAll(){
+      this.reqNum =this.balance/100;
     },
     buyClick() {
       this.postNum = this.reqNum * 100

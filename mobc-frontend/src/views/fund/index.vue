@@ -29,14 +29,12 @@
             {{ $t('dw.t183') }}
           </div>
         </div>
-
-    </div></div>
+      </div>
+    </div>
     <div class="today-earnings" style="">
       <p class="p-title line05">{{ $t('dw.t184') }}</p>
       <template v-if="newPurchase!=''">
-        <!--  -->
-
-          <vue-seamless-scroll :data="newPurchase" :class-option="classOption" class="earning-box">
+        <vue-seamless-scroll :data="newPurchase" :class-option="classOption" class="earning-box">
             <ul class="earning-list">
               <li class="earning-item" v-for="item in newPurchase">
                 <div >
@@ -46,7 +44,6 @@
                 </div>
               </li>
             </ul>
-
         </vue-seamless-scroll>
       </template>
     </div>
@@ -68,28 +65,28 @@
           :loadingText="loadingText"
       >
         <div class="pro-list">
-      <div class="box line05" v-for="item in productList" @click="toDetail(item)">
-        <div class="top" v-if="item.isVisible == 0 && item.name != $t('dw.t196')">
-          <carousel :elements="item.coverImages.split(',').map(item => imgBaseUrl + item)" style="width: 80px;"/>
-          <div class="info">
-            <p v-if="$i18n.locale=='zh_CN'" class="t">{{item.name}}</p>
-            <p v-else class="t">{{item.nameEn}}</p>
-            <p class="">{{ $t('dw.t168') }}: {{item.dailyInterest}}%</p>
-            <p>{{ $t('dw.t185') }}: {{item.cycle}} {{ $t('dw.t7') }}</p>
-            <p class="" v-if="item.name != 'Reward Product'" >{{ $t('dw.t5') }}: {{ item.copies }}/{{ item.copies - item.buyCount }}</p>
-            <p class="" v-else-if="item.name == 'Reward Product'" >Count: {{ item.buyCount}}</p>
-          </div>
-          <div class="r-price" v-if="item.type != '赠送产品'">
-            <p class="price" style=" text-align: center">{{  currencyShape  }}{{ parseFloat(item.minimumBuy / 100) }}</p>
-            <div class="buy" v-if="item.onSale == 0&&(item.copies!=item.buyCount)" style="width: 70px;">{{ $t('btn.t2') }}</div>
-            <div class="buy" v-else-if="item.onSale == 1 ||item.copies==item.buyCount" style="width: 70px;">{{ $t('btn.t34') }}</div>
+          <div class="box line05" v-for="item in productList" @click="toDetail(item)">
+            <div class="top" v-if="item.isVisible == 0 && item.name != $t('dw.t196')">
+              <carousel :elements="item.coverImages.split(',').map(item => imgBaseUrl + item)" style="width: 80px;"/>
+              <div class="info">
+                <p v-if="$i18n.locale=='zh_CN'" class="t">{{item.name}}</p>
+                <p v-else class="t">{{item.nameEn}}</p>
+                <p class="">{{ $t('dw.t168') }}: {{item.dailyInterest}}%</p>
+                <p>{{ $t('dw.t185') }}: {{item.cycle}} {{ $t('dw.t7') }}</p>
+                <p class="" v-if="item.name != 'Reward Product'" >{{ $t('dw.t5') }}: {{ item.copies }}/{{ item.copies - item.buyCount }}</p>
+                <p class="" v-else-if="item.name == 'Reward Product'" >Count: {{ item.buyCount}}</p>
+              </div>
+              <div class="r-price" v-if="item.type != '赠送产品'">
+                <p class="price" style=" text-align: center">{{  currencyShape  }}{{ parseFloat(item.minimumBuy / 100) }}</p>
+                <div class="buy" v-if="item.onSale == 0&&(item.copies!=item.buyCount)" style="width: 70px;">{{ $t('btn.t2') }}</div>
+                <div class="buy" v-else-if="item.onSale == 1 ||item.copies==item.buyCount" style="width: 70px;">{{ $t('btn.t34') }}</div>
+              </div>
+            </div>
+            <div v-if="item.isVisible == 0 && item.showProgressBar == 0" class="pro-progress">
+              <div class="progress-bar" :style="{ width: item.progress+'%' }"></div>
+            </div>
           </div>
         </div>
-        <div v-if="item.isVisible == 0 && item.showProgressBar == 0" class="pro-progress">
-          <div class="progress-bar" :style="{ width: item.progress+'%' }"></div>
-        </div>
-      </div>
-    </div>
       </van-list>
     </van-pull-refresh>
     <CustomerService/>
