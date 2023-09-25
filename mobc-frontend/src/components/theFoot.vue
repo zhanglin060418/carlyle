@@ -45,9 +45,9 @@ export default {
           // },
         },
         {
-          name: 'News', //任务
-          path: '/news',
-          icon: 'icon-icnews',
+          name: 'Community', //任务
+          path: '/community',
+          icon: 'icon-team',
           // icon: {
           //   active: require('@/assets/image/tab/task3.png'),
           //   inactive: require('@/assets/image/tab/task3_h.png'),
@@ -88,9 +88,9 @@ export default {
     $route: {
       handler() {
         let { path } = this.$route
-        if (path == '/home') {
+        if (path == '/home'||path == '/news') {
           this.active = 0
-        } else if (path == '/news') {
+        } else if (path == '/community') {
           this.active = 1
         } else if (path == '/fund') {
           this.active = 2

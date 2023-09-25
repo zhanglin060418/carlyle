@@ -5,19 +5,19 @@
         <!-- <van-cell  title="Head portrait" @click="bankCards" is-link /> -->
         <template v-if="userInfo.username">
           <div class="head-avatar">
-            <label>{{ $t('sa.txt277') }}</label>
-            <van-uploader :after-read="afterRead" accept="image/*" :max-count="1">
-              <div class="avatar">
-                <template v-if="!userInfo || !userInfo.headImg">
-                  <img src="static/assets/image/default-aa.png" alt="" />
-                </template>
-                <template v-else>
-                  <img :src="imgBaseUrl + userInfo.headImg" alt="" />
-                </template>
-                <van-icon name="arrow van-cell__right-icon" />
-              </div>
-            </van-uploader>
-          </div>
+          <label>{{ $t('sa.txt277') }}</label>
+          <van-uploader :after-read="afterRead" accept="image/*" :max-count="1">
+            <div class="avatar">
+              <template v-if="!userInfo || !userInfo.headImg">
+                <img src="static/assets/image/default-aa.png" alt="" />
+              </template>
+              <template v-else>
+                <img :src="imgBaseUrl + userInfo.headImg" alt="" />
+              </template>
+              <van-icon name="arrow van-cell__right-icon" />
+            </div>
+          </van-uploader>
+        </div>
         </template>
 
         <van-cell :title="$t('payDetail.text16')" @click="bankCards" is-link />

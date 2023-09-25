@@ -44,7 +44,7 @@
         <!-- <input type="text" v-model.trim="reqMoney" placeholder="Silakan masukkan jumlah penarikan" /> -->
         <input
           v-model="reqMoney"
-          type="number"
+          type="digit"
           :placeholder="$t('payDetail.text50')"
         />
       </div>
@@ -55,7 +55,7 @@
           ><span v-if="reqMoney"> ({{ withdrawFee }}%)</span>
         </p>
         <p>
-          {{ $t('payDetail.text38') }}：<span class="red">{{ reqMoney * (100 - withdrawFee) / 100 }}</span>
+          {{ $t('payDetail.text38') }}：<span class="red">{{ withdrawAmt}}</span>
         </p>
       </div>
       <p class="shengyu">
@@ -208,7 +208,15 @@ export default {
     }),
     fee() {
       if (this.reqMoney) {
-        return this.$utils.accMul(this.reqMoney, this.withdrawFee / 100 , 0)
+        let tempWithdrawAmt =  this.$utils.accMul(this.reqMoney, (100 - this.withdrawFee) / 100 , 0)
+        return this.$utils.accSub(this.reqMoney, tempWithdrawAmt, 0)
+      }
+      return 0
+    },
+
+    withdrawAmt() {
+      if (this.reqMoney) {
+        return this.$utils.accMul(this.reqMoney, (100-this.withdrawFee) / 100 , 0)
       }
       return 0
     },

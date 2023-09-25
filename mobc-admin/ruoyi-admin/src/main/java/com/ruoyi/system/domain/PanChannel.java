@@ -74,6 +74,30 @@ public class PanChannel extends BaseEntity
     @Excel(name = "是否代付")
     private String isProxy;//只设定一个可以做为代付通道
 
+    /** 充值排序 */
+    @Excel(name = "充值排序")
+    private Long rechargeSort;
+
+    /** 提现单笔费用 */
+    @Excel(name = "提现单笔费用")
+    private Long singleFee;
+
+    public Long getRechargeSort() {
+        return rechargeSort;
+    }
+
+    public void setRechargeSort(Long rechargeSort) {
+        this.rechargeSort = rechargeSort;
+    }
+
+    public Long getSingleFee() {
+        return singleFee;
+    }
+
+    public void setSingleFee(Long singleFee) {
+        this.singleFee = singleFee;
+    }
+
 
     public String getIsProxy() {
         return isProxy;

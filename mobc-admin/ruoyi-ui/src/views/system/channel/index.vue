@@ -79,8 +79,9 @@
             @change="changeProxy(scope.row)"/>
         </template>
       </el-table-column>
-        <el-table-column label="充值手续费" align="center" prop="inFeeRate" />
+      <el-table-column label="充值手续费" align="center" prop="inFeeRate" />
       <el-table-column label="提现手续费" align="center" prop="outFeeRate" />
+      <el-table-column label="提现单笔费用" align="center" prop="singleFee" />
       <el-table-column label="最小充值金额" align="center" prop="inMinAmount">
         <template slot-scope="scope">
           {{ parseFloat(scope.row.inMinAmount)}}
@@ -96,6 +97,7 @@
           {{ parseFloat(scope.row.outMinAmount)}}
         </template>
       </el-table-column>
+      <el-table-column label="充值顺序" align="center" prop="rechargeSort" />
       <el-table-column label="显示名称" align="center" prop="displayName" />
       <el-table-column label="显示logo" align="center" prop="displayLogo" width="100">
         <template slot-scope="scope">
@@ -105,7 +107,7 @@
 
       <el-table-column label="余额" align="center" prop="balance" >
         <template slot-scope="scope">
-           可用{{((JSON.parse(scope.row.balance).balance)/100).toFixed(2)}}<br>
+          可用{{((JSON.parse(scope.row.balance).balance)/100).toFixed(2)}}<br>
           冻结{{((JSON.parse(scope.row.balance).freezebalance)/100).toFixed(2)}}
         </template>
       </el-table-column>
@@ -180,30 +182,42 @@
             </el-form-item>
           </el-col>
         </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="充值手续费" prop="inFeeRate">
-             <el-input-number size="mini" v-model="form.inFeeRate" controls-position="right" :step="0.01" :min="0" placeholder="请输入充值手续费" />
-           </el-form-item>
-         </el-col>
-         <el-col :span="12">
-           <el-form-item label="提现手续费" prop="outFeeRate">
-             <el-input-number size="mini" v-model="form.outFeeRate" controls-position="right" :step="0.01" :min="0" placeholder="请输入提现手续费" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="最小充值金额" prop="inMinAmount">
-            <el-input-number size="mini" v-model="form.inMinAmount" controls-position="right" :step="1" :min="0" placeholder="请输入最小充值金额" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="最大充值金额" prop="inMaxAmount">
-            <el-input-number size="mini" v-model="form.inMaxAmount" controls-position="right" :step="1" :min="0" placeholder="请输入最大充值金额" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="充值手续费" prop="inFeeRate">
+              <el-input-number size="mini" v-model="form.inFeeRate" controls-position="right" :step="0.01" :min="0" placeholder="请输入充值手续费" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="提现手续费" prop="outFeeRate">
+              <el-input-number size="mini" v-model="form.outFeeRate" controls-position="right" :step="0.01" :min="0" placeholder="请输入提现手续费" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="提现单笔费用" prop="singleFee">
+              <el-input-number size="mini" v-model="form.singleFee" controls-position="right" :step="1" :min="0" placeholder="提现单笔费用" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="充值排序" prop="rechargeSort">
+              <el-input-number size="mini" v-model="form.rechargeSort" controls-position="right" :step="1" :min="0" placeholder="充值排序" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最小充值金额" prop="inMinAmount">
+              <el-input-number size="mini" v-model="form.inMinAmount" controls-position="right" :step="1" :min="0" placeholder="请输入最小充值金额" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最大充值金额" prop="inMaxAmount">
+              <el-input-number size="mini" v-model="form.inMaxAmount" controls-position="right" :step="1" :min="0" placeholder="请输入最大充值金额" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="最小提现金额" prop="outMinAmount">
@@ -226,7 +240,7 @@
             <el-form-item label="可能出现的营销信息" prop="displayTips">
               <el-input v-model="form.displayTips" placeholder="请输入可能出现的营销信息" />
             </el-form-item>
-         </el-col>
+          </el-col>
         </el-row>
         <el-form-item label="调用产生json" prop="jsonParam" style="min-height: 150px">
           <el-input size="mini" v-model="form.jsonParam" type="textarea" placeholder="请输入内容" rows="10"/>
@@ -243,208 +257,214 @@
 <script>
   import {listChannel, getChannel, delChannel, addChannel, updateChannel, setProxyChannel} from "@/api/system/channel";
 
-export default {
-  name: "Channel",
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 支付通道表格数据
-      channelList: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        channelMerno: null,
-        channelName: null,
-        status: null,
-        inFeeRate: null,
-        outFeeRate: null,
-        inMinAmount: null,
-        inMaxAmount: null,
-        outMinAmount: null,
-        jsonParam: null,
-        displayName: null,
-        displayLogo: null,
-        displayTips: null,
-        isProxy:null
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        channelMerno: [
-          { required: true, message: "商户号不能为空", trigger: "blur" }
-        ],
-        channelName: [
-          { required: true, message: "通道名称不能为空", trigger: "blur" }
-        ],
-        status: [
-          { required: true, message: "状态不能为空", trigger: "change" }
-        ],
-        inFeeRate: [
-          { required: true, message: "充值手续费不能为空", trigger: "blur" }
-        ],
-        outFeeRate: [
-          { required: true, message: "提现手续费不能为空", trigger: "blur" }
-        ],
-        inMinAmount: [
-          { required: true, message: "最小充值金额不能为空", trigger: "blur" }
-        ],
-        inMaxAmount: [
-          { required: true, message: "最大充值金额不能为空", trigger: "blur" }
-        ],
-        outMinAmount: [
-          { required: true, message: "最小提现金额不能为空", trigger: "blur" }
-        ],
-        jsonParam: [
-          { required: true, message: "调用产生json不能为空", trigger: "blur" }
-        ],
-      },
-      statusOptions: [{
-        "label": "启用",
-        "value": "0"
-      }, {
-        "label": "停用",
-        "value": "1"
-      },
-      ]
-    };
-  },
-  created() {
-    this.getList();
-  },
-  methods: {
-    /** 查询支付通道列表 */
-    getList() {
-      this.loading = true;
-      listChannel(this.queryParams).then(response => {
-        this.channelList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        channelId: null,
-        channelMerno: null,
-        channelName: null,
-        status: null,
-        inFeeRate: null,
-        outFeeRate: null,
-        inMinAmount: null,
-        inMaxAmount: null,
-        outMinAmount: null,
-        jsonParam: null,
-        createTime: null,
-        updateTime: null,
-        displayName: null,
-        displayLogo: null,
-        displayTips: null,
-        isProxy:null
+  export default {
+    name: "Channel",
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 支付通道表格数据
+        channelList: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 10,
+          channelMerno: null,
+          channelName: null,
+          status: null,
+          inFeeRate: null,
+          outFeeRate: null,
+          inMinAmount: null,
+          inMaxAmount: null,
+          outMinAmount: null,
+          jsonParam: null,
+          displayName: null,
+          displayLogo: null,
+          displayTips: null,
+          isProxy:null
+        },
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {
+          channelMerno: [
+            { required: true, message: "商户号不能为空", trigger: "blur" }
+          ],
+          channelName: [
+            { required: true, message: "通道名称不能为空", trigger: "blur" }
+          ],
+          status: [
+            { required: true, message: "状态不能为空", trigger: "change" }
+          ],
+          inFeeRate: [
+            { required: true, message: "充值手续费不能为空", trigger: "blur" }
+          ],
+          outFeeRate: [
+            { required: true, message: "提现手续费不能为空", trigger: "blur" }
+          ],
+          singleFee: [
+            { required: true, message: "提现单笔费用不能为空", trigger: "blur" }
+          ],
+          rechargeSort: [
+            { required: true, message: "充值排序不能为空", trigger: "blur" }
+          ],
+          inMinAmount: [
+            { required: true, message: "最小充值金额不能为空", trigger: "blur" }
+          ],
+          inMaxAmount: [
+            { required: true, message: "最大充值金额不能为空", trigger: "blur" }
+          ],
+          outMinAmount: [
+            { required: true, message: "最小提现金额不能为空", trigger: "blur" }
+          ],
+          jsonParam: [
+            { required: true, message: "调用产生json不能为空", trigger: "blur" }
+          ],
+        },
+        statusOptions: [{
+          "label": "启用",
+          "value": "0"
+        }, {
+          "label": "停用",
+          "value": "1"
+        },
+        ]
       };
-      this.resetForm("form");
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
+    created() {
       this.getList();
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.channelId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加支付通道";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const channelId = row.channelId || this.ids
-      getChannel(channelId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改支付通道";
-      });
-    },
-
-    async changeProxy(op){
-      this.loading = true;
-      await setProxyChannel(op)
-      this.loading = false;
-      this.handleQuery()
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          this.form.inMinAmount = this.form.inMinAmount
-          this.form.inMaxAmount = this.form.inMaxAmount
-          this.form.outMinAmount = this.form.outMinAmount
-          if (this.form.channelId != null) {
-            updateChannel(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addChannel(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const channelIds = row.channelId || this.ids;
-      this.$modal.confirm('是否确认删除支付通道编号为"' + channelIds + '"的数据项？').then(function() {
-        return delChannel(channelIds);
-      }).then(() => {
+    methods: {
+      /** 查询支付通道列表 */
+      getList() {
+        this.loading = true;
+        listChannel(this.queryParams).then(response => {
+          this.channelList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        });
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          channelId: null,
+          channelMerno: null,
+          channelName: null,
+          status: null,
+          inFeeRate: null,
+          outFeeRate: null,
+          inMinAmount: null,
+          inMaxAmount: null,
+          outMinAmount: null,
+          jsonParam: null,
+          createTime: null,
+          updateTime: null,
+          displayName: null,
+          displayLogo: null,
+          displayTips: null,
+          isProxy:null
+        };
+        this.resetForm("form");
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1;
         this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('system/channel/export', {
-        ...this.queryParams
-      }, `channel_${new Date().getTime()}.xlsx`)
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.resetForm("queryForm");
+        this.handleQuery();
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.channelId)
+        this.single = selection.length!==1
+        this.multiple = !selection.length
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset();
+        this.open = true;
+        this.title = "添加支付通道";
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.reset();
+        const channelId = row.channelId || this.ids
+        getChannel(channelId).then(response => {
+          this.form = response.data;
+          this.open = true;
+          this.title = "修改支付通道";
+        });
+      },
+
+      async changeProxy(op){
+        this.loading = true;
+        await setProxyChannel(op)
+        this.loading = false;
+        this.handleQuery()
+      },
+      /** 提交按钮 */
+      submitForm() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            this.form.inMinAmount = this.form.inMinAmount
+            this.form.inMaxAmount = this.form.inMaxAmount
+            this.form.outMinAmount = this.form.outMinAmount
+            if (this.form.channelId != null) {
+              updateChannel(this.form).then(response => {
+                this.$modal.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              });
+            } else {
+              addChannel(this.form).then(response => {
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              });
+            }
+          }
+        });
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        const channelIds = row.channelId || this.ids;
+        this.$modal.confirm('是否确认删除支付通道编号为"' + channelIds + '"的数据项？').then(function() {
+          return delChannel(channelIds);
+        }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        }).catch(() => {});
+      },
+      /** 导出按钮操作 */
+      handleExport() {
+        this.download('system/channel/export', {
+          ...this.queryParams
+        }, `channel_${new Date().getTime()}.xlsx`)
+      }
     }
-  }
-};
+  };
 </script>
 
 <style>

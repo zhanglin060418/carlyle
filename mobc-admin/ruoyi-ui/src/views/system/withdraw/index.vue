@@ -76,6 +76,24 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
+      <el-form-item label="渠道" prop="channelId">
+        <el-select
+          size="mini" v-model="queryParams.channelId"
+          placeholder="渠道"
+          clearable
+          @keyup.enter.native="handleQuery"
+        >
+          <el-option
+            v-for="(item, index) in channelList"
+            :key="index"
+            :label="item.displayName"
+            :value="item.channelId"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="创建时间">
         <el-date-picker
           size="mini" v-model="dateRange"
@@ -136,7 +154,7 @@
       <el-table-column label="代理商"  align="center" prop="agentName" v-if= "$auth.hasPermi('system:agent:edit')"/>
       <el-table-column label="提现金额" align="center" >
         <template slot-scope="scope">
-          {{ parseFloat(scope.row.amount) / 100+ parseFloat(scope.row.fee) / 100 }}
+          {{ parseFloat((scope.row.amount+scope.row.fee)/ 100) }}
         </template>
       </el-table-column>
       <el-table-column label="到账金额" align="center" prop="amount">
@@ -310,15 +328,13 @@ import {
   listWithdraw,
   getWithdraw,
   postBatchWithdraw,
-  delWithdraw,
-  addWithdraw,
   updateWithdraw,
   handleChangeStatus,
   handleChangeStatusRetry
 } from "@/api/system/withdraw";
 import UserInfo from "@/components/UserInfo";
 import CardInfo from "@/components/CardInfo";
-import {changeUserStatus} from "@/api/system/user";
+import {getChannelList} from "@/api/system/channel";
 import {parseTime} from "../../../utils/ruoyi";
 
 export default {
@@ -339,6 +355,7 @@ export default {
       total: 0,
       // 提款表格数据
       withdrawList: [],
+      channelList:[],
       amountCount: 0,
       dateRange: [],
       // 弹出层标题
@@ -393,6 +410,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getChannelList();
   },
   methods: {
     parseTime,
@@ -405,6 +423,11 @@ export default {
         this.amountCount = response.amountCount;
         this.loading = false;
       });
+    },
+    getChannelList(){
+      getChannelList().then(response => {
+        this.channelList = response.data;
+      })
     },
     handleUpdateBatch(str) {
       this.fullscreenLoading = true;

@@ -35,6 +35,18 @@ const routes = [{
                         title: 'News',
                     },
                 },
+
+                {
+                    path: '/community',
+                    name: 'Community',
+                    component: () =>
+                        import ('@/views/community'),
+                    meta: {
+                        title: 'Community',
+
+                    },
+
+                },
                 {
                     path: '/fund',
                     name: 'fund',
@@ -65,6 +77,15 @@ const routes = [{
                     },
                 },
             ],
+        },
+        {
+            path: '/release',
+            name: 'release',
+            component: () =>
+                import ('@/views/community/release'),
+            meta: {
+                title: 'Release',
+            },
         },
         {
             path: '/newsdetail',

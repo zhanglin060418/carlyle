@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.PanChannelMapper">
 
     <resultMap type="PanChannel" id="PanChannelResult">
@@ -21,11 +21,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="displayLogo"    column="display_logo"    />
         <result property="displayTips"    column="display_tips"    />
         <result property="isProxy"    column="is_proxy"    />
+        <result property="rechargeSort"    column="recharge_sort"    />
+        <result property="singleFee"    column="single_fee"  />
+
     </resultMap>
 
     <sql id="selectPanChannelVo">
-        select channel_id, channel_merNo, channel_name, status, in_fee_rate, out_fee_rate, in_min_amount, in_max_amount, out_min_amount, json_param, create_time, update_time, display_name, display_logo, display_tips,is_proxy from pan_channel
+        select channel_id, channel_merNo, channel_name,recharge_sort,single_fee, status, in_fee_rate, out_fee_rate, in_min_amount, in_max_amount, out_min_amount, json_param, create_time, update_time, display_name, display_logo, display_tips,is_proxy from pan_channel
     </sql>
+
+    <select id="selectPanChannelListByRecharge" parameterType="PanChannel" resultMap="PanChannelResult">
+        <include refid="selectPanChannelVo"/>
+        <where>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by recharge_sort
+    </select>
 
     <select id="selectPanChannelList" parameterType="PanChannel" resultMap="PanChannelResult">
         <include refid="selectPanChannelVo"/>
@@ -45,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isProxy != null  and isProxy != ''"> and is_proxy = #{isProxy}</if>
 
         </where>
-            order by create_time desc
+        order by create_time desc
     </select>
 
     <select id="selectPanChannelByChannelId" parameterType="Long" resultMap="PanChannelResult">
@@ -63,7 +74,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where is_proxy = "0" limit 1
     </select>
 
-
     <insert id="insertPanChannel" parameterType="PanChannel" useGeneratedKeys="true" keyProperty="channelId">
         insert into pan_channel
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -79,8 +89,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="displayName != null">display_name,</if>
             <if test="displayLogo != null">display_logo,</if>
             <if test="displayTips != null">display_tips,</if>
+            <if test="rechargeSort != null">recharge_sort,</if>
+            <if test="singleFee != null">single_fee,</if>
             create_time,is_proxy
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="channelMerno != null and channelMerno != ''">#{channelMerno},</if>
             <if test="channelName != null and channelName != ''">#{channelName},</if>
@@ -94,8 +106,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="displayName != null">#{displayName},</if>
             <if test="displayLogo != null">#{displayLogo},</if>
             <if test="displayTips != null">#{displayTips},</if>
+            <if test="rechargeSort != null">#{rechargeSort},</if>
+            <if test="singleFee != null">#{singleFee},</if>
             now(),'1'
-         </trim>
+        </trim>
     </insert>
 
     <update id="updatePanChannel" parameterType="PanChannel">
@@ -113,6 +127,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="displayName != null">display_name = #{displayName},</if>
             <if test="displayLogo != null">display_logo = #{displayLogo},</if>
             <if test="displayTips != null">display_tips = #{displayTips},</if>
+            <if test="rechargeSort != null">recharge_sort = #{rechargeSort},</if>
+            <if test="singleFee != null">single_fee = #{singleFee},</if>
             update_time = now()
         </trim>
         where channel_id = #{channelId}

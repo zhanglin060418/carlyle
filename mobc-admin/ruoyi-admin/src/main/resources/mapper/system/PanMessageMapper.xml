@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanMessageMapper">
+
+    <resultMap type="PanMessage" id="PanMessageResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="coverImage"    column="cover_image"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="commentNum"    column="comment_num"    />
+        <result property="likesNum"    column="likes_num"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="userName"    column="user_name"    />
+        <result property="topName"    column="top_name"    />
+        <result property="topId"    column="top_id"    />
+        <result property="managerId"    column="manager_id"  />
+        <result property="headImg"    column="avatar"  />
+        <result property="agentId"    column="agent_id"  />
+    </resultMap>
+
+    <sql id="selectPanMessageVo">
+        select message_id, user_id, content, cover_image, create_time, comment_num, likes_num, update_time, remark, status from pan_message
+    </sql>
+
+    <select id="selectPanMessageList" parameterType="PanMessage" resultMap="PanMessageResult">
+        SELECT
+            m.message_id,
+            u.user_name,
+            u2.user_name top_name,
+            m.user_id,
+            m.content,
+            m.cover_image,
+            m.create_time,
+            m.comment_num,
+            m.likes_num,
+            m.update_time,
+            m.remark,
+            m.STATUS
+        FROM
+        pan_message m
+        LEFT JOIN sys_user u ON m.user_id = u.user_id
+        LEFT JOIN sys_user u2 ON u.top_id = u2.user_id
+        <where>
+            <if test="userName != null and userName != '' "> and u.user_name = #{userName}</if>
+            <if test="topId != null and topId!= ''"> and u.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and u.manager_id  = #{managerId}</if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="agentId != null and agentId!= ''"> and u.agent_id  = #{agentId}</if>
+            <if test="status != null  and status != ''"> and m.status = #{status}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(m.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND <![CDATA[ DATE_FORMAT(m.create_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
+            </if>
+        </where>
+        order by m.create_time desc
+    </select>
+
+    <select id="selectPanMessageByMessageId" parameterType="Long" resultMap="PanMessageResult">
+        SELECT
+            m.message_id,
+            u.user_name,
+            m.user_id,
+            m.content,
+            m.cover_image,
+            m.create_time,
+            m.comment_num,
+            m.likes_num,
+            m.update_time,
+            m.remark,
+            m.STATUS
+        FROM
+        pan_message m
+        LEFT JOIN sys_user u ON m.user_id = u.user_id
+        where m.message_id = #{messageId}
+    </select>
+
+    <select id="getMessageList" parameterType="PanMessage" resultMap="PanMessageResult">
+        SELECT
+            m.message_id,
+            u.user_name,
+            u.avatar,
+            m.content,
+            m.cover_image,
+            m.create_time,
+            m.comment_num,
+            m.likes_num,
+						case WHEN  IFNULL(pp.cun, 0) = 0 THEN TRUE
+						else FALSE
+						end as likesbefore
+        FROM
+        pan_message m
+        LEFT JOIN sys_user u ON m.user_id = u.user_id
+				LEFT JOIN ( SELECT count( pan.likes_id ) cun, pan.message_id FROM pan_message_likes pan WHERE pan.user_id = #{userId} GROUP BY pan.message_id ) pp ON m.message_id =pp.message_id
+        where m.status = 'Completed'
+        order by m.create_time desc
+        limit #{currentPage},#{size}
+    </select>
+
+    <insert id="insertPanMessage" parameterType="PanMessage">
+        insert into pan_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="content != null">content,</if>
+            <if test="coverImage != null">cover_image,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="coverImage != null">#{coverImage},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updatePanMessage" parameterType="PanMessage">
+        update pan_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="likesNum != null">likes_num = #{likesNum},</if>
+            update_time = now()
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deletePanMessageByMessageId" parameterType="Long">
+        delete from pan_message where message_id = #{messageId}
+    </delete>
+
+    <delete id="deletePanMessageByMessageIds" parameterType="String">
+        delete from pan_message where message_id in
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+    <insert id="insertMessageLikes" parameterType="PanMessage">
+        insert into pan_message_likes
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="messageId != null">message_id,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="messageId != null">#{messageId},</if>
+            now()
+        </trim>
+    </insert>
+
+    <delete id="deleteMessageLikes" parameterType="PanMessage">
+            delete from pan_message_likes where message_id = #{messageId} and user_id = #{userId}
+    </delete>
+
+    <update id="updatePanMessageByLikesNumAdd" parameterType="PanMessage">
+        update pan_message
+           set likes_num = likes_num + 1,
+            update_time = now()
+        where message_id = #{messageId}
+    </update>
+
+    <update id="updatePanMessageByLikesNumReduce" parameterType="PanMessage">
+        update pan_message
+           set likes_num = likes_num - 1,
+            update_time = now()
+        where message_id = #{messageId} and likes_num > 0
+    </update>
+
+</mapper>

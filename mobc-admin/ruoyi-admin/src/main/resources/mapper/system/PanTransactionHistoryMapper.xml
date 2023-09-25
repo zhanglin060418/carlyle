@@ -1009,18 +1009,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <select id="getAgentTransInfo" parameterType="Long" resultMap="TeamOverviewResult">
-        SELECT
-        IFNULL(count( t.transaction_history_id ),0)  totalPeopleCount,
-        IFNULL( sum( t.amount ), 0 ) AS transAmt,
-        t.transaction_type AS transType
-        FROM
-        pan_transaction_history t
-        LEFT JOIN sys_user u ON t.user_id = u.user_id
-        where
-        t.transaction_type in ('Recharge','Withdraw')
-        and u.agent_id =  #{agentId}
-        GROUP BY
-        t.transaction_type
+        SELECT sum( re.balance ) transAmt FROM (
+            SELECT IFNULL( sum( p.amount -( p.amount * c.in_fee_rate / 100 )),0) balance,
+            p.channel_id
+            FROM
+                pan_recharge p
+                LEFT JOIN sys_user u ON p.user_id = u.user_id
+                LEFT JOIN pan_channel c ON p.channel_id = c.channel_id
+            WHERE
+                p.STATUS = 'Completed'
+                AND u.agent_id = #{agentId}
+            GROUP BY
+            p.channel_id
+            ) re
     </select>
     <select id="getTeamIncomeInfo" parameterType="Long" resultMap="TeamOverviewResult">
         SELECT
@@ -1030,9 +1031,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type IN ('Child_First_Purchase_Reward','Commission_A_Reward','Reward_Product')) childIncome,
             ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type = 'Commission_B_Reward' ) grandIncome,
             ( SELECT IFNULL( sum( amount ), 0 ) FROM pan_transaction_history WHERE user_id = #{userId}  AND transaction_type = 'Commission_C_Reward' ) greatGrandIncome,
-			(select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.parent_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as childRechargePeople,
-            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.grand_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as grandRechargePeople,
-            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.great_grand_id = #{userId} AND p.transaction_type = 'Recharge' group by p.user_id )  pu) as greatGrandRechargePeople
+			(select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.parent_id = #{userId} AND p.transaction_type = 'Buy_Product_Balance' group by p.user_id )  pu) as childRechargePeople,
+            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.grand_id = #{userId} AND p.transaction_type = 'Buy_Product_Balance' group by p.user_id )  pu) as grandRechargePeople,
+            (select count(1)  from (SELECT count(1) cou , p.user_id  FROM pan_transaction_history  p left join  sys_user u  on  p.user_id = u.user_id  WHERE u.great_grand_id = #{userId} AND p.transaction_type = 'Buy_Product_Balance' group by p.user_id )  pu) as greatGrandRechargePeople
         FROM
             sys_user
         WHERE

@@ -5,6 +5,26 @@
         <img src="https://www.carlyle.com/themes/carlyle_2020/logo.svg" alt="" class="logo" />
       </div>
     </div>
+    <div class="my-btn-box"  style="padding-left:10px;padding-right: 10px" >
+      <div class="my-btn tg" @click="downAppEx" >
+        <img src="static/assets/image/wind/icon/download.png" alt="" />
+        <p>{{ $t('dw.t163') }}</p>
+      </div>
+
+      <div class="my-btn whats"  @click="gotoNews">
+        <!-- <img src="static/assets/image/dw/btn_whats.png" alt="" /> -->
+        <img src="static/assets/image/xapp/xins/news.png" alt=""  />
+        <p>{{ $t('dw.t231') }}</p>
+      </div>
+    </div>
+
+    <div class="home-content">
+      <div class="earning-box">
+        <div class="scroll-container">
+          <p class="ql-snow ql-editor" v-html="loginAnnouncement.noticeContent"/>
+        </div>
+      </div>
+    </div>
     <div class="home-content">
       <div class="text-main">
         <div v-for="item in list" class="text-box" v-if="item.status == 0">
@@ -133,8 +153,12 @@ export default {
     },
     showNoticePop() {
       if (this.$route.path == '/home' && !sessionStorage.getItem('_t_notic')) {
-        this.showNotice = true
-        sessionStorage.setItem('_t_notic', 1)
+        this.getHomeAnnouncementItem().then(res => {
+          if(res.loginAnnouncement.status == '0'){
+            this.showNotice = true
+            sessionStorage.setItem('_t_notic', 1)
+          }
+        })
       }
     },
     closeNotic() {
@@ -167,7 +191,7 @@ export default {
       await this.getHomeIndex().then(res =>{
         this.list = res.data
       })
-      await  this.getHomeAnnouncementItem().then(res => {
+      await this.getHomeAnnouncementItem().then(res => {
         this.loginAnnouncement = res.loginAnnouncement
       })
     },
@@ -278,6 +302,45 @@ export default {
       let end = type == 0 ? '12:00' : type == 1 ? '17:00' : '21:00'
       this.getList(this.getTime(start), this.getTime(end), currentTime)
     },
+    gotoNews(){
+      this.$router.push('news')
+    },
+    downAppEx() {
+      console.log(" come on start downAppEx ");
+      let _downUrl = ''
+      let u = navigator.userAgent
+      let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+      let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
+      if (isiOS) {
+
+        _downUrl = "https://app.carlyles.online/carlyle";
+      } else if (isAndroid) {
+        // _downUrl =
+        //     'https://superwind-003.s3-accelerate.amazonaws.com/apk/SuperWind.apk'
+
+        var protocol = location.protocol; // 获取协议，例如："http:" 或 "https:"
+        var hostname = location.hostname; // 获取域名，例如："www.example.com"
+        var currUrl =  protocol+"//"+hostname
+        var port = location.port;
+        //兼容下测试环境带端口的访问
+        if(port!=''){
+          currUrl =  protocol+"//"+hostname+":"+port;
+        }
+
+        //如果dev测试环境另外算
+        if(process.env.NODE_ENV === 'development'){
+          _downUrl = process.env.NODE_ENV_URL+"/profile/upload/apk/carlyle.apk"
+        }else{
+          //这里其实可以查询最新的版本的，后续补充，哎一地鸡毛
+          _downUrl = currUrl+"/prod-api/profile/upload/apk/carlyle.apk"
+        }
+      }
+
+      console.log("  downAppEx url: " + _downUrl);
+      setTimeout(() => {
+        window.location.href = _downUrl
+      }, 100)
+    },
   },
 }
 </script>
@@ -290,4 +353,28 @@ div.van-popup--bottom {
   box-shadow: inset 0px 2px 4px rgb(243, 243, 242);
   border-radius: 20px 20px 0px 0px;
 }
+.earning-box{
+  height: 2rem ;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-top: 20px;
+}
+.scroll-container {
+  overflow: hidden; /* 隐藏溢出部分的文本 */
+}
+
+.scroll-container p {
+  animation: scroll 40s linear infinite;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
 </style>

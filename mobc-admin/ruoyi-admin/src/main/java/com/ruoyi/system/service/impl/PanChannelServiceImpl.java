@@ -57,6 +57,11 @@ public class PanChannelServiceImpl implements IPanChannelService
         return panChannelMapper.resetAllProxy();
     }
 
+    @Override
+    public List<PanChannel> selectPanChannelListByRecharge(PanChannel panChannel) {
+        return panChannelMapper.selectPanChannelListByRecharge(panChannel);
+    }
+
     /**
      * 查询支付通道列表
      *

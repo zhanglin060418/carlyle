@@ -63,16 +63,20 @@ public class PanChannelController extends BaseController
         //这里打算取一下不同的通道方式 需要能够支持多个
         PanChannel panChannel = new PanChannel();
         panChannel.setStatus(UserStatus.OK.getCode());
-        List<PanChannel> list = panChannelService.selectPanChannelList(panChannel);
-        list.sort(new Comparator<PanChannel>() {
-            @Override
-            public int compare(PanChannel o1, PanChannel o2) {
-                return (o2.getUpdateTime().compareTo(o1.getUpdateTime()));
-            }
-        });
+        List<PanChannel> list = panChannelService.selectPanChannelListByRecharge(panChannel);
         ajax.put("channelList", list);
 
-    	return ajax;
+        return ajax;
+    }
+
+
+    @GetMapping("/getChannelList")
+    public AjaxResult getChannelList() {
+        AjaxResult ajax = AjaxResult.success();
+        PanChannel panChannel = new PanChannel();
+        List<PanChannel> list = panChannelService.selectPanChannelListByRecharge(panChannel);
+        ajax.put("data", list);
+        return ajax;
     }
 
     @PreAuthorize("@ss.hasPermi('system:channel:list')")

@@ -25,7 +25,7 @@ import com.ruoyi.system.service.ISysUserService;
 
 /**
  * 个人信息 业务处理
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -137,5 +137,23 @@ public class SysProfileController extends BaseController
             }
         }
         return error("上传图片异常，请联系管理员");
+    }
+
+    /**
+     * 头像上传
+     */
+    @Log(title = "消息图片", businessType = BusinessType.UPDATE)
+    @PostMapping("/community")
+    public AjaxResult community(@RequestParam("communityfile") MultipartFile file) throws Exception
+    {
+        if (!file.isEmpty())
+        {
+            String community = FileUploadUtils.upload(RuoYiConfig.getCommunityPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
+                AjaxResult ajax = AjaxResult.success();
+                ajax.put("imgUrl", community);
+                return ajax;
+
+        }
+        return error("upload exception，try again later!");
     }
 }

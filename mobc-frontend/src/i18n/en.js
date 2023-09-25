@@ -71,6 +71,7 @@ export default {
     treasureWithdrawSuccess: 'You have successfully deposited your treasure balance into your account balance',
     failedOperation: 'Operation failed. Please try it again.',
     uploadSuccess: 'You have successfully uploaded your profile image',
+    messageSuccess: 'Successfully, Pending review',
     cardErr: 'This Card Number has been already exists',
     RewardTransferSuccess: 'You have successfully deposited your Reward balance into your account balance',
   },
@@ -157,7 +158,8 @@ export default {
     inviteCode: 'Invite Code',
     enterWhatsApp: 'Please enter your WhatsApp',
     enterTelegram: 'Please enter your Telegram',
-    setContact: 'Set Contact Information'
+    setContact: 'Set Contact Information',
+    news:'News'
   },
   status: {
     PENDING: 'Pending',
@@ -850,7 +852,8 @@ export default {
     t227: 'Check In',
     t228: 'Today income',
     rewardBalance: 'Reward Balance',
-    t229: 'Recharge',
-    t230: 'Total Recharge member'
+    t229: 'Buy member',
+    t230: 'Total Buy member',
+    t231: 'NEWS'
   },
 }

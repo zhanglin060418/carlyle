@@ -163,54 +163,16 @@ public class PanWithdrawServiceImpl implements IPanWithdrawService
     public BigDecimal getAgentBalance(Long agentId) {
 
         BigDecimal agentBalance = new BigDecimal(0);
-        PanAgentBalance panAgentBalance = agentBalanceMapper.selectPanAgentBalanceByAgentId(agentId);
         // 预充值
+        PanAgentBalance panAgentBalance = agentBalanceMapper.selectPanAgentBalanceByAgentId(agentId);
         BigDecimal prechargeAmt = panAgentBalance.getPrechargeAmt();
-
+        // 充值余额，已扣除充值手续费
         List<TeamOverview> totalTransCountlist = transHistoryMapper.getAgentTransInfo(agentId);
-        Long rechargeAmt = 0L;
-        Long withdrawAmt = 0L;
-        Long withdrawCount = 0L;
-        for (TeamOverview teamUser : totalTransCountlist) {
-            if (teamUser.getTransType().equalsIgnoreCase(TransType.Recharge.name())) {
-                rechargeAmt = teamUser.getTransAmt();
-            } else if (teamUser.getTransType().equalsIgnoreCase(TransType.Withdraw.name())) {
-                withdrawCount = teamUser.getTotalPeopleCount();
-                withdrawAmt = teamUser.getTransAmt();
-            }
-        }
-        // 在途金额
+        Long rechargeBalance =  totalTransCountlist.get(0).getTransAmt();
+        // 代付金额+手续费+单笔费用
         PanWithdraw transitInfo = panWithdrawMapper.getTransitAmtByUser(agentId);
-        BigDecimal transitAmt = transitInfo.getAmount();
-        BigDecimal transitCount = new BigDecimal(transitInfo.getWithdrawId());
-
-        String channel_recharge_withdrawRate = sysConfigService.selectConfigByKey("channel_recharge_withdrawRate");
-        Double withdrawal_fee = Double.parseDouble(sysConfigService.selectConfigByKey("withdrawal_fee"));
-
-        String[] strArr = channel_recharge_withdrawRate.split(",");
-        Double channelRechargeRate = Double.parseDouble(strArr[0]);
-        Double channelWithdrawRate = Double.parseDouble(strArr[1]);
-        Double channelWithdrawSingefee = Double.parseDouble(strArr[2]);
-
-        // 充值手续费
-        BigDecimal channelRechargeFee = new BigDecimal(rechargeAmt).multiply(new BigDecimal(channelRechargeRate)).divide(new BigDecimal(100));
-
-        // 已提现金额
-        BigDecimal channelWithdarwAmt = new BigDecimal(withdrawAmt).subtract(new BigDecimal(withdrawAmt).multiply(new BigDecimal(withdrawal_fee)).divide(new BigDecimal(100)));
-        // 已提现手续费
-        BigDecimal channelWithdrawFee = channelWithdarwAmt.multiply(new BigDecimal(channelWithdrawRate)).divide(new BigDecimal(100));
-        // 已提现单笔费用
-        BigDecimal channelSingefee = new BigDecimal(withdrawCount).multiply(new BigDecimal(channelWithdrawSingefee)).multiply(new BigDecimal(100));
-
-        // 在途手续费
-        BigDecimal channelTransitFee = transitAmt.multiply(new BigDecimal(channelWithdrawRate)).divide(new BigDecimal(100));
-        // 在途单笔费用
-        BigDecimal channelTransitSingefee = transitCount.multiply(new BigDecimal(channelWithdrawSingefee)).multiply(new BigDecimal(100));
-
-        agentBalance = prechargeAmt.add(new BigDecimal(rechargeAmt)).subtract(channelRechargeFee).
-                subtract(channelWithdarwAmt).subtract(channelWithdrawFee).subtract(channelSingefee).
-                subtract(transitAmt).subtract(channelTransitFee).subtract(channelTransitSingefee);
-
+        BigDecimal withdraAmtAndFee =transitInfo.getAmount();
+        agentBalance = prechargeAmt.add(new BigDecimal(rechargeBalance)).subtract(withdraAmtAndFee);
         return agentBalance;
     }
 }

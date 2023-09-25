@@ -204,7 +204,7 @@
   // box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.1);
   // border-radius: 50%;
   position: fixed;
-  right: 5px;
+  right: 10px;
   bottom: 60px;
   z-index: 29;
   display: flex;
@@ -378,4 +378,91 @@
   text-align: left;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.user-wrap {
+  margin: 10px 0;
+  background: #fff;
+  .message-box{
+    margin-top: 10px;
+    background-color: #f1f6ff;
+    border-radius: 20px;
+  }
+  .info-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    > img {
+      width: 32px;
+      height: 32px;
+    }
+    .info {
+      margin-left: 10px;
+    }
+  }
+  &.info-list {
+    .info-cell {
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+      .username {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+      .time{
+        font-size: 12px;
+      }
+    }
+  }
+  .info-content {
+    @media screen and (min-width: 600px) {
+      margin-top: 2px;
+    }
+    .text-main {
+      p {
+        color: #4f5050;
+        font-size: 16px;
+      }
+      .ql-editor{
+        color: #4f5050;
+        font-size: 16px;
+      }
+      .text-box {
+        margin-bottom: 10px;
+        img {
+          padding-left:15px;
+          padding-bottom:15px;
+          width: 60%;
+          height: auto;
+        }
+      }
+    }
+  }
+  .article_likes{
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0px 10px 10px 15px;
+    > img {
+      width: 20px;
+      height: 20px;
+    }
+    .likes {
+      font-size: 16px;
+      margin-left: 5px;
+    }
+  }
+  &.info-list {
+    .article_likes {
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
 }

@@ -71,7 +71,8 @@
               <div class="info">
                 <p v-if="$i18n.locale=='zh_CN'" class="t">{{item.name}}</p>
                 <p v-else class="t">{{item.nameEn}}</p>
-                <p class="">{{ $t('dw.t168') }}: {{item.dailyInterest}}%</p>
+                <p v-if="item.type == '赠送产品'"class="">{{ $t('dw.t168') }}: {{item.dailyInterest}}%</p>
+                <p v-else class="">{{ $t('dw.t168') }}: {{parseFloat(item.minimumBuy*item.dailyInterest/10000).toFixed(2)}}</p>
                 <p>{{ $t('dw.t185') }}: {{item.cycle}} {{ $t('dw.t7') }}</p>
                 <p class="" v-if="item.name != 'Reward Product'" >{{ $t('dw.t5') }}: {{ item.copies }}/{{ item.copies - item.buyCount }}</p>
                 <p class="" v-else-if="item.name == 'Reward Product'" >Count: {{ item.buyCount}}</p>

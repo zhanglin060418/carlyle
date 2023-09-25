@@ -75,4 +75,6 @@ public interface IPanChannelService
      * @return
      */
     public int resetAllProxy();
+
+    public List<PanChannel> selectPanChannelListByRecharge(PanChannel panChannel);
 }

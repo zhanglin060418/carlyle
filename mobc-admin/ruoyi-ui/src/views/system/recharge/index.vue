@@ -74,6 +74,24 @@
           </el-option>
         </el-select>
       </el-form-item>
+
+      <el-form-item label="渠道" prop="channelId">
+        <el-select
+          size="mini" v-model="queryParams.channelId"
+          placeholder="渠道"
+          clearable
+          @keyup.enter.native="handleQuery"
+        >
+          <el-option
+            v-for="(item, index) in channelList"
+            :key="index"
+            :label="item.displayName"
+            :value="item.channelId"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="创建时间">
         <el-date-picker
           size="mini" v-model="dateRange"
@@ -203,8 +221,10 @@
 
 <script>
 import { listRecharge, getRecharge, delRecharge, addRecharge, updateRecharge,handleChangeStatus } from "@/api/system/recharge";
+import {getChannelList} from "@/api/system/channel";
 import UserInfo from "@/components/UserInfo/index.js";
 import CardInfo from "@/components/CardInfo/index.js";
+
 
 export default {
   name: "Recharge",
@@ -226,6 +246,7 @@ export default {
       environment:'',
       // 充值表格数据
       rechargeList: [],
+      channelList:[],
       dateRange: [],
       // 弹出层标题
       title: "",
@@ -274,6 +295,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getChannelList();
   },
   methods: {
     /** 查询充值列表 */
@@ -286,6 +308,11 @@ export default {
         this.environment = response.environment;
         this.loading = false;
       });
+    },
+    getChannelList(){
+      getChannelList().then(response => {
+        this.channelList = response.data;
+      })
     },
 
     // 取消按钮

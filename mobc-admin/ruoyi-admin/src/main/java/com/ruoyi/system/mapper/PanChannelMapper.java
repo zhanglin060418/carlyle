@@ -67,5 +67,7 @@ public interface PanChannelMapper
 
     public PanChannel selectPanProxyChannelByStatus();
 
+    public List<PanChannel> selectPanChannelListByRecharge(PanChannel panChannel);
+
 
 }

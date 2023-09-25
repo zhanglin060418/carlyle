@@ -51,3 +51,10 @@ export function delChannel(channelId) {
     method: 'delete'
   })
 }
+
+export function getChannelList() {
+  return request({
+    url: '/system/channel/getChannelList',
+    method: 'get'
+  })
+}

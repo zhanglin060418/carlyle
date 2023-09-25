@@ -83,8 +83,10 @@ public class TransServiceImpl implements ITransService {
         String requestNo = DateUtils.createOrderId("W");
         panWithdraw.setUserId(createWithdraw.getUserId());
         panWithdraw.setRequestNo(requestNo);
-        panWithdraw.setFee(createWithdraw.getAmount().multiply(new BigDecimal(outFeeRate)).divide(new BigDecimal(100)));
-        panWithdraw.setAmount(createWithdraw.getAmount().subtract(panWithdraw.getFee()));
+        BigDecimal bd = createWithdraw.getAmount().multiply(new BigDecimal(100).subtract(new BigDecimal(outFeeRate))).divide(new BigDecimal(10000));
+        bd = bd.setScale(0, BigDecimal.ROUND_DOWN);
+        panWithdraw.setAmount(bd.multiply(new BigDecimal(100)));
+        panWithdraw.setFee(createWithdraw.getAmount().subtract(panWithdraw.getAmount()));
         panWithdraw.setCardId(createWithdraw.getCardId());
         panWithdraw.setBankCode(panBindCard.getBankCode());
         panWithdraw.setBankName(panBindCard.getBankName());
@@ -781,4 +783,5 @@ public class TransServiceImpl implements ITransService {
         }
         return msg;
     }
+
 }

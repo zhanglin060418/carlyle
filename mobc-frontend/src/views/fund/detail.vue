@@ -16,7 +16,8 @@
             <p>{{ $t('dw.t190') }}</p>
           </div>
           <div class="box">
-            <p><strong>{{ item.dailyInterest }}%</strong></p>
+            <p v-if="item.type == '赠送产品'"><strong>{{item.dailyInterest}}%</strong></p>
+            <p v-else ><strong>{{parseFloat(item.minimumBuy*item.dailyInterest/10000).toFixed(2)}}</strong></p>
             <p>{{ $t('dw.t168') }}</p>
           </div>
           <div class="box">

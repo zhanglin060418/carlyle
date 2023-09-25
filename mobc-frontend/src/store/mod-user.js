@@ -60,6 +60,12 @@ export default client => ({
     recharge({ commit }, params) {
       return client.post('/system/recharge/createRecharge', params)
     },
+    insertMessage({ commit }, params) {
+      return client.post('/system/message/createMessage', params)
+    },
+    createLikes({ commit }, params) {
+      return client.post('/system/message/createLikes', params)
+    },
     rechargeSuccess({ commit }, params) {
       return client.get('/system/recharge/rechargeSuccess', params)
     },
@@ -80,6 +86,10 @@ export default client => ({
     },
     getPurchaseInterestList({ commit }, arg) {
       return client.get('/system/purchase/getPurchaseInterestList', arg)
+    },
+
+    getMessageList({ commit }, arg) {
+      return client.get('/system/message/getMessageList', arg)
     },
 
     getPurchaseListForBuy() {

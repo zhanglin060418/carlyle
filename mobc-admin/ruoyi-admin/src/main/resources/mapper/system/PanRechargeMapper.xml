@@ -67,6 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userName != null and userName != ''"> and sys_user.user_name  like concat('%',#{userName})</if>
             <if test="status != null  and status != ''"> and pan_recharge.status = #{status}</if>
             <if test="orderNo != null  and orderNo != ''"> and pan_recharge.order_no = #{orderNo}</if>
+            <if test="channelId != null  and channelId != ''"> and pan_recharge.channel_id = #{channelId}</if>
             <if test="requestNo != null  and requestNo != ''"> and pan_recharge.request_no = #{requestNo}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
             	AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
@@ -102,6 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName})</if>
             <if test="status != null  and status != ''"> and pan_recharge.status = #{status}</if>
             <if test="orderNo != null  and orderNo != ''"> and pan_recharge.order_no = #{orderNo}</if>
+            <if test="channelId != null  and channelId != ''"> and pan_recharge.channel_id = #{channelId}</if>
             <if test="requestNo != null  and requestNo != ''"> and pan_recharge.request_no = #{requestNo}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
                 AND <![CDATA[ DATE_FORMAT(pan_recharge.create_time,'%Y-%m-%d') >= DATE_FORMAT( #{params.beginTime},'%Y-%m-%d') ]]>
