@@ -168,10 +168,23 @@ public class PanWithdrawServiceImpl implements IPanWithdrawService
         BigDecimal prechargeAmt = panAgentBalance.getPrechargeAmt();
         // 充值余额，已扣除充值手续费
         List<TeamOverview> totalTransCountlist = transHistoryMapper.getAgentTransInfo(agentId);
-        Long rechargeBalance =  totalTransCountlist.get(0).getTransAmt();
+        Long rechargeBalance = 0L;
+        if(totalTransCountlist.size()>0){
+            if(totalTransCountlist.get(0)!=null){
+                if(totalTransCountlist.get(0).getTransAmt()!=null) {
+                    rechargeBalance = totalTransCountlist.get(0).getTransAmt();
+                }
+            }
+        }
+
         // 代付金额+手续费+单笔费用
+        BigDecimal withdraAmtAndFee = new BigDecimal(0);
         PanWithdraw transitInfo = panWithdrawMapper.getTransitAmtByUser(agentId);
-        BigDecimal withdraAmtAndFee =transitInfo.getAmount();
+        if(transitInfo!=null){
+            if(transitInfo.getAmount()!=null) {
+                withdraAmtAndFee =transitInfo.getAmount();
+            }
+        }
         agentBalance = prechargeAmt.add(new BigDecimal(rechargeBalance)).subtract(withdraAmtAndFee);
         return agentBalance;
     }
