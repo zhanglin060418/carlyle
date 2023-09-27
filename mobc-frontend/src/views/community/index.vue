@@ -181,6 +181,7 @@
     display: flex;
     justify-content: center;
     height: 20px;
+    margin-top: 5px;
     font-size: 14px;
     color:  #3376c4;
     cursor: pointer;
@@ -191,6 +192,7 @@
     display: flex;
     justify-content: center;
     height: 20px;
+    margin-top: 5px;
     font-size: 14px;
     color:  #9fa3aa;
     cursor: pointer;

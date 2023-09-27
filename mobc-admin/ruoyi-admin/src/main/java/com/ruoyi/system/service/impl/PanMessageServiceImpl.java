@@ -106,12 +106,18 @@ public class PanMessageServiceImpl implements IPanMessageService
     @Transactional
     public int createLikes(PanMessage panMessage) {
         int i = 0;
-        if(panMessage.isLikesbefore()){
-            panMessageMapper.updatePanMessageByLikesNumReduce(panMessage);
+        if (panMessage.isLikesbefore()) {
             i = panMessageMapper.deleteMessageLikes(panMessage);
-        }else{
-            panMessageMapper.insertMessageLikes(panMessage);
-            i =  panMessageMapper.updatePanMessageByLikesNumAdd(panMessage);
+            if (i > 0) {
+                panMessageMapper.updatePanMessageByLikesNumReduce(panMessage);
+            }
+
+        } else {
+            i = panMessageMapper.insertMessageLikes(panMessage);
+            if (i > 0) {
+                panMessageMapper.updatePanMessageByLikesNumAdd(panMessage);
+            }
+
         }
         return i;
     }

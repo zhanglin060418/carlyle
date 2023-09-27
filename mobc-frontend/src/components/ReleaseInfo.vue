@@ -26,7 +26,7 @@
                 </div>
             </div>
         </van-popup>-->
-        <div class="kf" @click="gotoRelease">
+        <div class="send_message" @click="gotoRelease">
             <!--<div @click="kfLogoClick">-->
            <div>
                 <img src="static/assets/image/xapp/add.png" alt=""/>
@@ -37,10 +37,8 @@
 </template>
 
 <script>
-import mixinsSerivce from '@/mixins/service'
     export default {
         name: 'ReleaseInfo',
-        mixins: [mixinsSerivce],
         props: {},
         data() {
             return {
