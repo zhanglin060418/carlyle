@@ -442,4 +442,9 @@ public class PanTransactionHistoryServiceImpl implements IPanTransactionHistoryS
 		return transMapper.getTeamIncomeInfo(userId);
 
 	}
+
+	@Override
+	public List<TeamOverview> getTeamTransInfoByUser(Long userId) {
+		return transMapper.getTeamTransInfoByUser(userId);
+	}
 }

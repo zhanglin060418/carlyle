@@ -17,6 +17,20 @@
         </span>
       </div>
       <div class="income-box">
+        <p>{{ parseFloat(totalRechargeCount)/100 }}</p>
+        <span>
+          <!-- 总人数 -->
+          {{ $t('dw.t208')}}({{ sym }})
+        </span>
+      </div>
+      <div class="income-box">
+        <p>{{ parseFloat(totalPurchaseCount)/100 }}</p>
+        <span>
+          <!-- 总人数 -->
+          {{ $t('dw.t232')}}({{ sym }})
+        </span>
+      </div>
+      <div class="income-box">
         <p>{{ treeData.totalPeople}}</p>
         <span>
           <!-- 总人数 -->
@@ -190,6 +204,7 @@ export default {
       rewardAmt: 0,
       greatGrandCrowdRatio: 0,
       totalRechargeCount: 0,
+      totalPurchaseCount:0,
       totalWithdrawCount: 0,
       firstPurchaseCommissionRatio: 0,
       purchaseTreasureRate: 0,
@@ -295,6 +310,8 @@ export default {
       this.purchaseTreasureRate = this.list.purchaseTreasureRate || 0
       this.rewardProductDailyInterest = this.list.rewardProductDailyInterest || 0
       this.rewardAmt = this.list.rewardAmt || 0
+      this.totalRechargeCount = this.list.totalRechargeCount || 0
+      this.totalPurchaseCount = this.list.totalPurchaseCount || 0
       this.isLoading = false
     },
       toMore(level) {

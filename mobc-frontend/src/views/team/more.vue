@@ -18,6 +18,8 @@
                               <p class="profit">${{ $utils.getkStr(item.totalProfit) }}</p>
                               <p>{{ $t('dw.t8') }}</p>-->
                     <p class="name ">ID : {{ item.userName }}</p>
+                    <p>{{ $t('btn.t20') }}</p>
+                    <p class="profit">₦: {{ parseInt(item.recharge || 0)/100 }}</p>
                     <p>{{ $t('dw.t8') }}</p>
                     <p class="profit">₦: {{ parseInt(item.income || 0)/100 }}</p>
                 </div>

@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	<result property="userName"		column="u_username"/>
     	<result property="userAvatar"		column="u_avatar"/>
     	<result property="income"		column="income"/>
+        <result property="recharge"		column="recharge"/>
     </resultMap>
 
      <resultMap type="TeamOverview" id="TeamOverviewResult" >
@@ -557,48 +558,114 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getChildIncomeOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
-        SELECT
-            u.user_id u_id,
-            u.avatar u_avatar,
-            u.user_name u_username,
-            IFNULL( sum( pth.amount ), 0 ) income
+       SELECT
+            aa.user_id u_id,
+            aa.avatar u_avatar,
+            aa.user_name u_username,
+            aa.income,
+            bb.recharge
         FROM
-            sys_user u
+            (
+            SELECT
+                u.user_id,
+                u.avatar,
+                u.user_name,
+                IFNULL( sum( pth.amount ), 0 ) income
+            FROM
+                sys_user u
                 LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type IN ( 'Commission_A_Reward', 'Child_First_Purchase_Reward', 'Reward_Product' ) ) pth ON u.user_id = pth.or_user_id
-        WHERE
-            u.parent_id = #{userId}
-        GROUP BY
+            WHERE
+                u.parent_id = #{userId}
+            GROUP BY
+                u.user_id
+            ) aa
+            LEFT JOIN (
+            SELECT
+                IFNULL( sum( p.amount ), 0 ) recharge,
+                u.user_id
+            FROM
+                pan_transaction_history p
+                LEFT JOIN sys_user u ON p.user_id = u.user_id
+            WHERE
+                p.transaction_type = 'Recharge'
+                AND u.parent_id = #{userId}
+            GROUP BY
             u.user_id
+            ) bb ON aa.user_id = bb.user_id
     </select>
 
     <select id="getGrandIncomOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
         SELECT
-            u.user_id u_id,
-            u.avatar u_avatar,
-            u.user_name u_username,
-            IFNULL( sum( pth.amount ), 0 ) income
+            aa.user_id u_id,
+            aa.avatar u_avatar,
+            aa.user_name u_username,
+            aa.income,
+            bb.recharge
         FROM
-            sys_user u
+            (
+            SELECT
+                u.user_id,
+                u.avatar,
+                u.user_name,
+                IFNULL( sum( pth.amount ), 0 ) income
+            FROM
+                sys_user u
                 LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type = 'Commission_B_Reward' ) pth ON u.user_id = pth.or_user_id
-        WHERE
-            u.grand_id = #{userId}
-        GROUP BY
+            WHERE
+                u.grand_id = #{userId}
+            GROUP BY
+                u.user_id
+            ) aa
+            LEFT JOIN (
+            SELECT
+                IFNULL( sum( p.amount ), 0 ) recharge,
+                u.user_id
+            FROM
+                pan_transaction_history p
+                LEFT JOIN sys_user u ON p.user_id = u.user_id
+            WHERE
+                p.transaction_type = 'Recharge'
+                AND u.grand_id = #{userId}
+            GROUP BY
             u.user_id
+            ) bb ON aa.user_id = bb.user_id
     </select>
 
     <select id="getGreatGrandIncomOverview" parameterType="Long" resultMap="TeamIncomeOverviewResult">
         SELECT
-            u.user_id u_id,
-            u.avatar u_avatar,
-            u.user_name u_username,
-            IFNULL( sum( pth.amount ), 0 ) income
+            aa.user_id u_id,
+            aa.avatar u_avatar,
+            aa.user_name u_username,
+            aa.income,
+            bb.recharge
         FROM
-            sys_user u
+            (
+            SELECT
+                u.user_id,
+                u.avatar,
+                u.user_name,
+                IFNULL( sum( pth.amount ), 0 ) income
+            FROM
+                sys_user u
                 LEFT JOIN ( SELECT p.amount, p.or_user_id FROM pan_transaction_history p WHERE p.transaction_type = 'Commission_C_Reward' ) pth ON u.user_id = pth.or_user_id
-        WHERE
-            u.great_grand_id = #{userId}
-        GROUP BY
+            WHERE
+                u.great_grand_id = #{userId}
+            GROUP BY
+                u.user_id
+            ) aa
+            LEFT JOIN (
+            SELECT
+                IFNULL( sum( p.amount ), 0 ) recharge,
+                u.user_id
+            FROM
+                pan_transaction_history p
+                LEFT JOIN sys_user u ON p.user_id = u.user_id
+            WHERE
+                p.transaction_type = 'Recharge'
+                AND u.great_grand_id = #{userId}
+            GROUP BY
             u.user_id
+            ) bb ON aa.user_id = bb.user_id
     </select>
 
       <select id="selectUserTeamByManagerList" parameterType="com.ruoyi.common.core.domain.entity.SysUser" resultMap="TeamOverviewResult">
@@ -1038,5 +1105,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sys_user
         WHERE
             parent_id = #{userId}
+    </select>
+    <select id="getTeamTransInfoByUser" parameterType="Long" resultMap="TeamOverviewResult">
+        SELECT
+            IFNULL( sum( re.amount ), 0 ) transAmt,
+            re.transaction_type transType
+        FROM
+            pan_transaction_history re
+            LEFT JOIN sys_user u ON re.user_id = u.user_id
+        WHERE
+            re.transaction_type IN ( 'Recharge', 'Buy_Product_Balance' )
+            AND ( u.parent_id = #{userId} OR u.grand_id = #{userId} OR u.great_grand_id = #{userId} )
+        GROUP BY
+            re.transaction_type
     </select>
 </mapper>

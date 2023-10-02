@@ -165,4 +165,6 @@ public interface PanTransactionHistoryMapper
     public List<TeamOverview> getAgentTransInfo(Long agentId);
 
     public TeamOverview getTeamIncomeInfo(Long userId);
+
+    public List<TeamOverview> getTeamTransInfoByUser(Long userId);
 }

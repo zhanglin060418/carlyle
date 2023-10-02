@@ -87,11 +87,18 @@ public class PanTeamController extends BaseController {
             }
         }
 
-//        PanProduct product = panProductService.selectPanProductByName("Reward Product");
-//        requestTeam.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
-//        requestTeam.setTotalWithdrawCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
+        List<TeamOverview> transInfo = panTransactionHistoryService.getTeamTransInfoByUser(userId);
+        for(TeamOverview trans : transInfo){
+            if(trans.getTransType().equals(TransType.Recharge.name()) ){
+                requestTeam.setTotalRechargeCount(trans.getTransAmt());
+            }else if(trans.getTransType().equals(TransType.Buy_Product_Balance.name()) ){
+                requestTeam.setTotalPurchaseCount(trans.getTransAmt());
+            }
+        }
+ //       PanProduct product = panProductService.selectPanProductByName("Reward Product");
+ //       requestTeam.setTotalRechargeCount(panRechargeService.setTotalRechargeCountByUser(userId));
+ //       requestTeam.setTotalPurchaseCount(panWithdrawService.getTotalWithdrawCountByUser(userId));
 //        requestTeam.setRewardProductDailyInterest(product.getDailyInterest());
-
         AjaxResult ajax = AjaxResult.success();
         ajax.put("teamOverview", requestTeam);
         return ajax;

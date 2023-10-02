@@ -13,6 +13,7 @@
         </div>
         <div style="text-align: center;" >
             <img :src="userQrcode"  alt="" />
+            <p>UID:{{userId}}</p>
         </div>
     </div>
 </template>
@@ -62,6 +63,7 @@ export default {
     return {
       active: 0,
       showPopup: false,
+      userId: 0,
       hashtag: window.config.domain,
       inviteCode: '',
       userQrcode: '',
@@ -123,6 +125,7 @@ export default {
         domain :domain
       })
       this.userQrcode ='data:image/jpg;base64,' +  res.userQrcode
+      this.userId = this.userInfo.user_id;
     },
 
     open() {

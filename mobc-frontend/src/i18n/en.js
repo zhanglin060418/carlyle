@@ -854,6 +854,8 @@ export default {
     rewardBalance: 'Reward Balance',
     t229: 'Buy member',
     t230: 'Total Buy member',
+    t232: 'Total Purchase',
     t231: 'NEWS'
+
   },
 }
