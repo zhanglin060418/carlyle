@@ -20,8 +20,8 @@
 
     <div class="home-content">
       <div class="earning-box">
-        <div class="scroll-container">
-          <p class="ql-snow ql-editor" v-html="loginAnnouncement.noticeContent"/>
+        <div class="scroll-container ql-snow">
+          <p class="ql-editor" v-html="loginAnnouncement.noticeContent"/>
         </div>
       </div>
     </div>

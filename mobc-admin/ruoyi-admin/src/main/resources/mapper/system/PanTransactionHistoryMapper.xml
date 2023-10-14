@@ -500,12 +500,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 	<select id="getYesterdayTransaction" parameterType="Long" resultMap="PanTransactionHistoryResult">
-         select * from pan_transaction_history where user_id=#{userId} and  DATE_FORMAT(transaction_date,'%Y-%m-%d')= DATE(NOW() - INTERVAL 1 DAY)
+         select * from pan_transaction_history where user_id=#{userId} and <![CDATA[  DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE(NOW() - INTERVAL 7 DAY) ]]>
          order by transaction_date desc
     </select>
 
 	<select id="getLastWeekTransaction" parameterType="Long" resultMap="PanTransactionHistoryResult">
-		select * from pan_transaction_history where user_id=#{userId} and <![CDATA[  DATE_FORMAT(transaction_date,'%Y-%m-%d') >= DATE(NOW() - INTERVAL 7 DAY) ]]>
+		select * from pan_transaction_history where user_id=#{userId}
 		order by transaction_date desc
     </select>
 

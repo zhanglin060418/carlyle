@@ -22,7 +22,7 @@ const myValidMixins = {
         }),
         isLogin() {
             if (!this.userInfo || !this.userInfo.username) {
-                this.$router.push('/login')
+                this.$router.push('/login');
                 return false
             }
             return true
@@ -40,28 +40,27 @@ const myValidMixins = {
                 }
             })*/
         },
-        async toService(type = 'whats') {
-            let _url = 'https://t.me/+qjWLk9N-uQ5lOGE1'
-            let idx = 0
+        async toService(type) {
+            let _url = 'https://t.me/+qjWLk9N-uQ5lOGE1';
+           // let idx = 0
             if (type == 'tggroup') {
                 if(this.userInfo.clerkTelegram) {
-                    _url = 'https://t.me/' + this.userInfo.clerkTelegram
+                    _url = 'https://t.me/' + this.userInfo.clerkTelegram;
+                }else if(this.userInfo.telegram) {
+                    _url = 'https://t.me/' + this.userInfo.telegram;
                 }
-                else if(this.userInfo.telegram) {
-                    _url = 'https://t.me/' + this.userInfo.telegram
-                }
-                else _url = 'https://t.me/+qjWLk9N-uQ5lOGE1'
+                else _url = 'https://t.me/+qjWLk9N-uQ5lOGE1';
             } else if (type == 'tgSiaran') {
-                _url = 'https://t.me/+qjWLk9N-uQ5lOGE1'
+                _url = 'https://t.me/+qjWLk9N-uQ5lOGE1';
             } else if (type == 'whats') {
-                idx = parseInt(Math.random() * this.wathsrls.length, 10)
+                // idx = parseInt(Math.random() * this.wathsrls.length, 10)
                 if(this.userInfo.clerkWhatsApp) {
-                    _url = 'https://wa.me/+' + this.userInfo.clerkWhatsApp
+                    _url = 'https://wa.me/+' + this.userInfo.clerkWhatsApp;
+                }else if(this.userInfo.whatsApp) {
+                    _url = 'https://wa.me/+' + this.userInfo.whatsApp;
+                }else{
+                    _url = 'https://wa.me/+'+this.userInfo.username;
                 }
-                else if(this.userInfo.whatsApp) {
-                    _url = 'https://wa.me/+' + this.userInfo.whatsApp
-                }
-                else _url = 'https://wa.me/+'+this.userInfo.username
                 // _url = this.wathsrls[idx]
                     // 根据用户id缓存常用客服
                     // if (this.isLogin()) {
@@ -74,12 +73,14 @@ const myValidMixins = {
             }
             if (type == 'tgtask') {
                 if (this.isLogin()) {
-                    _url = 'https://t.me/+qjWLk9N-uQ5lOGE1'
+                    _url = 'https://t.me/+qjWLk9N-uQ5lOGE1';
                 } else {
                     return
                 }
             }
-            if (!_url) return
+            if (!_url){
+                return
+            }
             if (window.webkit) {
                 window.webkit.messageHandlers.openBrowser.postMessage(_url)
             } else if (window.appInterface) {

@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import mixinsSerivce from '@/mixins/service'
+import myValidMixins from '@/mixins/service'
     export default {
         name: 'CustomerService',
-        mixins: [mixinsSerivce],
-        props: {},
+        mixins: [myValidMixins],
+        // props: {},
         data() {
             return {
-                serviceUrl: '',
-                showServicePopup: false,
+                //serviceUrl: '',
+                //showServicePopup: false,
             };
         },
         created() {
@@ -53,24 +53,24 @@ import mixinsSerivce from '@/mixins/service'
         mounted() {
         },
         methods: {
-            kfLogoClick() {
-                const domainHost = window.location.host;
-                this.showServicePopup = true;
-                if (domainHost.includes('www.exfdngn')){
-                    this.serviceUrl = "https://tawk.to/chat/6489ce6594cf5d49dc5dac4c/1h2t4sft2";
-                }else if(domainHost.includes('www.fdngn')){
-                    this.serviceUrl = "https://tawk.to/chat/6489cc76cc26a871b02284ab/1h2t4dcjh";
-                }else if(domainHost.includes('www.bainbc')){
-                    this.serviceUrl = "https://tawk.to/chat/648a0b1ecc26a871b0229042/1h2tjmscd";
-                }else if(domainHost.includes('www.ifund')){
-                    this.serviceUrl = "https://tawk.to/chat/6489b225cc26a871b0227da3/1h2stvoqj";
-                }else{
-                    this.serviceUrl = "https://tawk.to/chat/648a0b1ecc26a871b0229042/1h2tjmscd";
-                }
-            },
-            closeService() {
-                this.showServicePopup = false;
-            }
+            // kfLogoClick() {
+            //     const domainHost = window.location.host;
+            //     this.showServicePopup = true;
+            //     if (domainHost.includes('www.exfdngn')){
+            //         this.serviceUrl = "https://tawk.to/chat/6489ce6594cf5d49dc5dac4c/1h2t4sft2";
+            //     }else if(domainHost.includes('www.fdngn')){
+            //         this.serviceUrl = "https://tawk.to/chat/6489cc76cc26a871b02284ab/1h2t4dcjh";
+            //     }else if(domainHost.includes('www.bainbc')){
+            //         this.serviceUrl = "https://tawk.to/chat/648a0b1ecc26a871b0229042/1h2tjmscd";
+            //     }else if(domainHost.includes('www.ifund')){
+            //         this.serviceUrl = "https://tawk.to/chat/6489b225cc26a871b0227da3/1h2stvoqj";
+            //     }else{
+            //         this.serviceUrl = "https://tawk.to/chat/648a0b1ecc26a871b0229042/1h2tjmscd";
+            //     }
+            // },
+            // closeService() {
+            //     this.showServicePopup = false;
+            // }
 
         }
     }

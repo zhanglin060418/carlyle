@@ -14,7 +14,7 @@
             <p v-if="list.status != 'In progress'">{{ $t('dw.t189') }}: {{ formatDate(list.endDate) }}</p>
           </div>
           <div class="r-price">
-            <p class="price" style="text-align: center">{{ currencyShape }}{{ list.amount/100 }}</p>
+            <p class="price" style="text-align: right">{{ currencyShape }}{{ list.amount/100 }}</p>
             <div v-if="list.payBack == 0 && list.status == 'Success'" class="progress">{{ $t('dw.t198') }}</div>
             <div v-if="list.status == 'In progress'" class="wait_payment">{{ $t('dw.t199') }}</div>
             <div v-if="list.status == 'Failed'" class="failed">{{ $t('status.FAIL') }}</div>

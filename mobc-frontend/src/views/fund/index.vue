@@ -78,7 +78,7 @@
                 <p class="" v-else-if="item.name == 'Reward Product'" >Count: {{ item.buyCount}}</p>
               </div>
               <div class="r-price" v-if="item.type != '赠送产品'">
-                <p class="price" style=" text-align: center">{{  currencyShape  }}{{ parseFloat(item.minimumBuy / 100) }}</p>
+                <p class="price" style=" text-align: right">{{  currencyShape  }}{{ parseFloat(item.minimumBuy / 100) }}</p>
                 <div class="buy" v-if="item.onSale == 0&&(item.copies!=item.buyCount)" style="width: 70px;">{{ $t('btn.t2') }}</div>
                 <div class="buy" v-else-if="item.onSale == 1 ||item.copies==item.buyCount" style="width: 70px;">{{ $t('btn.t34') }}</div>
               </div>

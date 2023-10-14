@@ -124,14 +124,16 @@
     </div>
     <h2 class="p-title">{{ $t('dw.t174') }}</h2>
     <div class="desc" style="background: #eaeeff;">
-      <div class="ql-editor" >
+      <div class="ql-snow" >
           <p class="ql-editor" v-html="invitationText.descriptionEn" />
       </div>
     </div>
 
     <h2 class="p-title">{{ $t('dw.t175') }}</h2>
     <div class="desc" style="background: #eaeeff;">
+      <div class="ql-snow" >
         <p class="ql-editor" v-html="treatmentText.descriptionEn" />
+      </div>
     </div>
     <sharePopup :show="showShare" @close="close" :code="userInfo.inviteCode">
     </sharePopup>

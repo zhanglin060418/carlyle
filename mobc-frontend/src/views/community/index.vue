@@ -75,7 +75,7 @@
         onClickControl: false,
         currentPage: 0,
         messageList:[],
-        pageSize: 5,
+        pageSize: 10,
         showMoreInfo:false,
         showAllInfo:false,
         isLoading: false,
