@@ -59,6 +59,7 @@
           >{{ scope.row.name }}</el-button>
         </template>
       </el-table-column>
+      <el-table-column label="英文名称" align="center" prop="nameEn"/>
       <el-table-column label="缩略图" align="center" prop="coverImages" width="80">
         <template slot-scope="scope">
           <image-preview :src="scope.row.coverImages" :width="50" :height="50"/>
@@ -68,7 +69,7 @@
       <el-table-column label="类型" align="center" prop="type">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 'Cash'">现金</span>
-          <span v-else-if="scope.row.type == 'Voucher'">优惠卷</span>
+          <span v-else-if="scope.row.type == 'Voucher'">优惠券</span>
           <span v-else-if="scope.row.type == 'Virtual'">虚拟物品</span>
         </template>
       </el-table-column>
@@ -145,19 +146,24 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="面值" prop="amount">
               <el-input-number size="mini" v-model="form.amount" controls-position="right" :step="1" :min="0" placeholder="请输入会员充值最小金额" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="概率" prop="probability">
               <el-input-number size="mini" v-model="form.probability" controls-position="right" :step="0.01" :min="0" placeholder="请输入概率" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="有效期" prop="cycle">
               <el-input-number size="mini" v-model="form.cycle" controls-position="right" :step="1" :min="0" placeholder="请输入有效期" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="标识" prop="category" >
+              <el-input-number size="mini" v-model="form.category" controls-position="right" :step="1" :min="0" placeholder="请输入标识" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -169,14 +175,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="标识" prop="category" >
-              <el-input-number size="mini" v-model="form.category" controls-position="right" :step="1" :min="0" placeholder="请输入标识" />
-            </el-form-item>
-          </el-col>
           <el-col :span="12">
             <el-form-item label="介绍" prop="description">
-              <editor v-model="form.description" :min-height="192" placeholder="请输入内容"/>
+              <editor v-model="form.description" :min-height="100" placeholder="请输入内容"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -259,7 +260,7 @@ export default {
         "label": "现金",
         "value": "Cash"
       }, {
-        "label": "优惠卷",
+        "label": "优惠券",
         "value": "Voucher"
       }, {
         "label": "虚拟物品",

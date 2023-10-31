@@ -80,6 +80,7 @@
       <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
       <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
       <el-table-column label="代理商"  align="center" prop="agentName" v-if= "$auth.hasPermi('system:agent:edit')"/>
+      <el-table-column label="剩余抽奖次数" align="center" prop="drawsNumber"  />
       <el-table-column label="可提现余额" align="center" prop="availableAmt">
         <template slot-scope="scope">
           {{ parseFloat(scope.row.availableAmt) / 100 }}

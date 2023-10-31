@@ -172,6 +172,8 @@
                         return this.$t('transType.Lucky_Income')
                     case 'Draws_Income':
                         return this.$t('transType.Draws_Income')
+                    case 'Coupon_Deals':
+                        return this.$t('transType.Coupon_Deals')
                 }
             },
             itemClick(type) {

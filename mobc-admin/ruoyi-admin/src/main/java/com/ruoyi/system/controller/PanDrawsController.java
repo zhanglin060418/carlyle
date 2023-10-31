@@ -11,9 +11,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageStatus;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.system.domain.PanDrawsDetail;
-import com.ruoyi.system.domain.PanLottery;
-import com.ruoyi.system.domain.PanUserAsset;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.IPanLotteryService;
 import com.ruoyi.system.service.IPanUserAssetService;
 import com.ruoyi.system.service.ITransService;
@@ -41,9 +39,6 @@ public class PanDrawsController extends BaseController {
     @Autowired
     private IPanLotteryService panLotteryService;
 
-    @Autowired
-    private ITransService iTransService;
-
     /**
      * 查询产品列表
      */
@@ -70,6 +65,18 @@ public class PanDrawsController extends BaseController {
         AjaxResult ajax = AjaxResult.success();
         List<PanDrawsDetail> drawsList =  panLotteryService.getDrawsList(userId);
         ajax.put("data", drawsList);
+        return ajax;
+    }
+
+    @GetMapping("/getVoucherList")
+    public AjaxResult getVoucherList(@RequestParam Long productId) {
+        LoginUser currentUser = getLoginUser();
+        PanDrawsDetail drawsDetail = new PanDrawsDetail();
+        drawsDetail.setUserId(currentUser.getUserId());
+        drawsDetail.setProductId(productId);
+        List<PanDrawsDetail> drawsList = panLotteryService.getVoucherList(drawsDetail);
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put(AjaxResult.DATA_TAG, drawsList);
         return ajax;
     }
 

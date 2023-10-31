@@ -105,6 +105,8 @@
           <span v-else-if="scope.row.transactionType == 'Reward_Transfer_Out'">返佣金额转出</span>
           <span v-else-if="scope.row.transactionType == 'Lucky_Income'">幸运收益</span>
           <span v-else-if="scope.row.transactionType == 'Draws_Income'">抽奖现金收益</span>
+          <span v-else-if="scope.row.transactionType == 'Coupon_Deals'">优惠券交易</span>
+
 
         </template>
       </el-table-column>
@@ -268,6 +270,9 @@ export default {
         },{
           "label": "抽奖现金收益",
           "value": "Draws_Income"
+        },{
+          "label": "优惠券交易",
+          "value": "Coupon_Deals"
         }],
     };
   },

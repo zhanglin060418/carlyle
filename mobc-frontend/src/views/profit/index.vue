@@ -69,7 +69,7 @@
         <van-icon name="arrow r-arr" />
       </div>
       <div class="team-cell line05" @click="toLottery()">
-        <img src="static/assets/image/lucky/zp.png" alt="" />
+        <img src="static/assets/image/wind/icon/icon-lottery.png" alt="" />
         <div class="info">
           <p>Lottery</p>
         </div>

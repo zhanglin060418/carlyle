@@ -63,6 +63,16 @@ public class PanUserBalance extends BaseEntity
 
     private BigDecimal amount;
 
+    public int getDrawsNumber() {
+        return drawsNumber;
+    }
+
+    public void setDrawsNumber(int drawsNumber) {
+        this.drawsNumber = drawsNumber;
+    }
+
+    private int drawsNumber;
+
     private String  billType;
     private String transType;
     private String isRebate;

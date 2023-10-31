@@ -122,50 +122,100 @@ public class TransServiceImpl implements ITransService {
      */
     @Override
     @Transactional
-    public String purchaseBalance(Purchase purchaseBalance) {
+    public String purchaseBalance(Purchase purchaseBean) {
         logger.info("****交易管理-余额购买产品-Start********");
         String result = MessageStatus.SUCCESS;
-        if (purchaseBalance.getStatus().equals(TransStatus.SUCCESS)) {
-            purchaseBalance.setBeginDate(DateUtils.getTomorrowDate());
-            purchaseBalance.setEndDate(DateUtils.getSomeDayLaterDate(purchaseBalance.getCycle()));
-            PanUserBalance panUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBalance.getBuyer());
+        if (purchaseBean.getStatus().equals(TransStatus.SUCCESS)) {
+            purchaseBean.setBeginDate(DateUtils.getTomorrowDate());
+            purchaseBean.setEndDate(DateUtils.getSomeDayLaterDate(purchaseBean.getCycle()));
+            PanUserBalance panUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBean.getBuyer());
 
-            BigDecimal balanceBefore = panUserBalance.getBalance();
-            BigDecimal balanceAfter = panUserBalance.getBalance().subtract(purchaseBalance.getAmount());
-            PanTransactionHistory panTransactionHistory = new PanTransactionHistory();
-            panTransactionHistory.setAmount(purchaseBalance.getAmount());
-            panTransactionHistory.setOrOrderId(purchaseBalance.getOrderNo());
-            panTransactionHistory.setOrUserId(purchaseBalance.getBuyer());
-            panTransactionHistory.setUserId(purchaseBalance.getBuyer());
-            panTransactionHistory.setTransactionType(TransType.Buy_Product_Balance.toString());
-            panTransactionHistory.setIsIncome(IsIncome.N.toString());
-            panTransactionHistory.setRemark("余额购买产品");
-            panTransactionHistory.setBillType(BillType.OUT.toString());
-            panTransactionHistory.setAmountBefore(balanceBefore);
-            panTransactionHistory.setAmountAfter(balanceAfter);
+            if(purchaseBean.getDrawsId()>0 && purchaseBean.getVoucherAmount().compareTo(BigDecimal.ZERO)>0){
+                BigDecimal cashBefore = panUserBalance.getBalance();
+                BigDecimal cash  = purchaseBean.getAmount().subtract(purchaseBean.getVoucherAmount());
+                BigDecimal cashAfter = panUserBalance.getBalance().subtract(cash);
+                PanTransactionHistory cashTrans = new PanTransactionHistory();
+                cashTrans.setAmount(cash);
+                cashTrans.setOrOrderId(purchaseBean.getOrderNo());
+                cashTrans.setOrUserId(purchaseBean.getBuyer());
+                cashTrans.setUserId(purchaseBean.getBuyer());
+                cashTrans.setTransactionType(TransType.Buy_Product_Balance.toString());
+                cashTrans.setIsIncome(IsIncome.N.toString());
+                cashTrans.setRemark("余额购买产品");
+                cashTrans.setBillType(BillType.OUT.toString());
+                cashTrans.setAmountBefore(cashBefore);
+                cashTrans.setAmountAfter(cashAfter);
 
-            logger.info("****交易管理-余额购买产品-TransInfo:{}", JSONObject.toJSONString(panTransactionHistory));
-            transHistoryMapper.insertPanTransactionHistory(panTransactionHistory);
+                logger.info("****交易管理-余额购买产品-TransInfo:{}", JSONObject.toJSONString(cashTrans));
+                transHistoryMapper.insertPanTransactionHistory(cashTrans);
 
-            //购买成功，可用余额减少
-            panUserBalance.setAvailableAmt(panUserBalance.getAvailableAmt().subtract(purchaseBalance.getAmount()));
-            //购买成功，锁定金额增加，总额不变
-            panUserBalance.setLockBalance(panUserBalance.getLockBalance().add(purchaseBalance.getAmount()));
 
-            logger.info("****交易管理-余额购买产品-UserBalance:{}", JSONObject.toJSONString(panUserBalance));
+                BigDecimal voucherBefore = cashAfter;
+                BigDecimal voucherAfter = cashAfter;
+                PanTransactionHistory voucherTrans = new PanTransactionHistory();
+                voucherTrans.setAmount(purchaseBean.getVoucherAmount());
+                voucherTrans.setOrOrderId(purchaseBean.getOrderNo());
+                voucherTrans.setOrUserId(purchaseBean.getBuyer());
+                voucherTrans.setUserId(purchaseBean.getBuyer());
+                voucherTrans.setTransactionType(TransType.Coupon_Deals.toString());
+                voucherTrans.setIsIncome(IsIncome.N.toString());
+                voucherTrans.setRemark("使用优惠券");
+                voucherTrans.setBillType(BillType.IN.toString());
+                voucherTrans.setAmountBefore(voucherBefore);
+                voucherTrans.setAmountAfter(voucherAfter);
+
+                logger.info("****交易管理-使用优惠券-TransInfo:{}", JSONObject.toJSONString(voucherTrans));
+                transHistoryMapper.insertPanTransactionHistory(voucherTrans);
+                PanDrawsDetail drawsDetail =new PanDrawsDetail();
+                drawsDetail.setStatus(PrizeStatus.COMPLETED.trim());
+                drawsDetail.setId(purchaseBean.getDrawsId());
+                logger.info("****交易管理-更新优惠券:{}", JSONObject.toJSONString(drawsDetail));
+                panLotteryMapper.updateDrawsDetail(drawsDetail);
+
+                panUserBalance.setBalance(panUserBalance.getBalance().add(purchaseBean.getVoucherAmount()));
+                //购买成功，可用余额减少
+                panUserBalance.setAvailableAmt(panUserBalance.getAvailableAmt().subtract(purchaseBean.getAmount()).add(purchaseBean.getVoucherAmount()));
+                //购买成功，锁定金额增加，
+                panUserBalance.setLockBalance(panUserBalance.getLockBalance().add(purchaseBean.getAmount()));
+                logger.info("****交易管理-余额优惠卷购买产品-UserBalance:{},Voucher:{}", JSONObject.toJSONString(panUserBalance),purchaseBean.getVoucherAmount());
+            }else{
+                BigDecimal balanceBefore = panUserBalance.getBalance();
+                BigDecimal balanceAfter = panUserBalance.getBalance().subtract(purchaseBean.getAmount());
+                PanTransactionHistory panTransactionHistory = new PanTransactionHistory();
+                panTransactionHistory.setAmount(purchaseBean.getAmount());
+                panTransactionHistory.setOrOrderId(purchaseBean.getOrderNo());
+                panTransactionHistory.setOrUserId(purchaseBean.getBuyer());
+                panTransactionHistory.setUserId(purchaseBean.getBuyer());
+                panTransactionHistory.setTransactionType(TransType.Buy_Product_Balance.toString());
+                panTransactionHistory.setIsIncome(IsIncome.N.toString());
+                panTransactionHistory.setRemark("余额购买产品");
+                panTransactionHistory.setBillType(BillType.OUT.toString());
+                panTransactionHistory.setAmountBefore(balanceBefore);
+                panTransactionHistory.setAmountAfter(balanceAfter);
+
+                logger.info("****交易管理-余额购买产品-TransInfo:{}", JSONObject.toJSONString(panTransactionHistory));
+                transHistoryMapper.insertPanTransactionHistory(panTransactionHistory);
+
+                //购买成功，可用余额减少
+                panUserBalance.setAvailableAmt(panUserBalance.getAvailableAmt().subtract(purchaseBean.getAmount()));
+                //购买成功，锁定金额增加，总额不变
+                panUserBalance.setLockBalance(panUserBalance.getLockBalance().add(purchaseBean.getAmount()));
+                logger.info("****交易管理-余额购买产品-UserBalance:{}", JSONObject.toJSONString(panUserBalance));
+            }
+
             userBalanceMapper.updatePanUserBalance(panUserBalance);
 
-            SysUser sysUser = sysUserMapper.selectUserById(purchaseBalance.getBuyer());
+            SysUser sysUser = sysUserMapper.selectUserById(purchaseBean.getBuyer());
             logger.info("****交易管理-余额购买产品-UserInfo", JSONObject.toJSONString(sysUser));
-            if (purchaseBalance.getIsLucky().equals("0")) {
-                PanUserBalance luckyUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBalance.getBuyer());
+            if (purchaseBean.getIsLucky().equals("0")) {
+                PanUserBalance luckyUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBean.getBuyer());
                 BigDecimal luckyBalanceBefore = luckyUserBalance.getBalance();
-                BigDecimal luckyBalanceAfter = luckyUserBalance.getBalance().add(purchaseBalance.getLuckyAmt());
+                BigDecimal luckyBalanceAfter = luckyUserBalance.getBalance().add(purchaseBean.getLuckyAmt());
                 PanTransactionHistory transactionHistory = new PanTransactionHistory();
-                transactionHistory.setAmount(purchaseBalance.getLuckyAmt());
-                transactionHistory.setOrOrderId(purchaseBalance.getOrderNo());
-                transactionHistory.setOrUserId(purchaseBalance.getBuyer());
-                transactionHistory.setUserId(purchaseBalance.getBuyer());
+                transactionHistory.setAmount(purchaseBean.getLuckyAmt());
+                transactionHistory.setOrOrderId(purchaseBean.getOrderNo());
+                transactionHistory.setOrUserId(purchaseBean.getBuyer());
+                transactionHistory.setUserId(purchaseBean.getBuyer());
                 transactionHistory.setTransactionType(TransType.Lucky_Income.toString());
                 transactionHistory.setIsIncome(IsIncome.N.toString());
                 transactionHistory.setRemark("购买产品-幸运收益");
@@ -176,18 +226,23 @@ public class TransServiceImpl implements ITransService {
                 logger.info("****交易管理-余额购买产品-幸运收益-TransInfo:{}", JSONObject.toJSONString(transactionHistory));
                 transHistoryMapper.insertPanTransactionHistory(transactionHistory);
 
-                luckyUserBalance.setAvailableAmt(luckyUserBalance.getAvailableAmt().add(purchaseBalance.getLuckyAmt()));
-                luckyUserBalance.setBalance(luckyUserBalance.getBalance().add(purchaseBalance.getLuckyAmt()));
+                luckyUserBalance.setAvailableAmt(luckyUserBalance.getAvailableAmt().add(purchaseBean.getLuckyAmt()));
+                luckyUserBalance.setBalance(luckyUserBalance.getBalance().add(purchaseBean.getLuckyAmt()));
 
                 logger.info("****交易管理-余额购买产品-幸运收益-UserBalance:{}", JSONObject.toJSONString(luckyUserBalance));
                 userBalanceMapper.updatePanUserBalance(luckyUserBalance);
             }
+            if(purchaseBean.getIsDraws().equals("0")){
+                PanUserAsset panUserAsset = new PanUserAsset();
+                panUserAsset.setUserId(purchaseBean.getBuyer());
+                userAssetMapper.updateDrawsNumberAdd(panUserAsset);
+            }
 
             if (sysUser.getParentId() != null && sysUser.getParentId() > 0) {
-                commission(purchaseBalance, sysUser);
+                commission(purchaseBean, sysUser);
             }
         }
-        int i = purchaseMapper.insertPurchase(purchaseBalance);
+        int i = purchaseMapper.insertPurchase(purchaseBean);
         if (i < 1) {
             result = MessageStatus.ERROR;
         }

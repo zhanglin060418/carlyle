@@ -41,6 +41,8 @@ public enum TransType {
      */
     Buy_Product_Balance,
 
+    Coupon_Deals,
+
     Lucky_Income,
 
     Draws_Income,

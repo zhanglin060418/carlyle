@@ -94,7 +94,7 @@
       <el-table-column label="奖品类型" align="center" prop="type" >
         <template slot-scope="scope">
           <span v-if="scope.row.type == 'Cash'">现金</span>
-          <span v-else-if="scope.row.type == 'Voucher'">优惠卷</span>
+          <span v-else-if="scope.row.type == 'Voucher'">优惠券</span>
           <span v-else-if="scope.row.type == 'Virtual'">虚拟物品</span>
         </template>
       </el-table-column>
@@ -177,7 +177,7 @@ export default {
         "label": "现金",
         "value": "Cash"
       },{
-        "label": "优惠卷",
+        "label": "优惠券",
         "value": "Voucher"
       }, {
         "label": "虚拟物品",

@@ -182,8 +182,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateVoucherEndDate">
+        update pan_draws_detail set status ='Expired'
+        where status = 'ToBeUsed' and type = 'Voucher' and CURDATE() > end_date
+    </update>
+
     <select id="getDrawsList" parameterType="Long" resultMap="PanDrawsDetailResult">
         SELECT
+            d.id,
             d.name_en,
             d.type,
             d.end_date,
@@ -195,5 +201,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ORDER BY d.create_time desc
     </select>
 
+    <select id="getVoucherListByJob" resultMap="PanDrawsDetailResult">
+        SELECT
+            d.id,
+            d.name_en,
+            d.type,
+            d.end_date,
+            d.status,
+            d.create_time
+        FROM
+            pan_draws_detail d
+        where d.status = 'ToBeUsed'
+        and d.type = 'Voucher'
+        and CURDATE() > d.end_date
+    </select>
+    <select id="getVoucherList"  parameterType="PanDrawsDetail" resultMap="PanDrawsDetailResult">
+        SELECT
+            d.id,
+            d.name_en,
+            d.amount,
+            d.status,
+            d.type,
+            d.end_date
+        FROM
+            pan_draws_detail d
+        WHERE
+            d.user_id = #{userId}
+            AND d.STATUS = 'ToBeUsed'
+            AND d.type = 'Voucher'
+            AND d.amount >= ( SELECT voucher_start * 100 FROM pan_product p WHERE id = #{productId} )
+            AND ( SELECT voucher_end * 100 FROM pan_product p WHERE id = #{productId} ) >= d.amount
+        ORDER BY
+            d.amount DESC
+    </select>
+
+    <select id="getDrawsById" parameterType="Long" resultMap="PanDrawsDetailResult">
+         SELECT
+            d.id,
+            d.user_id,
+            d.name,
+            d.name_en,
+            d.amount,
+            d.status,
+            d.type,
+            d.end_date
+        FROM
+            pan_draws_detail d
+        WHERE
+            d.id = #{id}
+    </select>
 
 </mapper>

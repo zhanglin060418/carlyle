@@ -274,6 +274,7 @@ export default {
     Reward_Transfer_Out :'Reward Transfer Out',
     Lucky_Income :'Lucky Income',
     Draws_Income :'Draws Income',
+    Coupon_Deals :'Coupon Deals'
 
   },
   //支付详情
@@ -327,7 +328,9 @@ export default {
     text52: 'Add balance to my account',
     text53: 'Choose Methods',
     text54: 'Account Balance',
-    text55: 'Online payment'
+    text55: 'Online payment',
+    text56: 'No Coupon',
+    text57: 'Select Coupon',
   },
   sa: {
     payment: 'Payment',

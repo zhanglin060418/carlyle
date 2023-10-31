@@ -49,4 +49,12 @@ public interface PanLotteryMapper
     public List<PanDrawsDetail> getDrawsList(Long userId);
 
     public List<PanDrawsDetail> selectPanDrawsList(PanDrawsDetail drawsDetail);
+
+    public List<PanDrawsDetail> getVoucherListByJob();
+
+    public int updateVoucherEndDate();
+
+    public List<PanDrawsDetail> getVoucherList(PanDrawsDetail drawsDetail);
+
+    public PanDrawsDetail getDrawsById(Long id);
 }

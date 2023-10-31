@@ -36,6 +36,9 @@ public class PanInterest {
     private ISysConfigService iSysConfigService;
 
     @Autowired
+    private IPanLotteryService lotteryService;
+
+    @Autowired
     private IPanUserAssetService iPanUserAssetService;
 
     private static final Logger log = LoggerFactory.getLogger(PanInterest.class);
@@ -64,6 +67,14 @@ public class PanInterest {
                 taskRecord.setTaskDate(todayDate);
                 log.info("****任务调度 Task Record:" + JSONObject.toJSONString(taskRecord));
                 iTaskRecordService.insertTaskJobRecord(taskRecord);
+
+                /**
+                 * 优惠卷过期
+                 */
+                List<PanDrawsDetail> drawsList = lotteryService.getVoucherListByJob();
+                if(drawsList.size()>0){
+                    lotteryService.updateVoucherEndDate();
+                }
 
                 /**
                  * 计算购买产品利息

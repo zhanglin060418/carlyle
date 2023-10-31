@@ -37,10 +37,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="descriptionRu"    column="description_ru"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="isDraws"    column="is_draws"    />
+        <result property="isVoucher"    column="is_voucher"    />
+        <result property="voucherStart"    column="voucher_start"    />
+        <result property="voucherEnd"    column="voucher_end"    />
     </resultMap>
 
     <sql id="selectPanProductVo">
-        select id, name, name_in,curr_fund, name_en, name_ru, cover_images, category, type, reward_product, daily_interest, cycle, minimum_buy, maximum_buy, fund_type, progress, show_progress_bar, selling_timestamp, total_fund, copies, is_visible, on_sale, has_group_buy_option, lucky_number_range_start, lucky_number_range_end, status, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time from pan_product
+        select id, name, name_in,curr_fund,is_draws,is_voucher,voucher_start,voucher_end, name_en, name_ru, cover_images, category, type, reward_product, daily_interest, cycle, minimum_buy, maximum_buy, fund_type, progress, show_progress_bar, selling_timestamp, total_fund, copies, is_visible, on_sale, has_group_buy_option, lucky_number_range_start, lucky_number_range_end, status, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time from pan_product
     </sql>
 
     <select id="selectPanProductList" parameterType="PanProduct" resultMap="PanProductResult">
@@ -115,6 +119,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pd.total_fund,
             pd.copies,
             pd.is_visible,
+            pd.is_draws,
+            pd.is_voucher,
+            pd.voucher_start,
+            pd.voucher_end,
             pd.on_sale,
             IFNULL(pp.cun, 0)  buyCount
         FROM
@@ -174,6 +182,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="descriptionEn != null">description_en,</if>
             <if test="descriptionIn != null">description_in,</if>
             <if test="descriptionRu != null">description_ru,</if>
+            <if test="isDraws != null">is_draws,</if>
+            <if test="isVoucher != null">is_voucher,</if>
+            <if test="voucherStart != null">voucher_start,</if>
+            <if test="voucherEnd != null">voucher_end,</if>
             create_time
          )values(
             <if test="name != null and name != ''">#{name},</if>
@@ -205,6 +217,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="descriptionEn != null">#{descriptionEn},</if>
             <if test="descriptionIn != null">#{descriptionIn},</if>
             <if test="descriptionRu != null">#{descriptionRu},</if>
+            <if test="isDraws != null">#{isDraws},</if>
+            <if test="isVoucher != null">#{isVoucher},</if>
+            <if test="voucherStart != null">#{voucherStart},</if>
+            <if test="voucherEnd != null">#{voucherEnd},</if>
             now()
          )
     </insert>
@@ -241,6 +257,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="descriptionEn != null">description_en = #{descriptionEn},</if>
             <if test="descriptionIn != null">description_in = #{descriptionIn},</if>
             <if test="descriptionRu != null">description_ru = #{descriptionRu},</if>
+            <if test="isDraws != null">is_draws =#{isDraws},</if>
+            <if test="isVoucher != null">is_voucher =#{isVoucher},</if>
+            <if test="voucherStart != null">voucher_start =#{voucherStart},</if>
+            <if test="voucherEnd != null">voucher_end =#{voucherEnd},</if>
             update_time = now()
         </set>
         where id = #{id}

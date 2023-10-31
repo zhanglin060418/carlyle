@@ -52,6 +52,8 @@ public class PurchaseController extends BaseController {
     @Autowired
     private IPanTransactionHistoryService transService;
 
+    @Autowired
+    private IPanLotteryService panLotteryService;
 
     private static final Logger logger = LoggerFactory.getLogger(PurchaseController.class);
 
@@ -260,15 +262,36 @@ public class PurchaseController extends BaseController {
                 finalAjax.put("msg", "Not enough Copies");
                 return finalAjax;
             }
+
+            Purchase purchase = new Purchase();
             //判断余额
-            if (purchaseCreate.getAmount().compareTo(panUserBalance.getAvailableAmt()) > 0) {
-                finalAjax.put("msg", "Not enough balance");
-                return finalAjax;
+            if(purchaseCreate.getDrawsId()>0){
+                PanDrawsDetail drawsDetail =  panLotteryService.getDrawsById(purchaseCreate.getDrawsId());
+                if(drawsDetail==null){
+                    finalAjax.put("msg", "The coupon does not exist");
+                    return finalAjax;
+                }
+                if(drawsDetail.getStatus().equals("Expired")){
+                    finalAjax.put("msg", "The coupon Expired");
+                    return finalAjax;
+                }
+
+                if(purchaseCreate.getAmount().compareTo(panUserBalance.getAvailableAmt().add(drawsDetail.getAmount())) > 0) {
+                    finalAjax.put("msg", "Not enough balance");
+                    return finalAjax;
+                }
+
+                purchase.setVoucherAmount(drawsDetail.getAmount());
+                purchase.setDrawsId(drawsDetail.getId());
+            } else{
+                if(purchaseCreate.getAmount().compareTo(panUserBalance.getAvailableAmt()) > 0) {
+                    finalAjax.put("msg", "Not enough balance");
+                    return finalAjax;
+                }
             }
 
             try {
                 String orderNo = DateUtils.createOrderId("P");
-                Purchase purchase = new Purchase();
                 purchase.setOrderNo(orderNo);
                 purchase.setBuyer(purchaseCreate.getUserId());
                 purchase.setProduct(purchaseCreate.getProductId());
@@ -277,6 +300,7 @@ public class PurchaseController extends BaseController {
                 purchase.setTotalInterest(new BigDecimal(0));
                 purchase.setAmount(purchaseCreate.getAmount());
                 purchase.setPayBack("0");
+                purchase.setIsDraws(panProduct.getIsDraws());
                 if (panProduct.getHasGroupBuyOption().equals("0")) {
                     int luckyAmount = DateUtils.getluckyAmtRandom(panProduct.getLuckyNumberRangeStart(), panProduct.getLuckyNumberRangeEnd());
 

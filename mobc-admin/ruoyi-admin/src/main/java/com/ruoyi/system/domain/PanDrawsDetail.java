@@ -66,6 +66,8 @@ public class PanDrawsDetail extends BaseEntity
 
     private String agentName;
 
+    private Long productId;
+
     public Long getId() {
         return id;
     }
@@ -224,5 +226,13 @@ public class PanDrawsDetail extends BaseEntity
 
     public void setAgentName(String agentName) {
         this.agentName = agentName;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

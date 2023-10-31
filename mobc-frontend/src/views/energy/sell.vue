@@ -21,7 +21,7 @@
              <img src="static/assets/image/dw/add-bank-l.png" alt="" />
             <div class="info">
               <p>
-                {{ bankItem.bank.name }}(
+                {{ bankItem.bankName }}(
                 {{ bankItem.cardNo.toString().substring(0, 4) }} **** ****
                 {{
                   bankItem.cardNo.toString().substring(

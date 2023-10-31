@@ -129,6 +129,7 @@ export default {
           path: '/confirmpurchase',
           query: {
             data: JSON.stringify(data),
+            type: 'pruchase'
           },
         })
     },

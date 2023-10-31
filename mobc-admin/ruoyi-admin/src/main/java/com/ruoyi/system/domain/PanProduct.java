@@ -139,6 +139,46 @@ public class PanProduct extends BaseEntity
     @Excel(name = "介绍", readConverterExp = "俄=文")
     private String descriptionRu;
 
+    private String isDraws;
+
+    private String isVoucher;
+
+    private Integer voucherStart;
+
+    private Integer voucherEnd;
+
+    public String getIsDraws() {
+        return isDraws;
+    }
+
+    public void setIsDraws(String isDraws) {
+        this.isDraws = isDraws;
+    }
+
+    public String getIsVoucher() {
+        return isVoucher;
+    }
+
+    public void setIsVoucher(String isVoucher) {
+        this.isVoucher = isVoucher;
+    }
+
+    public Integer getVoucherStart() {
+        return voucherStart;
+    }
+
+    public void setVoucherStart(Integer voucherStart) {
+        this.voucherStart = voucherStart;
+    }
+
+    public Integer getVoucherEnd() {
+        return voucherEnd;
+    }
+
+    public void setVoucherEnd(Integer voucherEnd) {
+        this.voucherEnd = voucherEnd;
+    }
+
     public void setId(Long id)
     {
         this.id = id;

@@ -17,6 +17,8 @@ public class PurchaseCreate extends BaseEntity
 
     private Long type;
 
+    private Long drawsId;
+
 	public Long getProductId() {
 		return productId;
 	}
@@ -47,5 +49,13 @@ public class PurchaseCreate extends BaseEntity
 
 	public void setType(Long type) {
 		this.type = type;
+	}
+
+	public Long getDrawsId() {
+		return drawsId;
+	}
+
+	public void setDrawsId(Long drawsId) {
+		this.drawsId = drawsId;
 	}
 }

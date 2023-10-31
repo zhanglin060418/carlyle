@@ -1,7 +1,26 @@
 <template>
   <modMain :title="this.$route.query.type == 'withdraw' ? $route.meta.withdrawtitle : item.name == this.$t('dw.t196') ? $route.meta.title : 'Confirm Buy'">
-  <div class="sell-energy energy">
-
+    <div class="sell-energy">
+    <div class="t-box top" v-if="this.$route.query.type == 'pruchase' && this.item.name != this.$t('dw.t196')">
+      <span v-if="listVouchers.length == 0">{{ $t('payDetail.text56') }}</span>
+      <span v-else>{{ $t('payDetail.text57') }}</span>
+      <template>
+        <div class="yinhangka" :class="{ has: listVouchers.length > 0 }"  @click="goShowVoucher">
+          <div class="add-btn" v-if="listVouchers.length == 0" >
+            {{ $t('payDetail.text56') }}
+          </div>
+          <div class="card-info" v-else  >
+            <img src="static/assets/image/lucky/coupon.png" alt="" />
+            <div class="info">
+              <p>{{voucherItem.nameEn}}  ({{currencyShape}}:{{ parseFloat(voucherItem.amount/100)}})</p>
+              <span>Expired: {{ voucherItem.endDate}} </span>
+            </div>
+          </div>
+          <van-icon name="arrow" />
+        </div>
+      </template>
+    </div>
+    <div class="sell-energy energy">
     <div class="t-box bot" v-if="item.fundType == '区间'">
       <p v-if="item.name != $t('dw.t196')">
         {{ $t('payDetail.text370') }} ( {{ $t('dw.t192') }} : {{ parseFloat(item.minimumBuy/100 )}}
@@ -45,6 +64,52 @@
     <div class="popup-btn" @click="buyClick()">
       {{ $t('btn.t27') }} {{ sym }} {{ ' ' }} {{ this.item.fundType == '定额' ? this.item.minimumBuy/100 : reqNum }}
     </div>
+
+      <van-popup
+              v-model="showVoucher"
+              round
+              position="bottom"
+              safe-area-inset-bottom
+              class="popup-sell-buy"
+              :style="{ height: '60%',margin: '0% 0% 0% 0%' }"
+      >
+        <div class="sell-buy popup-box energy-popup">
+          <div class="head">
+            <div class="title">
+              {{ $t('payDetail.text57') }}
+            </div>
+          </div>
+          <div class="content">
+            <div class="bank-main">
+              <div
+                      class="display-box line05"
+                      :class="{ active: voucherItem.id == item.id }"
+                      v-for="item in listVouchers"
+                      :key="item.id"
+                      @click="voucherClick(item)"
+              >
+                <div class="left">
+                  <!-- <img src="static/assets/image/dw/add-bank-l.png" alt="" /> -->
+                  <div class="infos">
+                    <p>
+                      {{ item.nameEn }}
+                    </p>
+                    <span>
+                   Expired: {{ item.endDate}} </span
+                    >
+                  </div>
+                </div>
+                <div class="right" v-if="item.id == voucherItem.id">
+                  <van-icon name="checked check" />
+                </div>
+              </div>
+            </div>
+            <div class="popup-btn lv" @click="showVoucher = false">
+              {{ $t('sys.confirm') }}
+            </div>
+          </div>
+        </div>
+      </van-popup>
     <!-- Choose Methods Dialog -->
     <van-popup
         v-model="showPurchaseDetailDlg"
@@ -64,12 +129,12 @@
         <div class="content">
           <div class="usertop">
             <div class="top">
-              <p class="totlle">{{ $t('dw.t178') }}</p>
+              <p class="totlle">{{ $t('dw.t204') }}</p>
               <h2>{{  currencyShape  }}: {{ parseFloat(balance/100) }}</h2>
             </div>
           </div>
           <div class="bank-main">
-            <div class="display-box" style="height: 35px">
+            <div class="display-box" style="height: 35px" >
               <div class="left">
                 <div class="infos">
                   <p class="new">{{ $t('dw.t216') }}</p>
@@ -77,6 +142,26 @@
               </div>
               <div class="right">
                 <p class="new">{{ reqNum }}({{ sym }})</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px" v-if="voucherItem!=null&&voucherItem.amount>0">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">Cash</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{ reqNum- (voucherItem.amount/100)}}({{ sym }})</p>
+              </div>
+            </div>
+            <div class="display-box" style="height: 35px" v-if="voucherItem!=null&&voucherItem.amount>0">
+              <div class="left">
+                <div class="infos">
+                  <p class="new">Coupon</p>
+                </div>
+              </div>
+              <div class="right">
+                <p class="new">{{(voucherItem.amount/100)}}({{ sym }})</p>
               </div>
             </div>
             <div class="display-box" style="height: 35px">
@@ -168,6 +253,7 @@
     </van-popup>
   </div>
     <loadding v-if="isLoading"></loadding>
+    </div>
   </modMain>
 </template>
 
@@ -186,6 +272,9 @@ export default {
       luckyAmount:0,
       isLoading: false,
       showLucky: false,
+      showVoucher: false,
+      listVouchers: [],
+      voucherItem: null,
       sym: '',
       userId: '',
       payPassword: '',
@@ -198,8 +287,11 @@ export default {
       balance: 0,
       assetBalance: 0,
       pList:[],
+      purchaseMonery: {
+        drawsId: 0,
+        amount: 0,
+      },
       type: '',
-      showBank: false,
       selectedBalance: true,
       showPurchaseDetailDlg: false,
     }
@@ -226,8 +318,9 @@ export default {
   created() {
     //获取通道
     this.userId = localStorage.getItem('userId') || null
-    this.getData()
     this.item = JSON.parse(this.$route.query.data)
+    this._getVoucherList()
+    this.getData()
     this.type = this.$route.query.type
     this.sym = localStorage.getItem('localeCurrency') || 'NGN'
     if(this.sym == 'NGN')
@@ -241,6 +334,7 @@ export default {
       transferOutAsset: 'user/transferOutAsset',
       getUserBalance: 'user/getUserBalance',
       getBankCard: 'bankCard/getBankCard',
+      getVoucherList: 'user/getVoucherList',
       recharge: 'user/recharge',
       verifyPayPassword: 'user/verifyPayPassword',
       getPurchaseListForBuy: 'user/getPurchaseListForBuy'
@@ -249,6 +343,28 @@ export default {
     ...mapMutations('user', {
       setAccount: 'SET_ACCOUNT',
     }),
+    goShowVoucher(){
+      if(this.listVouchers.length>0){
+        this.showVoucher = true;
+      }
+    },
+    voucherClick(item) {
+      this.purchaseMonery.drawsId = item.id
+      this.voucherItem = item
+    },
+    _getVoucherList() {
+      const user_id = this.userInfo.user_id;
+      const productId  = this.item.id;
+      this.getVoucherList({productId:productId}).then(res => {
+        if (res.code == 200) {
+          this.listVouchers = res.data || []
+          if (this.listVouchers.length > 0) {
+            this.voucherClick(this.listVouchers[0])
+          }
+        }
+      })
+    },
+
     async getData() {
       await this.getUserBalance({userId: this.userId}).then(res => {
         this.balance = res.availableAmt || 0
@@ -293,7 +409,14 @@ export default {
           this.errDialog(this.$t('msg.inputAmount') + " : \n" + (this.item.minimumBuy / 100) + " - " + (this.item.maximumBuy / 100))
           return
         }
-        if (this.selectedBalance && this.postNum > this.balance) {
+
+        if(this.voucherItem!=null && this.voucherItem.amount>0){
+
+          if(this.selectedBalance && this.postNum > (this.balance + this.voucherItem.amount)) {
+              this.errDialog(this.$t('sa.txt370'))
+              return;
+          }
+        }else if (this.selectedBalance && this.postNum > this.balance) {
           this.errDialog(this.$t('sa.txt370'))
           return;
         }
@@ -390,7 +513,12 @@ export default {
         }
       } else {
         let type = this.selectedBalance ? 0 : 1
+        let drawsId = 0;
+        if(this.voucherItem!=null && this.voucherItem.amount>0){
+          drawsId = this.voucherItem.id
+        }
         const formData = {
+          drawsId:drawsId,
           userId: user_id,
           productId: this.item.id,
           amount: this.postNum,

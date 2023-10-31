@@ -72,6 +72,10 @@ public class Purchase extends BaseEntity {
     @Excel(name = "金额")
     private BigDecimal amount;
 
+    private BigDecimal voucherAmount;
+
+    private long drawsId;
+
     /**
      * 是否返息
      */
@@ -91,12 +95,52 @@ public class Purchase extends BaseEntity {
     private BigDecimal luckyAmt;
     private String isLucky;
 
+    private String isDraws;
+
+    private String isVoucher;
+
+    private Integer voucherStart;
+
+    private Integer voucherEnd;
+
     /**
      * 状态
      */
     private String status;
 
     private PanProduct item;
+
+    public String getIsDraws() {
+        return isDraws;
+    }
+
+    public void setIsDraws(String isDraws) {
+        this.isDraws = isDraws;
+    }
+
+    public String getIsVoucher() {
+        return isVoucher;
+    }
+
+    public void setIsVoucher(String isVoucher) {
+        this.isVoucher = isVoucher;
+    }
+
+    public Integer getVoucherStart() {
+        return voucherStart;
+    }
+
+    public void setVoucherStart(Integer voucherStart) {
+        this.voucherStart = voucherStart;
+    }
+
+    public Integer getVoucherEnd() {
+        return voucherEnd;
+    }
+
+    public void setVoucherEnd(Integer voucherEnd) {
+        this.voucherEnd = voucherEnd;
+    }
 
     public String getBeginDate() {
         return beginDate;
@@ -336,5 +380,21 @@ public class Purchase extends BaseEntity {
 
     public void setAgentName(String agentName) {
         this.agentName = agentName;
+    }
+
+    public BigDecimal getVoucherAmount() {
+        return voucherAmount;
+    }
+
+    public void setVoucherAmount(BigDecimal voucherAmount) {
+        this.voucherAmount = voucherAmount;
+    }
+
+    public long getDrawsId() {
+        return drawsId;
+    }
+
+    public void setDrawsId(long drawsId) {
+        this.drawsId = drawsId;
     }
 }

@@ -73,5 +73,25 @@ public class PanLotteryServiceImpl implements IPanLotteryService
        return panLotteryMapper.selectPanDrawsList(drawsDetail);
     }
 
+    @Override
+    public List<PanDrawsDetail> getVoucherListByJob() {
+        return panLotteryMapper.getVoucherListByJob();
+    }
+
+    @Override
+    public int updateVoucherEndDate() {
+        return panLotteryMapper.updateVoucherEndDate();
+    }
+
+    @Override
+    public List<PanDrawsDetail> getVoucherList(PanDrawsDetail drawsDetail) {
+        return panLotteryMapper.getVoucherList(drawsDetail);
+    }
+
+    @Override
+    public PanDrawsDetail getDrawsById(Long id) {
+        return panLotteryMapper.getDrawsById(id);
+    }
+
 
 }

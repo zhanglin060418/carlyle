@@ -92,7 +92,9 @@ export default client => ({
       return client.get('/system/message/getMessageList', arg)
     },
 
-
+    getVoucherList({ commit }, arg) {
+      return client.get('/system/draws/getVoucherList', arg)
+    },
 
     getPurchaseListForBuy() {
       return client.get('/system/purchase/getPurchaseListForBuy')

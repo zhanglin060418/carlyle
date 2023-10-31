@@ -21,6 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="agentId"    column="agent_id"  />
         <result property="agentName"    column="agent_name"  />
         <result property="isRebate"    column="is_rebate"  />
+        <result property="drawsNumber"    column="draws_number"  />
+
     </resultMap>
 
     <sql id="selectPanUserBalanceVo">
@@ -50,9 +52,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             u.user_name,
             u2.user_name top_name,
             u3.user_name manager_name,
-            u4.user_name agent_name
+            u4.user_name agent_name,
+            a.draws_number
         FROM
             pan_user_balance pub
+        LEFT JOIN pan_user_asset a ON pub.user_id = a.user_id
         LEFT JOIN sys_user u ON pub.user_id = u.user_id
         LEFT JOIN sys_user u2 ON u2.user_id = u.top_id
         LEFT JOIN sys_user u3 ON u3.user_id = u.manager_id
