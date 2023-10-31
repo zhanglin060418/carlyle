@@ -51,7 +51,8 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table v-loading="loading" :data="signRecordList" >
+    <el-table v-loading="loading" :data="signRecordList" @row-dblclick="rowDblClick" @sort-change="changeTableSort"
+              :default-sort = "{prop: 'signTime', order: 'descending'}">>
       <el-table-column label="编号" align="center" prop="signId" />
       <el-table-column label="用户" align="center" prop="userName"/>
       <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
@@ -62,8 +63,8 @@
           <span>{{ formatDate(scope.row.signYear,scope.row.signMonth,scope.row.signDay) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="签到时间" align="center" prop="signTime" />
-      <el-table-column label="连续天数" align="center" prop="continuousDay" />
+      <el-table-column label="签到时间" align="center" prop="signTime" :sortable="'custom'"/>
+      <el-table-column label="连续天数" align="center" prop="continuousDay" :sortable="'custom'"/>
     </el-table>
 
     <pagination
@@ -133,6 +134,18 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    //排序触发事件
+    changeTableSort({prop ,order}) {
+      this.queryParams.propName = prop;
+      this.queryParams.sortType = order;
+      this.loading = true;
+      listSignRecord(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+          this.signRecordList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        }
+      );
     },
 
     /** 搜索按钮操作 */

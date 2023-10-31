@@ -120,11 +120,12 @@ public class PurchaseController extends BaseController {
 
     /**
      * 根据orderNo查询产品收益列表
+     *
      * @param orderNo
      * @return
      */
     @GetMapping("/getPurchaseInterestList")
-    public AjaxResult getPurchaseInterestList(@RequestParam String orderNo,@RequestParam Long userId,@RequestParam int currentPage,@RequestParam int pageSize) {
+    public AjaxResult getPurchaseInterestList(@RequestParam String orderNo, @RequestParam Long userId, @RequestParam int currentPage, @RequestParam int pageSize) {
         /**
          *查询交易记录表，返回此购买产品订单收益记录
          * amount：金额
@@ -237,16 +238,16 @@ public class PurchaseController extends BaseController {
             }
             PanUserBalance panUserBalance = panUserBalanceService.getPanUserBalanceByUserId(purchaseCreate.getUserId());
             PanProduct panProduct = panProductService.selectPanProductById(purchaseCreate.getProductId());
-            if(!panProduct.getOnSale().equals("0")){
-                logger.info("****该基金已经停售！" );
+            if (!panProduct.getOnSale().equals("0")) {
+                logger.info("****该基金已经停售！");
                 finalAjax.put("msg", "The fund has been discontinued!");
                 return finalAjax;
             }
-            if(!DateUtils.isPastDate(panProduct.getSellingTimestamp())){
+            if (!DateUtils.isPastDate(panProduct.getSellingTimestamp())) {
                 SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String sellingTimestamp = sdf3.format(panProduct.getSellingTimestamp());
                 logger.info("****该基金发售时间为:" + sellingTimestamp);
-                finalAjax.put("msg", "The fund will be launched on:"+sellingTimestamp);
+                finalAjax.put("msg", "The fund will be launched on:" + sellingTimestamp);
                 return finalAjax;
             }
             //查询已购买份数
@@ -264,6 +265,7 @@ public class PurchaseController extends BaseController {
                 finalAjax.put("msg", "Not enough balance");
                 return finalAjax;
             }
+
             try {
                 String orderNo = DateUtils.createOrderId("P");
                 Purchase purchase = new Purchase();
@@ -275,14 +277,21 @@ public class PurchaseController extends BaseController {
                 purchase.setTotalInterest(new BigDecimal(0));
                 purchase.setAmount(purchaseCreate.getAmount());
                 purchase.setPayBack("0");
+                if (panProduct.getHasGroupBuyOption().equals("0")) {
+                    int luckyAmount = DateUtils.getluckyAmtRandom(panProduct.getLuckyNumberRangeStart(), panProduct.getLuckyNumberRangeEnd());
+
+                    purchase.setIsLucky("0");
+                    purchase.setLuckyAmt(new BigDecimal(luckyAmount).multiply(new BigDecimal(100)));
+                } else {
+                    purchase.setIsLucky("1");
+                }
                 purchase.setStatus(TransStatus.SUCCESS);
+
                 logger.info("****产品购买-info:{}", JSONObject.toJSONString(purchase));
                 String result = iTransService.purchaseBalance(purchase);
-
                 if (result.equals(MessageStatus.SUCCESS)) {
-                    panProduct.setCurrFund(new BigDecimal(panProduct.getCurrFund()).subtract(purchaseCreate.getAmount().divide(new BigDecimal(100))).doubleValue());
-                    panProductService.updatePanProduct(panProduct);
                     finalAjax = AjaxResult.success();
+                    finalAjax.put("data",purchase);
                 } else {
                     finalAjax.put("msg", "Network exception, please try again later");
                 }

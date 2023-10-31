@@ -47,6 +47,44 @@ export function getTodayData(query) {
     params: query
   })
 }
+export function gettodayDataByFrist(query) {
+  return request({
+    url: 'system/user/gettodayDataByFrist',
+    method: 'get',
+    params: query
+  })
+}
+export function getTodayDataSecond(query) {
+  return request({
+    url: 'system/user/getTodayDataSecond',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getTodayDataThird(query) {
+  return request({
+    url: 'system/user/getTodayDataThird',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getTodayDataFour(query) {
+  return request({
+    url: 'system/user/getTodayDataFour',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getTodayDataFive(query) {
+  return request({
+    url: 'system/user/getTodayDataFive',
+    method: 'get',
+    params: query
+  })
+}
 
 export function getTotalData(query) {
   return request({
@@ -70,6 +108,21 @@ export function getTotalDataSecond(query) {
     params: query
   })
 }
+export function getTotalDataThird(query) {
+  return request({
+    url: 'system/user/getTotalDataThird',
+    method: 'get',
+    params: query
+  })
+}
+export function getAgentBalance(query) {
+  return request({
+    url: 'system/user/getAgentBalance',
+    method: 'get',
+    params: query
+  })
+}
+
 
 // 退出方法
 export function logout() {

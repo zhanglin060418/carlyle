@@ -92,12 +92,17 @@ export default client => ({
       return client.get('/system/message/getMessageList', arg)
     },
 
+
+
     getPurchaseListForBuy() {
       return client.get('/system/purchase/getPurchaseListForBuy')
     },
 
     addSignRecord({ commit }, arg) {
       return client.post('/system/signRecord/addSignRecord', arg)
+    },
+    addLotteryMove({ commit }, arg) {
+      return client.post('/system/lottery/addLotteryMove', arg)
     },
     getSignRecordListByUser({ commit }, arg) {
       return client.get('/system/signRecord/getSignRecordListByUser', arg)
@@ -121,6 +126,10 @@ export default client => ({
     },
     withdrawList({ commit }, arg) {
       return client.get('/system/withdraw/getWithdrawHistory', arg)
+    },
+
+    getDrawsList({ commit }, arg) {
+      return client.get('/system/draws/getDrawsList', arg)
     },
     getTotalTeam({ commit }, arg) {
       return client.get('/system/user/getTotalTeam', arg)
@@ -182,6 +191,9 @@ export default client => ({
     },
     getHomeIndex() {
       return client.get('/system/home/getHomeList')
+    },
+    getLotteryList() {
+      return client.get('/system/lottery/getLotteryList')
     },
     getHomeAnnouncement() {
       return client.get('/system/notice/getHomeAnnouncement')

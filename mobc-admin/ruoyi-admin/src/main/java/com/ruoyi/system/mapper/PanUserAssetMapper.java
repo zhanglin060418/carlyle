@@ -69,4 +69,11 @@ public interface PanUserAssetMapper
     public Long assetTotalRebate();
 
     public List<PanUserAsset> selectUserAssetListByJob();
+
+    public PanUserAsset getDrawsNumberByUserId(Long userId);
+
+    public int updateDrawsNumberAdd(PanUserAsset panUserAsset);
+
+    public int updateDrawsNumberReduce(PanUserAsset panUserAsset);
+
 }

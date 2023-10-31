@@ -68,6 +68,13 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
+      <div class="team-cell line05" @click="toLottery()">
+        <img src="static/assets/image/lucky/zp.png" alt="" />
+        <div class="info">
+          <p>Lottery</p>
+        </div>
+        <van-icon name="arrow r-arr" />
+     </div>
       <div class="team-cell line05" @click="toGo('/bill')">
         <img src="static/assets/image/wind/icon/icon-bill.png" alt="" />
         <div class="info">
@@ -103,13 +110,6 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-<!--     <div class="team-cell line05" @click="toGo('/helpcenter')">-->
-<!--        <img src="static/assets/image/wind/icon/icon-service.png" alt="" />-->
-<!--        <div class="info">-->
-<!--         <p>FAQ</p>-->
-<!--        </div>-->
-<!--        <van-icon name="arrow r-arr" />-->
-<!--      </div>-->
       <div class="team-cell " @click="toPersonCenter">
         <img src="static/assets/image/wind/icon/setting.png" alt="" />
         <div class="info">
@@ -117,49 +117,6 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <!-- <div class="team-cell line05" @click="toGo('/rank')">
-        <img src="static/assets/image/iconmy1.png" alt="" />
-        <div class="info">
-          <p>Daftar Peringkat</p>
-        </div>
-        <i></i>
-      </div>
-
-      <div class="team-cell line05" @click="toGo('/inOutList?type=1')">
-        <img src="static/assets/image/iconmy2.png" alt="" />
-        <div class="info">
-          <p>Recharge Record</p>
-        </div>
-        <i></i>
-      </div>
-      <div class="team-cell" @click="toGo('/inOutList?type=2')">
-        <img src="static/assets/image/iconmy3.png" alt="" />
-        <div class="info">
-          <p>Withdrawal Record</p>
-        </div>
-        <i></i>
-      </div>
-      <div class="team-cell" @click="toGo('/bankcard')">
-        <img src="static/assets/image/iconmy5.png" alt="" />
-        <div class="info">
-          <p>Kartu bank saya</p>
-        </div>
-        <i></i>
-      </div>
-      <div class="team-cell" @click="$utils.downApp()">
-        <img src="static/assets/image/iconmy7.png" alt="" />
-        <div class="info">
-          <p>App Download</p>
-        </div>
-        <i></i>
-      </div>
-      <div class="team-cell" @click="tologout">
-        <img src="static/assets/image/iconmy8.png" alt="" />
-        <div class="info">
-          <p>Login Out</p>
-        </div>
-        <i></i>
-      </div> -->
     </div>
     <groupService />
     <CustomerService/>
@@ -263,6 +220,19 @@
           this.$router.push('/login')
         }
       },
+      toLottery() {
+        if (this.isLogin) {
+          const user_id = this.userInfo.user_id;
+          this.$router.push({
+            path: '/lottery',
+            query: {
+              data:user_id
+            },
+          })
+        } else {
+          this.$router.push('/login')
+        }
+      },
       toGo(path) {
         let isOk = false
         if (path == '/setting' || path == '/helpcenter') {
@@ -305,7 +275,7 @@
         let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
         if (isiOS) {
 
-          _downUrl = "https://app.carlyles.online/carlyle";
+          _downUrl = "https://www.fairburnsegg.com/fairburnseggs";
         } else if (isAndroid) {
           // _downUrl =
           //     'https://superwind-003.s3-accelerate.amazonaws.com/apk/SuperWind.apk'

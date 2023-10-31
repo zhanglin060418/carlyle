@@ -409,7 +409,7 @@
 <script>
 
 import { list } from "@/api/monitor/operlog";
-import { getTotalDataByFrist ,getTotalDataSecond,getTodayData,getTotalData} from "@/api/login";
+import {getTotalData, getTotalDataByFrist ,getTotalDataSecond,getTotalDataThird,getTodayData,gettodayDataByFrist,getTodayDataSecond,getTodayDataThird,getTodayDataFour,getTodayDataFive,getAgentBalance} from "@/api/login";
 import {parseTime} from "../utils/ruoyi";
 
 export default {
@@ -480,7 +480,9 @@ export default {
     }
   },
   created() {
-    this.getData();
+    this.getTodayTransData();
+    this.getTotalTransData();
+    this.getAgentBalance();
   },
   methods: {
     parseTime,
@@ -490,7 +492,9 @@ export default {
       return date.toLocaleDateString(undefined, options) + " " + date.toLocaleTimeString(undefined)
     },
     handleQuery() {
-      this.getData();
+      this.getTodayTransData();
+      this.getTotalTransData();
+      this.getAgentBalance();
     },
     getList() {
       this.loading = true;
@@ -501,15 +505,31 @@ export default {
         }
       );
     },
-    getData() {
+    getAgentBalance(){
+      getAgentBalance(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.agentBalance=response.agentBalance
+      });
+    },
+
+    getTodayTransData() {
       this.loading = true;
       getTodayData(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-        this.todayRechargeCount=response.todayRechargeCount
-        this.todayOrderCount=response.todayOrderCount
-        this.todayWithdrawCount=response.todayWithdrawCount
         this.todayRechargeUsers=response.todayRechargeUsers
         this.todayOrderUsers=response.todayOrderUsers
         this.todayWithdrawUsers=response.todayWithdrawUsers
+        this.loading = false;
+      });
+      gettodayDataByFrist(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.todayRechargeCount=response.todayRechargeCount
+        this.todayOrderCount=response.todayOrderCount
+        this.todayWithdrawCount=response.todayWithdrawCount
+      });
+
+      getTodayDataSecond(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.todayRegisterUsers=response.todayRegisterUsers
+      });
+
+      getTodayDataThird(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.todayRechargeAmt=response.todayRechargeAmt
         this.todayWithdrawAmt=response.todayWithdrawAmt
         this.todayOrderAmt=response.todayOrderAmt
@@ -517,12 +537,17 @@ export default {
         this.todayInterestAmt=response.todayInterestAmt
         this.todayPrincipalAmt=response.todayPrincipalAmt
         this.todayTreasureRewardAmt=response.todayTreasureRewardAmt
-        this.todayRegisterUsers=response.todayRegisterUsers
-        this.todayActiveUsers=response.todayActiveUsers
-        this.todayFristRechargeUsers=response.todayFristRechargeUsers
         this.todaySignInRewardAmt=response.todaySignInRewardAmt
-        this.loading = false;
       });
+
+      getTodayDataFour(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.todayActiveUsers=response.todayActiveUsers
+      });
+      getTodayDataFive(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.todayFristRechargeUsers=response.todayFristRechargeUsers
+      });
+    },
+    getTotalTransData(){
       getTotalData(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.totalPeople=response.totalPeople
         this.totalBalance=response.totalBalance
@@ -543,18 +568,19 @@ export default {
         this.totalTreasureRewardAmt=response.totalTreasureRewardAmt
         this.totalFirstPurchaseRewardAmt=response.totalFirstPurchaseRewardAmt
         this.totalSignInRewardAmt=response.totalSignInRewardAmt
-        this.agentBalance=response.agentBalance
-
       });
 
       getTotalDataSecond(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.totalRechargeUsers=response.totalRechargeUsers
+        this.totalOrderUsers=response.totalOrderUsers
+        this.totalWithdrawUsers=response.totalWithdrawUsers
+      });
+
+      getTotalDataThird(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.totalRechargeCount=response.totalRechargeCount
         this.totalOrderCount=response.totalOrderCount
         this.totalWithdrawCount=response.totalWithdrawCount
         this.totalRewardProductCount=response.totalRewardProductCount
-        this.totalRechargeUsers=response.totalRechargeUsers
-        this.totalOrderUsers=response.totalOrderUsers
-        this.totalWithdrawUsers=response.totalWithdrawUsers
       });
     }
   }

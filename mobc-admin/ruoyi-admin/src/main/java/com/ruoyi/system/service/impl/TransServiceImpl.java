@@ -5,9 +5,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BillType;
 import com.ruoyi.common.enums.IsIncome;
 import com.ruoyi.common.enums.TransType;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.MessageStatus;
-import com.ruoyi.common.utils.TransStatus;
+import com.ruoyi.common.utils.*;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.ISysConfigService;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -61,6 +60,9 @@ public class TransServiceImpl implements ITransService {
 
     @Autowired
     private PanSignRecordMapper panSignRecordMapper;
+
+    @Autowired
+    private PanLotteryMapper panLotteryMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(TransServiceImpl.class);
 
@@ -155,6 +157,32 @@ public class TransServiceImpl implements ITransService {
 
             SysUser sysUser = sysUserMapper.selectUserById(purchaseBalance.getBuyer());
             logger.info("****交易管理-余额购买产品-UserInfo", JSONObject.toJSONString(sysUser));
+            if (purchaseBalance.getIsLucky().equals("0")) {
+                PanUserBalance luckyUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBalance.getBuyer());
+                BigDecimal luckyBalanceBefore = luckyUserBalance.getBalance();
+                BigDecimal luckyBalanceAfter = luckyUserBalance.getBalance().add(purchaseBalance.getLuckyAmt());
+                PanTransactionHistory transactionHistory = new PanTransactionHistory();
+                transactionHistory.setAmount(purchaseBalance.getLuckyAmt());
+                transactionHistory.setOrOrderId(purchaseBalance.getOrderNo());
+                transactionHistory.setOrUserId(purchaseBalance.getBuyer());
+                transactionHistory.setUserId(purchaseBalance.getBuyer());
+                transactionHistory.setTransactionType(TransType.Lucky_Income.toString());
+                transactionHistory.setIsIncome(IsIncome.N.toString());
+                transactionHistory.setRemark("购买产品-幸运收益");
+                transactionHistory.setBillType(BillType.IN.toString());
+                transactionHistory.setAmountBefore(luckyBalanceBefore);
+                transactionHistory.setAmountAfter(luckyBalanceAfter);
+
+                logger.info("****交易管理-余额购买产品-幸运收益-TransInfo:{}", JSONObject.toJSONString(transactionHistory));
+                transHistoryMapper.insertPanTransactionHistory(transactionHistory);
+
+                luckyUserBalance.setAvailableAmt(luckyUserBalance.getAvailableAmt().add(purchaseBalance.getLuckyAmt()));
+                luckyUserBalance.setBalance(luckyUserBalance.getBalance().add(purchaseBalance.getLuckyAmt()));
+
+                logger.info("****交易管理-余额购买产品-幸运收益-UserBalance:{}", JSONObject.toJSONString(luckyUserBalance));
+                userBalanceMapper.updatePanUserBalance(luckyUserBalance);
+            }
+
             if (sysUser.getParentId() != null && sysUser.getParentId() > 0) {
                 commission(purchaseBalance, sysUser);
             }
@@ -180,7 +208,7 @@ public class TransServiceImpl implements ITransService {
         panTransactionHistory.setOrUserId(Long.parseLong(requestUserBalance.getUpdateAt()));
 
 
-        if(requestUserBalance.getBillType().equals(BillType.IN.toString())){
+        if (requestUserBalance.getBillType().equals(BillType.IN.toString())) {
             BigDecimal inBalanceBefore = currUserBalance.getBalance();
             BigDecimal inBalanceAfter = currUserBalance.getBalance().add(currAmount);
             panTransactionHistory.setIsIncome(IsIncome.Y.toString());
@@ -194,7 +222,7 @@ public class TransServiceImpl implements ITransService {
             currUserBalance.setAvailableAmt(currUserBalance.getAvailableAmt().add(currAmount));
             currUserBalance.setBalance(currUserBalance.getBalance().add(currAmount));
             logger.info("****交易管理-修改用户余额-UserBalance:{}", JSONObject.toJSONString(currUserBalance));
-        }else if (requestUserBalance.getBillType().equals(BillType.OUT.toString())){
+        } else if (requestUserBalance.getBillType().equals(BillType.OUT.toString())) {
             BigDecimal outBalanceBefore = currUserBalance.getBalance();
             BigDecimal outBalanceAfter = currUserBalance.getBalance().subtract(currAmount);
             panTransactionHistory.setIsIncome(IsIncome.N.toString());
@@ -325,7 +353,7 @@ public class TransServiceImpl implements ITransService {
             userPurchase.setBuyer(currUser.getUserId());
             userPurchase.setStatus(TransStatus.SUCCESS);
             List<Purchase> userPurchaseList = purchaseMapper.selectPurchaseListForBuy(userPurchase);
-            if (userPurchaseList.size() <1) {
+            if (userPurchaseList.size() < 1) {
                 //首单，赠送金额
                 logger.info("****交易管理-首单-Strat********");
                 // 首单赠送比例
@@ -503,9 +531,9 @@ public class TransServiceImpl implements ITransService {
     }
 
 
-
     /**
      * 增值宝转入
+     *
      * @param panUserAsset
      * @return
      */
@@ -549,12 +577,13 @@ public class TransServiceImpl implements ITransService {
 
     /**
      * 增值宝转出
+     *
      * @param panUserAsset
      * @return
      */
     @Override
     @Transactional
-    public String transferOut(PanUserAsset panUserAsset){
+    public String transferOut(PanUserAsset panUserAsset) {
         logger.info("****交易管理-增值宝转出-Start********");
         String msg = MessageStatus.SUCCESS;
         PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(panUserAsset.getUserId());
@@ -596,13 +625,13 @@ public class TransServiceImpl implements ITransService {
     @Transactional
     public String toSgin(PanSignRecord panSignRecord) {
         logger.info("****交易管理-签到-Start********");
-        PanSignRecord  maxSignRecord =  panSignRecordMapper.getMaxSignRecordByUser(panSignRecord.getUserId());
+        PanSignRecord maxSignRecord = panSignRecordMapper.getMaxSignRecordByUser(panSignRecord.getUserId());
         int continuousDay = 1;
-        if(maxSignRecord!=null){
-            String fristDay = maxSignRecord.getSignYear()+"-"+maxSignRecord.getSignMonth()+"-"+maxSignRecord.getSignDay();
-            String secondDay = panSignRecord.getSignYear()+"-"+panSignRecord.getSignMonth()+"-"+panSignRecord.getSignDay();
-            if(DateUtils.differenceDay(fristDay,secondDay)==1){
-                continuousDay =  maxSignRecord.getContinuousDay()+1;
+        if (maxSignRecord != null) {
+            String fristDay = maxSignRecord.getSignYear() + "-" + maxSignRecord.getSignMonth() + "-" + maxSignRecord.getSignDay();
+            String secondDay = panSignRecord.getSignYear() + "-" + panSignRecord.getSignMonth() + "-" + panSignRecord.getSignDay();
+            if (DateUtils.differenceDay(fristDay, secondDay) == 1) {
+                continuousDay = maxSignRecord.getContinuousDay() + 1;
             }
         }
         PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(panSignRecord.getUserId());
@@ -611,8 +640,8 @@ public class TransServiceImpl implements ITransService {
         int dailySignInAmountMax = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmountMax"));
         int dailySignInAmountRate = Integer.parseInt(sysConfigService.selectConfigByKey("dailySignInAmountRate"));
         // int ax = (int) (dailySignInAmount + Math.random() * ((dailySignInAmountMax-dailySignInAmount)+1));
-        int ax  = DateUtils.getProportionRandom(dailySignInAmount,dailySignInAmountMax,dailySignInAmountRate);
-        BigDecimal transAmount =  new BigDecimal(ax).multiply(new BigDecimal(100));
+        int ax = DateUtils.getProportionRandom(dailySignInAmount, dailySignInAmountMax, dailySignInAmountRate);
+        BigDecimal transAmount = new BigDecimal(ax).multiply(new BigDecimal(100));
 
         BigDecimal balanceBefore = userBalance.getBalance();
         BigDecimal balanceAfter = userBalance.getBalance().add(transAmount);
@@ -649,23 +678,42 @@ public class TransServiceImpl implements ITransService {
         logger.info("****交易管理-修改代理余额-Start********");
         String msg = MessageStatus.SUCCESS;
         PanAgentBalance currAgentBalance = agentBalanceMapper.selectPanAgentBalanceById(requestAgentBalance.getId());
-        BigDecimal currAmount = requestAgentBalance.getAmount().multiply(new BigDecimal(100));
-        BigDecimal inBalanceBefore = currAgentBalance.getBalance();
-        BigDecimal inBalanceAfter = currAgentBalance.getBalance().add(currAmount);
+        if (requestAgentBalance.getTransType().equals(TransType.Prepaid_Recharge.toString())) {
+            BigDecimal currAmount = requestAgentBalance.getAmount().multiply(new BigDecimal(100));
+            BigDecimal inBalanceBefore = currAgentBalance.getBalance();
+            BigDecimal inBalanceAfter = currAgentBalance.getBalance().add(currAmount);
+            PanAgentBalanceDetail trans = new PanAgentBalanceDetail();
+            trans.setAgentId(currAgentBalance.getAgentId());
+            trans.setAmountBefore(inBalanceBefore);
+            trans.setAmount(currAmount);
+            trans.setAmountAfter(inBalanceAfter);
+            trans.setTransType(TransType.Prepaid_Recharge.name());
+            logger.info("****交易管理-新增代理商余额明细-agentBalanceDetail:{}", JSONObject.toJSONString(trans));
+            agentBalanceMapper.insertAgentBalanceDetail(trans);
 
-        PanAgentBalanceDetail trans = new PanAgentBalanceDetail();
-        trans.setAgentId(currAgentBalance.getAgentId());
-        trans.setAmountBefore(inBalanceBefore);
-        trans.setAmount(currAmount);
-        trans.setAmountAfter(inBalanceAfter);
-        trans.setTransType(TransType.Prepaid_Recharge.name());
-        logger.info("****交易管理-新增代理商余额明细-agentBalanceDetail:{}", JSONObject.toJSONString(trans));
-        agentBalanceMapper.insertAgentBalanceDetail(trans);
+            currAgentBalance.setAvailableAmt(currAgentBalance.getAvailableAmt().add(currAmount));
+            currAgentBalance.setBalance(currAgentBalance.getBalance().add(currAmount));
+            currAgentBalance.setPrechargeAmt(currAgentBalance.getPrechargeAmt().add(currAmount));
+            logger.info("****交易管理-修改代理商余额-AgentBalance:{}", JSONObject.toJSONString(currAgentBalance));
+        } else if (requestAgentBalance.getTransType().equals(TransType.Manual_Adjustment.toString())) {
 
-        currAgentBalance.setAvailableAmt(currAgentBalance.getAvailableAmt().add(currAmount));
-        currAgentBalance.setBalance(currAgentBalance.getBalance().add(currAmount));
-        currAgentBalance.setPrechargeAmt(currAgentBalance.getPrechargeAmt().add(currAmount));
-        logger.info("****交易管理-修改代理商余额-AgentBalance:{}", JSONObject.toJSONString(currAgentBalance));
+            BigDecimal currAmount = requestAgentBalance.getAmount().multiply(new BigDecimal(100));
+            BigDecimal inBalanceBefore = currAgentBalance.getBalance();
+            BigDecimal inBalanceAfter = currAgentBalance.getBalance().subtract(currAmount);
+            PanAgentBalanceDetail trans = new PanAgentBalanceDetail();
+            trans.setAgentId(currAgentBalance.getAgentId());
+            trans.setAmountBefore(inBalanceBefore);
+            trans.setAmount(currAmount);
+            trans.setAmountAfter(inBalanceAfter);
+            trans.setTransType(TransType.Manual_Adjustment.name());
+            logger.info("****交易管理-减少代理商余额明细-agentBalanceDetail:{}", JSONObject.toJSONString(trans));
+            agentBalanceMapper.insertAgentBalanceDetail(trans);
+
+            currAgentBalance.setAvailableAmt(currAgentBalance.getAvailableAmt().subtract(currAmount));
+            currAgentBalance.setBalance(currAgentBalance.getBalance().subtract(currAmount));
+            currAgentBalance.setPrechargeAmt(currAgentBalance.getPrechargeAmt().subtract(currAmount));
+            logger.info("****交易管理-减少代理商余额-AgentBalance:{}", JSONObject.toJSONString(currAgentBalance));
+        }
 
         int i = agentBalanceMapper.updatePanAgentBalance(currAgentBalance);
         if (i < 1) {
@@ -779,6 +827,61 @@ public class TransServiceImpl implements ITransService {
         int i = userBalanceMapper.updatePanUserBalance(userBalance);
 
         if (i < 1) {
+            msg = MessageStatus.ERROR;
+        }
+        return msg;
+    }
+
+    /***
+     * 抽奖
+     */
+    @Override
+    @Transactional
+    public String addLotteryMove(PanLottery resultLottery) {
+        logger.info("****交易管理-抽奖："+ JSONObject.toJSONString(resultLottery));
+        String msg = MessageStatus.SUCCESS;
+
+        PanUserAsset userAsset = new PanUserAsset();
+        userAsset.setUserId(resultLottery.getUserId());
+        userAssetMapper.updateDrawsNumberReduce(userAsset);
+        PanDrawsDetail drawsDetail =new PanDrawsDetail();
+        drawsDetail.setType(resultLottery.getType());
+        drawsDetail.setUserId(resultLottery.getUserId());
+        drawsDetail.setLotteryId(resultLottery.getId());
+        drawsDetail.setName(resultLottery.getName());
+        drawsDetail.setNameEn(resultLottery.getNameEn());
+        drawsDetail.setAmount(resultLottery.getAmount());
+        drawsDetail.setStatus(PrizeStatus.COMPLETED);
+        if(resultLottery.getType().equals(LotteryType.Cash)){
+            PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(resultLottery.getUserId());
+            BigDecimal drawsBalanceBefore = userBalance.getBalance();
+            BigDecimal drawsBalanceAfter = userBalance.getBalance().add(resultLottery.getAmount());
+            PanTransactionHistory transactionHistory = new PanTransactionHistory();
+            transactionHistory.setAmount(resultLottery.getAmount());
+            transactionHistory.setOrUserId(resultLottery.getUserId());
+            transactionHistory.setUserId(resultLottery.getUserId());
+            transactionHistory.setTransactionType(TransType.Draws_Income.toString());
+            transactionHistory.setIsIncome(IsIncome.N.toString());
+            transactionHistory.setRemark("抽奖-现金收益");
+            transactionHistory.setBillType(BillType.IN.toString());
+            transactionHistory.setAmountBefore(drawsBalanceBefore);
+            transactionHistory.setAmountAfter(drawsBalanceAfter);
+
+            logger.info("****交易管理-抽奖现金-TransInfo:{}", JSONObject.toJSONString(transactionHistory));
+            transHistoryMapper.insertPanTransactionHistory(transactionHistory);
+
+            userBalance.setAvailableAmt(userBalance.getAvailableAmt().add(resultLottery.getAmount()));
+            userBalance.setBalance(userBalance.getBalance().add(resultLottery.getAmount()));
+
+            logger.info("****交易管理-抽奖现金-UserBalance:{}", JSONObject.toJSONString(userBalance));
+            userBalanceMapper.updatePanUserBalance(userBalance);
+        }else if(resultLottery.getType().equals(LotteryType.Voucher)){
+            drawsDetail.setStatus(PrizeStatus.TO_BE_USED);
+            drawsDetail.setEndDate(DateUtils.getSomeDayLaterDateByToday(resultLottery.getCycle()));
+        }
+        int i =  panLotteryMapper.addDrawsDetail(drawsDetail);
+
+        if(i<1){
             msg = MessageStatus.ERROR;
         }
         return msg;

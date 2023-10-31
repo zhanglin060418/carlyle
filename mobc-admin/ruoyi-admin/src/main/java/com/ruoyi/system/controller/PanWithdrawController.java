@@ -304,7 +304,7 @@ public class PanWithdrawController extends BaseController {
         String key = redisCache.getCacheObject(requestNo);
         if (null == key) {
             redisCache.setCacheObject(requestNo, requestNo);
-            redisCache.expire(requestNo, 60L, TimeUnit.MINUTES);
+            redisCache.expire(requestNo, 10L, TimeUnit.MINUTES);
         } else {
             ajax = AjaxResult.error();
             ajax.put("msg", "请勿重复提交");
@@ -372,7 +372,7 @@ public class PanWithdrawController extends BaseController {
             String key = redisCache.getCacheObject(withdrawId);
             if (null == key) {
                 redisCache.setCacheObject(withdrawId, withdrawId);
-                redisCache.expire(withdrawId, 60L, TimeUnit.MINUTES);
+                redisCache.expire(withdrawId, 20L, TimeUnit.MINUTES);
             } else {
                 ajax = AjaxResult.error();
                 ajax.put("msg", "请勿重复提交");

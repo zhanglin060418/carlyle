@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.PanAgentBalance;
+import com.ruoyi.system.domain.PanAgentBalanceDetail;
 import com.ruoyi.system.domain.PanUserBalance;
 import com.ruoyi.system.mapper.PanAgentBalanceMapper;
 import com.ruoyi.system.mapper.PanUserBalanceMapper;
@@ -46,5 +47,10 @@ public class PanAgentBalanceServiceImpl implements IPanAgentBalanceService {
     @Override
     public PanAgentBalance selectPanAgentBalanceByAgentId(Long id){
         return panAgentBalanceMapper.selectPanAgentBalanceByAgentId(id);
+    }
+
+    @Override
+    public List<PanAgentBalanceDetail> selectAgenBalanceDetailList(Long agentId) {
+        return panAgentBalanceMapper.selectAgenBalanceDetailList(agentId);
     }
 }

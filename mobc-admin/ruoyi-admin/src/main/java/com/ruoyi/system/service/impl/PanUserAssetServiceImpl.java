@@ -114,4 +114,9 @@ public class PanUserAssetServiceImpl implements IPanUserAssetService
     public Long assetTotalRebate() {
         return panUserAssetMapper.assetTotalRebate();
     }
+
+    @Override
+    public PanUserAsset getDrawsNumberByUserId(Long userId) {
+        return panUserAssetMapper.getDrawsNumberByUserId(userId);
+    }
 }

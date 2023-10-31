@@ -114,6 +114,10 @@ export default {
       this.reqNum = num
     },
     sbtClick() {
+      if(this.reqNum==0){
+        this.errDialog("Please enter the amount!")
+        return
+      }
       this.reqMoney = this.reqNum * 100
 
       if(this.balance == 0){

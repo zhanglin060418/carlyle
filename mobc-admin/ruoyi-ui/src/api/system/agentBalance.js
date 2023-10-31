@@ -26,3 +26,11 @@ export function updateAgentBalance(data) {
   })
 }
 
+export function getBalanceDetailList(data) {
+  return request({
+    url: '/system/agentBalance/getBalanceDetailList',
+    method: 'post',
+    params: data
+  })
+}
+

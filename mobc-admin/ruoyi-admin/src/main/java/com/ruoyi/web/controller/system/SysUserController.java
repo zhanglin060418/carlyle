@@ -495,6 +495,24 @@ public class SysUserController extends BaseController {
                 }
             }
         }
+
+        ajax.put("todayRechargeUsers",todayRechargeUsers);
+        ajax.put("todayOrderUsers",todayOrderUsers);
+        ajax.put("todayWithdrawUsers",todayWithdrawUsers);
+        return ajax;
+    }
+    @RequestMapping("/gettodayDataByFrist")
+    public AjaxResult gettodayDataByFrist(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if (currentUser.getUserType().equals("01")) {
+            sysUser.setTopId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("02")) {
+            sysUser.setManagerId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("03")) {
+            sysUser.setAgentId(currentUser.getUserId());
+        }
+
         // 今日充值单数
         Long todayRechargeCount = 0L;
         // 今日订单单数
@@ -513,6 +531,44 @@ public class SysUserController extends BaseController {
                 }
             }
         }
+
+        ajax.put("todayRechargeCount",todayRechargeCount);
+        ajax.put("todayOrderCount",todayOrderCount);
+        ajax.put("todayWithdrawCount",todayWithdrawCount);
+        return ajax;
+    }
+
+
+    @RequestMapping("/getTodayDataSecond")
+    public AjaxResult getTodayDataSecond(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if (currentUser.getUserType().equals("01")) {
+            sysUser.setTopId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("02")) {
+            sysUser.setManagerId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("03")) {
+            sysUser.setAgentId(currentUser.getUserId());
+        }
+
+        //今日注册用户
+        Long todayRegisterUsers= userService.todayRegisterUsers(sysUser);
+        ajax.put("todayRegisterUsers",todayRegisterUsers);
+        return ajax;
+    }
+
+    @RequestMapping("/getTodayDataThird")
+    public AjaxResult getTodayDataThird(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if (currentUser.getUserType().equals("01")) {
+            sysUser.setTopId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("02")) {
+            sysUser.setManagerId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("03")) {
+            sysUser.setAgentId(currentUser.getUserId());
+        }
+
         // 今日充值金额
         Long todayRechargeAmt =0L;
         // 今日提现金额
@@ -552,21 +608,7 @@ public class SysUserController extends BaseController {
                 }
             }
         }
-        //今日注册用户
-        Long todayRegisterUsers= userService.todayRegisterUsers(sysUser);
-        //今日活跃用户
-        Long todayActiveUsers=transService.todayActiveUsers(sysUser);
-        //今日首次充值用户
-        Long todayFristRechargeUsers=transService.todayFristRechargeUsers(sysUser);
-        ajax.put("todayRegisterUsers",todayRegisterUsers);
-        ajax.put("todayActiveUsers",todayActiveUsers);
-        ajax.put("todayFristRechargeUsers",todayFristRechargeUsers);
-        ajax.put("todayRechargeCount",todayRechargeCount);
-        ajax.put("todayOrderCount",todayOrderCount);
-        ajax.put("todayWithdrawCount",todayWithdrawCount);
-        ajax.put("todayRechargeUsers",todayRechargeUsers);
-        ajax.put("todayOrderUsers",todayOrderUsers);
-        ajax.put("todayWithdrawUsers",todayWithdrawUsers);
+
         ajax.put("todayRechargeAmt",todayRechargeAmt);
         ajax.put("todayWithdrawAmt",todayWithdrawAmt);
         ajax.put("todayOrderAmt",todayOrderAmt);
@@ -577,6 +619,44 @@ public class SysUserController extends BaseController {
         ajax.put("todaySignInRewardAmt",todaySignInRewardAmt);
         return ajax;
     }
+
+    @RequestMapping("/getTodayDataFour")
+    public AjaxResult getTodayDataFour(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if (currentUser.getUserType().equals("01")) {
+            sysUser.setTopId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("02")) {
+            sysUser.setManagerId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("03")) {
+            sysUser.setAgentId(currentUser.getUserId());
+        }
+
+
+        //今日活跃用户
+        Long todayActiveUsers=transService.todayActiveUsers(sysUser);
+        ajax.put("todayActiveUsers",todayActiveUsers);
+        return ajax;
+    }
+
+    @RequestMapping("/getTodayDataFive")
+    public AjaxResult getTodayDataFive(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if (currentUser.getUserType().equals("01")) {
+            sysUser.setTopId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("02")) {
+            sysUser.setManagerId(currentUser.getUserId());
+        } else if (currentUser.getUserType().equals("03")) {
+            sysUser.setAgentId(currentUser.getUserId());
+        }
+
+        //今日首次充值用户
+        Long todayFristRechargeUsers=transService.todayFristRechargeUsers(sysUser);
+        ajax.put("todayFristRechargeUsers",todayFristRechargeUsers);
+        return ajax;
+    }
+
     @RequestMapping("/getTotalData")
     public AjaxResult getTotalData(SysUser sysUser) {
         AjaxResult ajax = AjaxResult.success();
@@ -611,17 +691,13 @@ public class SysUserController extends BaseController {
     public AjaxResult getTotalDataByFrist(SysUser sysUser) {
         AjaxResult ajax = AjaxResult.success();
         LoginUser currentUser = getLoginUser();
-        Long agentBalance = 0L;
 
         if(currentUser.getUserType().equals("01")){
             sysUser.setTopId(currentUser.getUserId());
-            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUser().getAgentId()).longValue();
         }else if(currentUser.getUserType().equals("02")){
             sysUser.setManagerId(currentUser.getUserId());
-            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUser().getAgentId()).longValue();
         }else if(currentUser.getUserType().equals("03")){
             sysUser.setAgentId(currentUser.getUserId());
-            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUserId()).longValue();
         }
 
         // 总充值金额
@@ -685,9 +761,6 @@ public class SysUserController extends BaseController {
             }
 
         }
-
-
-        ajax.put("agentBalance",agentBalance);
         ajax.put("totalRechargeAmt",totalRechargeAmt);
         ajax.put("totalWithdrawAmt",totalWithdrawAmt);
         ajax.put("totalOrderAmt",totalOrderAmt);
@@ -736,6 +809,23 @@ public class SysUserController extends BaseController {
                 }
             }
         }
+        ajax.put("totalRechargeUsers",totalRechargeUsers);
+        ajax.put("totalOrderUsers",totalOrderUsers);
+        ajax.put("totalWithdrawUsers",totalWithdrawUsers);
+        return ajax;
+    }
+
+    @RequestMapping("/getTotalDataThird")
+    public AjaxResult getTotalDataThird(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        if(currentUser.getUserType().equals("01")){
+            sysUser.setTopId(currentUser.getUserId());
+        }else if(currentUser.getUserType().equals("02")){
+            sysUser.setManagerId(currentUser.getUserId());
+        }else if(currentUser.getUserType().equals("03")){
+            sysUser.setAgentId(currentUser.getUserId());
+        }
 
         // 总充值单数
         Long totalRechargeCount = 0L;
@@ -759,9 +849,6 @@ public class SysUserController extends BaseController {
                 }
             }
         }
-        ajax.put("totalRechargeUsers",totalRechargeUsers);
-        ajax.put("totalOrderUsers",totalOrderUsers);
-        ajax.put("totalWithdrawUsers",totalWithdrawUsers);
         ajax.put("totalRechargeCount",totalRechargeCount);
         ajax.put("totalOrderCount",totalOrderCount);
         ajax.put("totalWithdrawCount",totalWithdrawCount);
@@ -770,4 +857,22 @@ public class SysUserController extends BaseController {
     }
 
 
+    @RequestMapping("/getAgentBalance")
+    public AjaxResult getAgentBalance(SysUser sysUser) {
+        AjaxResult ajax = AjaxResult.success();
+        LoginUser currentUser = getLoginUser();
+        Long agentBalance = 0L;
+
+        if(currentUser.getUserType().equals("01")){
+            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUser().getAgentId()).longValue();
+        }else if(currentUser.getUserType().equals("02")){
+            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUser().getAgentId()).longValue();
+        }else if(currentUser.getUserType().equals("03")){
+            agentBalance = panWithdrawService.getAgentBalance(currentUser.getUserId()).longValue();
+        }
+
+        ajax.put("agentBalance",agentBalance);
+        return ajax;
+
+    }
 }

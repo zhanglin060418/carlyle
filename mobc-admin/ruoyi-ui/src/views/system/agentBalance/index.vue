@@ -55,6 +55,20 @@
          {{scope.row.updateAt}}
         </template>
       </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+        width="160"
+        class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(scope.row)"
+            v-hasPermi="['system:agentBalance:edit']">详情</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -74,6 +88,21 @@
         <el-form-item label="当前预付款金额" prop="balance">
           <el-input v-model="form.prechargeAmt"  readonly="readonly" />
         </el-form-item>
+        <el-form-item label="业务类型" prop="transType">
+          <el-select
+            v-model="form.transType"
+            placeholder="请选择业务类型"
+            clearable
+            @keyup.enter.native="handleQuery"
+            style="width:100%">
+            <el-option
+              v-for="(item, index) in transTypeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="新增金额" prop="amount">
           <el-input v-model="form.amount" type ="number" placeholder="请输入金额" />
         </el-form-item>
@@ -83,19 +112,27 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="dialogVisible"  title="详情" width="70%">
+      <child-component ref="child" ></child-component>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listAgentBalance, getAgentBalance, updateAgentBalance } from "@/api/system/agentBalance";
-import UserInfo from "@/components/UserInfo";
+import ChildComponent from './balanceDetail.vue'
 
 export default {
   name: "Balance",
+  components: {
+    ChildComponent
+  },
   data() {
     return {
       // 遮罩层
       loading: true,
+      currentComponent: null,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -112,6 +149,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      dialogVisible: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -119,10 +157,21 @@ export default {
       },
       // 表单参数
       form: {},
+      transTypeOptions: [
+        {
+          "label": "预付款充值",
+          "value": "Prepaid_Recharge"
+        },{
+          "label": "手工调账",
+          "value": "Manual_Adjustment"
+        }],
       // 表单校验
       rules: {
         agentId: [
           { required: true, message: "用户ID不能为空", trigger: "blur" }
+        ],
+        transType: [
+          { required: true, message: "请选择业务类型", trigger: "blur" }
         ],
         amount: [
           { required: true, message: "金额不能为空", trigger: "blur" }
@@ -143,6 +192,14 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+
+    handleDetail(row) {
+      this.dialogVisible = true;
+      this.currentComponent = 'ChildComponent';
+      this.$nextTick(() => {
+        this.$refs.child.getAgentBalanceDetail(row)
+      })
     },
     // 取消按钮
     cancel() {
@@ -186,7 +243,7 @@ export default {
         this.form = response.data;
         this.form.prechargeAmt = this.form.prechargeAmt/100
         this.open = true;
-        this.title = "预付款处理";
+        this.title = "代理商余额处理";
       });
     },
     handleGetUser(agentId) {
@@ -199,10 +256,16 @@ export default {
           if (this.form.id != null) {
             this.loading = true
             updateAgentBalance(this.form).then(response => {
-              this.loading = false
-              this.$modal.msgSuccess("处理成功");
-              this.open = false;
-              this.getList();
+              if(response.code=='200'){
+                this.loading = false
+                this.$modal.msgSuccess("处理成功");
+                this.open = false;
+                this.getList();
+              }else{
+                this.loading = false;
+                this.errDialog(response.msg)
+              }
+
             });
           }
         }
@@ -211,3 +274,50 @@ export default {
   }
 };
 </script>
+
+<style>
+  table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table caption{
+    font-size: 2em;
+    font-weight: bold;
+    margin: 1em 0;
+  }
+
+  th,td{
+    border: 1px solid #999;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  table thead tr{
+    background-color: #f8f8f9;
+    color: #515a6e;
+    height: 40px;
+    font-size: 15px;
+    border-right: 1px solid #dfe6ec;
+  }
+  table tbody tr{
+    height: 40px;
+  }
+  table tbody tr:nth-child(odd){
+    background-color: #eee;
+  }
+
+  table tbody tr:hover{
+    background-color: #ccc;
+  }
+
+  table tbody tr td:first-child{
+    color: #1890ff;
+  }
+
+  table tfoot tr td{
+    text-align: right;
+    padding-right: 15px;
+  }
+
+</style>

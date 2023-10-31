@@ -42,6 +42,15 @@ public class PanAgentBalance extends BaseEntity
 
     private BigDecimal amount;
 
+    private String transType;
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public void setTransType(String transType) {
+        this.transType = transType;
+    }
 
     public Long getId() {
         return id;

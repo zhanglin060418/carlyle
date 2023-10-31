@@ -39,6 +39,8 @@ public class PanUserAsset extends BaseEntity {
     @Excel(name = "金额")
     private BigDecimal amount;
 
+    private int drawsNumber;
+
     /*
     交易金额
      */
@@ -73,6 +75,14 @@ public class PanUserAsset extends BaseEntity {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public int getDrawsNumber() {
+        return drawsNumber;
+    }
+
+    public void setDrawsNumber(int drawsNumber) {
+        this.drawsNumber = drawsNumber;
     }
 
     @Override

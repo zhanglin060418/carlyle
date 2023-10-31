@@ -189,6 +189,16 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     }
 
+    public static String getSomeDayLaterDateByToday(int day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date());
+        calendar.add(calendar.DATE, +day-1);
+        String date = sdf.format(calendar.getTime());
+        return date;
+
+    }
+
 
     /***
      *  获取...天后时间
@@ -318,5 +328,54 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         int currMax = max*rete/100;
         int ax = (int) (min + Math.random() * ((currMax-min)+1));
         return ax;
+    }
+
+    public static int getluckyAmtRandom(int min, int max) {
+        int ax = (int) (min + Math.random() * ((max-min)+1));
+        return ax;
+    }
+
+
+    /**
+     * 根据概率生成随机奖品
+     */
+    public static String getRandomForLottery(Map<String, Double> prizes ) {
+        List<Double> ranges = new ArrayList<>();
+        double sum = 0.0;
+        for (Double probability : prizes.values()) {
+            sum += probability;
+            ranges.add(sum);
+        }
+        Random random = new Random();
+        double randomNumber = random.nextDouble();
+        System.out.println("随机数："+randomNumber);
+        String prize = "";
+
+        for (int i = 0; i < ranges.size(); i++) {
+            if (randomNumber <= ranges.get(i)) {
+                prize = (String) prizes.keySet().toArray()[i];
+                break;
+            }
+        }
+        return prize;
+    }
+
+    public static void main(String[] args) {
+
+        Map<String, Double> numbers = new HashMap<>();
+//        for (ProbabilityEntity entity : probabilityEntityList) {
+//            numbers.put(entity.getId(), entity.getProbabilityValue());
+//        }
+        Map<String, Double> prizes = new HashMap<>();
+        prizes.put("奖品A", 0.0);
+        prizes.put("奖品B", 0.0);
+        prizes.put("奖品C", 0.0);
+        prizes.put("奖品E", 0.05);
+        prizes.put("奖品F", 0.1);
+        prizes.put("奖品G", 0.15);
+        prizes.put("奖品H", 0.25);
+        prizes.put("奖品I", 0.45);
+
+        System.out.println(getRandomForLottery(prizes));
     }
 }

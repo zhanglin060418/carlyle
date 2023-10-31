@@ -168,6 +168,10 @@
                         return this.$t('transType.Manual_Reward_Product')
                     case 'Reward_Transfer_Out':
                         return this.$t('transType.Reward_Transfer_Out')
+                    case 'Lucky_Income':
+                        return this.$t('transType.Lucky_Income')
+                    case 'Draws_Income':
+                        return this.$t('transType.Draws_Income')
                 }
             },
             itemClick(type) {

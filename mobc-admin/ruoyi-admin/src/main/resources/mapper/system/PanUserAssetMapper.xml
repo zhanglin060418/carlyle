@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userAssetId"    column="user_asset_id"    />
         <result property="userId"    column="user_id"    />
         <result property="balance"    column="balance"    />
+        <result property="drawsNumber"    column="draws_number"    />
     </resultMap>
 
     <sql id="selectPanUserAssetVo">
@@ -96,4 +97,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="assetTotalRebate" resultType="Long">
         select sum(amount) from pan_transaction_history where transaction_type='Treasure_Reward'
     </select>
+
+    <select id="getDrawsNumberByUserId" parameterType="Long" resultMap="PanUserAssetResult">
+        select user_id, draws_number from pan_user_asset where user_id = #{userId}
+    </select>
+
+    <update id="updateDrawsNumberAdd"  parameterType="PanUserAsset">
+        update pan_user_asset
+           set draws_number = draws_number + 1
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateDrawsNumberReduce" parameterType="PanUserAsset">
+        update pan_user_asset
+           set draws_number = draws_number - 1
+        where user_id = #{userId}
+    </update>
 </mapper>

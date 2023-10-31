@@ -29,6 +29,24 @@ public class PanSignRecord extends BaseEntity
     private String topName;
     private String managerName;
     private String agentName;
+    private String  sortType ;
+    private String propName;
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
+    }
+
+    public String getPropName() {
+        return propName;
+    }
+
+    public void setPropName(String propName) {
+        this.propName = propName;
+    }
 
     public Long getSignId() {
         return signId;

@@ -15,6 +15,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="agentName"    column="agent_name"  />
     </resultMap>
 
+    <resultMap type="PanAgentBalanceDetail" id="PanAgentBalanceDetailResult">
+        <result property="agentId"    column="agent_id"    />
+        <result property="transId"    column="trans_id"    />
+        <result property="balance"    column="balance"    />
+        <result property="amount" column="amount" />
+        <result property="amountBefore"    column="amount_before"    />
+        <result property="amountAfter" column="amount_after" />
+        <result property="agentName" column="agent_name" />
+        <result property="transType"    column="trans_type"  />
+        <result property="transactionDate"    column="transaction_date" />
+    </resultMap>
+
     <select id="selectPanAgentBalanceList" parameterType="PanAgentBalance" resultMap="PanAgentBalanceResult">
         SELECT
             pub.id,
@@ -123,6 +135,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pan_agent_balance a left join sys_user u on a.agent_id = u.user_id
         where
             a.id = #{id}
+    </select>
+    <select id="selectAgenBalanceDetailList" parameterType="Long" resultMap="PanAgentBalanceDetailResult">
+        SELECT
+        a.trans_id,
+        u.user_name agent_name,
+        a.amount,
+        a.amount_after,
+        a.amount_before,
+        a.trans_type ,
+        a.transaction_date
+    FROM
+        pan_agent_balance_detail a
+        LEFT JOIN sys_user u ON a.agent_id = u.user_id
+        where a.agent_id = #{agentId}
+        order by a.transaction_date desc
+
     </select>
 
 </mapper>

@@ -159,6 +159,13 @@
         {{parseFloat(scope.row.currFund/100)}}
         </template>
       </el-table-column>
+
+      <el-table-column label="是否开启幸运收入" align="center" prop="hasGroupBuyOption" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.hasGroupBuyOption == '0'" style="color: #71e2a3">是</span>
+          <span v-if="scope.row.hasGroupBuyOption == '1'" style="color: #ffba00">否</span>
+        </template>
+      </el-table-column>
       <el-table-column label="数字进度条" align="center" prop="showProgressBar">
         <template slot-scope="scope">
           <el-switch
@@ -399,7 +406,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="是否支持团购" prop="hasGroupBuyOption">
+            <el-form-item label="是否开启幸运收入" prop="hasGroupBuyOption">
               <el-radio-group v-model="form.hasGroupBuyOption">
                 <el-radio
                   v-for="dict in dict.type.sys_normal_disable"
@@ -566,7 +573,7 @@ export default {
           { required: true, message: "是否发售不能为空", trigger: "blur" }
         ],
         hasGroupBuyOption: [
-          { required: true, message: "是否支持团购不能为空", trigger: "blur" }
+          { required: true, message: "是否开启幸运收入不能为空", trigger: "blur" }
         ],
         luckyNumberRangeStart: [
           { required: true, message: "幸运收入区间开始值不能为空", trigger: "blur" }
@@ -731,6 +738,12 @@ export default {
           this.form.maximumBuy = this.form.maximumBuy * 100
           this.form.totalFund = this.form.totalFund * 100
           this.form.currFund = this.form.currFund * 100
+          if(this.form.hasGroupBuyOption=='0'){
+            if(this.form.luckyNumberRangeEnd =='0'||this.form.luckyNumberRangeStart>this.form.luckyNumberRangeEnd){
+              this.$modal.msg("幸运区间值异常，请检查");
+              return;
+            }
+          }
           const reward = this.form.rewardProduct
           if (reward!=null) {
             const curr = this.rewardProductList.filter(item => item.name == reward)

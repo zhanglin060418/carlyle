@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PanLotteryMapper">
+
+    <resultMap type="PanLottery" id="PanLotteryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="coverImages"    column="cover_images"    />
+        <result property="category"    column="category"    />
+        <result property="type"    column="type"    />
+        <result property="probability"    column="probability"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="amount"    column="amount"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="PanDrawsDetail" id="PanDrawsDetailResult">
+        <result property="id"    column="id"    />
+        <result property="lotteryId"    column="lottery_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="type"    column="type"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="userName"    column="user_name"    />
+        <result property="topId"    column="top_id"    />
+        <result property="managerId"        column="manager_id" />
+        <result property="topName"    column="top_name"    />
+        <result property="managerName"    column="manager_name"  />
+        <result property="agentId"    column="agent_id"  />
+        <result property="agentName"    column="agent_name"  />
+        <result property="name"    column="name"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="coverImages"    column="cover_images"    />
+        <result property="category"    column="category"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="amount"    column="amount"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPanLotteryVo">
+        select id, name,  name_en, cover_images, category, type,  probability, cycle, amount,  cast(description as char) as description, create_time, update_time from pan_lottery
+    </sql>
+
+    <select id="selectPanDrawsList" parameterType="PanDrawsDetail" resultMap="PanDrawsDetailResult">
+        SELECT
+            sys_user.user_name user_name,
+            u2.user_name top_name,
+            u3.user_name manager_name,
+            u4.user_name agent_name,
+            d.id,
+            d.user_id,
+            d.lottery_id,
+            d.name,
+            d.name_en,
+            d.type,
+            d.amount,
+            d.end_date,
+            d.status,
+            d.create_time,
+            d.update_time
+        FROM
+            pan_draws_detail d
+            LEFT JOIN sys_user ON sys_user.user_id = d.user_id
+            LEFT JOIN sys_user u2 ON u2.user_id = sys_user.top_id
+            LEFT JOIN sys_user u3 ON u3.user_id = sys_user.manager_id
+            LEFT JOIN sys_user u4 ON u4.user_id = sys_user.agent_id
+        <where>
+            <if test="name != null  and name != ''"> and d.name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and d.type = #{type}</if>
+            <if test="status != null  and status != ''"> and d.status = #{status}</if>
+            <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName}) </if>
+            <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
+            <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
+            <if test="agentName != null and agentName!= ''"> and u4.user_name  = #{agentName}</if>
+            <if test="topId != null and topId!= ''"> and sys_user.top_id  = #{topId}</if>
+            <if test="managerId != null and managerId!= ''"> and sys_user.manager_id  = #{managerId}</if>
+            <if test="agentId != null and agentId!= ''"> and sys_user.agent_id  = #{agentId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(d.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(d.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        order by d.create_time desc
+    </select>
+
+    <select id="selectPanLotteryList" parameterType="PanLottery" resultMap="PanLotteryResult">
+        <include refid="selectPanLotteryVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectPanLotteryById" parameterType="Long" resultMap="PanLotteryResult">
+        <include refid="selectPanLotteryVo"/>
+        where id = #{id}
+    </select>
+    <select id="getLotteryListByCategory" resultMap="PanLotteryResult">
+        SELECT
+            id,
+            name_en,
+            cover_images,
+            category,
+            type,
+            probability,
+            cycle,
+            amount
+        FROM
+            pan_lottery
+            order by category
+    </select>
+
+
+    <update id="updatePanLottery" parameterType="PanLottery">
+        update pan_lottery
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="nameEn != null">name_en = #{nameEn},</if>
+            <if test="coverImages != null">cover_images = #{coverImages},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="probability != null">probability = #{probability},</if>
+            <if test="cycle != null">cycle = #{cycle},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <insert id="addDrawsDetail" parameterType="PanDrawsDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into pan_draws_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="lotteryId != null ">lottery_id,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="endDate != null and endDate != ''">end_date,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="nameEn != null and nameEn != ''">name_en,</if>
+            <if test="amount != null and amount != ''">amount,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="lotteryId != null">#{lotteryId},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="endDate != null and endDate != ''">#{endDate},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="nameEn != null and nameEn != ''">#{nameEn},</if>
+            <if test="amount != null and amount != ''">#{amount},</if>
+            now()
+        </trim>
+    </insert>
+
+    <update id="updateDrawsDetail" parameterType="PanDrawsDetail">
+        update pan_draws_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            update_time = now()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getDrawsList" parameterType="Long" resultMap="PanDrawsDetailResult">
+        SELECT
+            d.name_en,
+            d.type,
+            d.end_date,
+            d.status,
+            d.create_time
+        FROM
+            pan_draws_detail d
+            where d.user_id = #{userId}
+            ORDER BY d.create_time desc
+    </select>
+
+
+</mapper>

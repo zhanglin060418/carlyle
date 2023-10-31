@@ -24,4 +24,6 @@ public interface PanAgentBalanceMapper {
     public PanAgentBalance selectPanAgentBalanceByAgentId(Long agentId);
 
     public int insertAgentBalanceDetail(PanAgentBalanceDetail trans);
+
+    public List<PanAgentBalanceDetail> selectAgenBalanceDetailList(Long agentId);
 }

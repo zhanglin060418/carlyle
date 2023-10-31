@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.PanAgentBalance;
+import com.ruoyi.system.domain.PanAgentBalanceDetail;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface IPanAgentBalanceService {
     public PanAgentBalance selectPanAgentBalanceById(Long id);
 
     public PanAgentBalance selectPanAgentBalanceByAgentId(Long agentId);
+
+    public List<PanAgentBalanceDetail> selectAgenBalanceDetailList(Long agentId);
 }

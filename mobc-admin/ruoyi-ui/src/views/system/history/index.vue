@@ -103,6 +103,9 @@
           <span v-else-if="scope.row.transactionType == 'SignIn_Reward'">签到奖励</span>
           <span v-else-if="scope.row.transactionType == 'Manual_Reward_Product'">手工赠送产品</span>
           <span v-else-if="scope.row.transactionType == 'Reward_Transfer_Out'">返佣金额转出</span>
+          <span v-else-if="scope.row.transactionType == 'Lucky_Income'">幸运收益</span>
+          <span v-else-if="scope.row.transactionType == 'Draws_Income'">抽奖现金收益</span>
+
         </template>
       </el-table-column>
       <el-table-column label="交易前可用余额" align="center" prop="amountBefore">
@@ -259,6 +262,12 @@ export default {
         },{
           "label": "返佣金额转出",
           "value": "Reward_Transfer_Out"
+        },{
+          "label": "幸运收益",
+          "value": "Lucky_Income"
+        },{
+          "label": "抽奖现金收益",
+          "value": "Draws_Income"
         }],
     };
   },

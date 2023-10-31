@@ -135,6 +135,16 @@ const routes = [{
               type: '1'
             },
           },
+    {
+        path: '/drawsList',
+        name: 'drawsList',
+        component: () =>
+            import ('@/views/lottery/drawsList'),
+        meta: {
+            title: '',
+        },
+    },
+
         {
           path: '/confirmpurchase',
           name: 'confirmpurchase',
@@ -572,6 +582,15 @@ const routes = [{
         name: '签到',
         component: () =>
             import ('@/views/check'),
+        meta: {
+            title: '',
+        },
+    },
+    {
+        path: '/lottery',
+        name: '抽奖',
+        component: () =>
+            import ('@/views/lottery'),
         meta: {
             title: '',
         },

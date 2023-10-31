@@ -88,6 +88,9 @@ public class Purchase extends BaseEntity {
         this.topId = topId;
     }
 
+    private BigDecimal luckyAmt;
+    private String isLucky;
+
     /**
      * 状态
      */
@@ -124,6 +127,23 @@ public class Purchase extends BaseEntity {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    public BigDecimal getLuckyAmt() {
+        return luckyAmt;
+    }
+
+    public void setLuckyAmt(BigDecimal luckyAmt) {
+        this.luckyAmt = luckyAmt;
+    }
+
+    public String getIsLucky() {
+        return isLucky;
+    }
+
+    public void setIsLucky(String isLucky) {
+        this.isLucky = isLucky;
+    }
+
     /**
      * 收益开始日期
      */

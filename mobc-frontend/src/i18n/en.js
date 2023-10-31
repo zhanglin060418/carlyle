@@ -81,6 +81,7 @@ export default {
   user: {
     setting: 'Setting',
     checkin: 'Sign In',
+    lottery: 'Lottery',
     help: 'FAQ',
     service: 'Customer Service',
     uid: 'UID',
@@ -271,6 +272,9 @@ export default {
     SignIn_Reward :'Sign In Reward',
     Manual_Reward_Product :'Manual Reward Product',
     Reward_Transfer_Out :'Reward Transfer Out',
+    Lucky_Income :'Lucky Income',
+    Draws_Income :'Draws Income',
+
   },
   //支付详情
   payDetail: {
@@ -654,7 +658,7 @@ export default {
     t60: 'Deal price',
     t61: 'Transaction successful',
     t62: 'Balance is low, please buy energy first',
-    t63: 'Welcome to Carlyle, congratulations, you are now a member of the Carlyle Fund',
+    t63: 'Welcome to buy Carlyle Fund! Please contact online customer service and join the official Whatsapp group for more ways to make money.',
     t631: 'Purchase successful',
     t64: 'Item is sold out Please come early next time',
     t65: 'Energy redemption has been successful, waiting for payment',

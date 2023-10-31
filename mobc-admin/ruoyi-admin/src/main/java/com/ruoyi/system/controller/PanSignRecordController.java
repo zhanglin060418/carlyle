@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.MessageStatus;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ITransService;
 import org.slf4j.Logger;
@@ -57,6 +58,11 @@ public class PanSignRecordController extends BaseController
         }
         if (currentUser.getUserType().equals("03")) {
             panSignRecord.setAgentId(currentUser.getUserId());
+        }
+        if (StringUtils.isBlank(panSignRecord.getPropName())) {
+            panSignRecord.setPropName("signTime");
+            //descending  ascending
+            panSignRecord.setSortType("descending");
         }
         startPage();
         List<PanSignRecord> list = panSignRecordService.selectPanSignRecordList(panSignRecord);

@@ -40,6 +40,10 @@ public enum TransType {
      * Buy Product Balance
      */
     Buy_Product_Balance,
+
+    Lucky_Income,
+
+    Draws_Income,
     /**
      * 下级首单奖励
      * Child First Purchase Reward

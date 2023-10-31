@@ -5,7 +5,7 @@
         <p v-if="title">{{ title }}</p>
         <slot name="title"></slot>
       </div> -->
-      <div class="head">
+      <div class="head" style="height: 240px;min-height: 240px;">
         <div class="title">
           {{ $t('dw.t22') }}
         </div>

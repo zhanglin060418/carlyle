@@ -153,6 +153,19 @@
         :placeholder="$t('home.paymentPwd')"
     ></base-input>
     </van-dialog>
+    <van-popup
+            v-model="showLucky"
+            round
+            position="bottom"
+            safe-area-inset-bottom
+            class="popup-lucky"
+            :style="{ height:'14.2rem',width:'76%',margin: '0% 12% 40% 12% ' }">
+      <div class="sell-lucky" @click="closeLucky">
+        <div class="content-money">
+          <p class="money">{{currencyShape}} {{luckyAmount/100}}</p>
+        </div>
+      </div>
+    </van-popup>
   </div>
     <loadding v-if="isLoading"></loadding>
   </modMain>
@@ -170,7 +183,9 @@ export default {
   data() {
     return {
       currencyShape: '',
+      luckyAmount:0,
       isLoading: false,
+      showLucky: false,
       sym: '',
       userId: '',
       payPassword: '',
@@ -251,6 +266,10 @@ export default {
       this.reqNum =this.balance/100;
     },
     buyClick() {
+      if(this.reqNum==0){
+        this.errDialog("Please enter the amount!")
+        return
+      }
       this.postNum = this.reqNum * 100
       if (this.item.name == this.$t('dw.t196')) {
         if(this.$route.query.type == 'withdraw') {
@@ -300,6 +319,7 @@ export default {
     //     },
     //   })
     // },
+
     toConfirmPaymentPwd() {
       this.showPurchaseDetailDlg = false
       this.buy();
@@ -316,6 +336,12 @@ export default {
           this.verifyPayDlgOpen = false
           return false
         }
+      })
+    },
+    closeLucky(){
+      this.showLucky = false;
+      this.$router.push({
+        path: '/fund',
       })
     },
     async buy() {
@@ -374,26 +400,19 @@ export default {
         this.addToPurchase(formData).then(res => {
           this.isLoading = false
           if(res.code == 200) {
-            if(type == 1) {
-              let _url = res.payInfoUrl
-              if (window.webkit) {
-                window.webkit.messageHandlers.openBrowser.postMessage(_url)
-              } else if (window.appInterface) {
-                window.appInterface.openBrowser(_url)
-              } else {
-                window.location.href = _url
+            if(res.data.isLucky == '0'){
+              this.luckyAmount = res.data.luckyAmt;
+              this.showLucky = true;
+            }else{
+              this.$router.push({
+                path: 'fund',
+              })
+              if(this.pList.length<1){
+                bus.$emit('openDialog', 1)
+              }else{
+                bus.$emit('openDialog', 5)
               }
             }
-
-            this.$router.push({
-              path: 'fund',
-            })
-            if(this.pList.length<1){
-              bus.$emit('openDialog', 1)
-            }else{
-              bus.$emit('openDialog', 5)
-            }
-
           }
           else {
             if(res.msg == 'Not enough Copies')

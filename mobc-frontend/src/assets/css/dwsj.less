@@ -1621,8 +1621,8 @@ body {
     display: flex;
     flex-direction: column;
     .head {
-      height: 240px;
-      min-height: 240px;
+      height: 50px;
+      min-height: 50px;
       position: relative;
       .title {
         width: 166px;
@@ -2669,5 +2669,32 @@ body {
     font-size: 18px;
     margin-bottom: 8px;
     color: #000;
+  }
+}
+
+.popup-lucky {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  .sell-lucky {
+    background: url('/static/assets/image/XY.png');
+    background-size: 100%;
+    width: 100%;
+    height: auto;
+    .content-money {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      padding-top: 4rem;
+      align-items: center;
+      justify-content: center;
+      .money {
+        font-size: 24px;
+        font-weight: 700;
+        background-color: white;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: #0a364a;
+      }
+    }
   }
 }

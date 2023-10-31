@@ -90,19 +90,13 @@
       position="bottom"
       safe-area-inset-bottom
       class="popup-sell-buy"
-      :style="{ height: '40%' }"
+      :style="{ height: '60%',margin: '0% 0% 0% 0%' }"
     >
       <div class="sell-buy popup-box energy-popup">
         <div class="head">
           <div class="title">
             {{ $t('payDetail.text41') }}
           </div>
-          <!-- <img
-            class="poput-close"
-            src="static/assets/image/dw/close.png"
-            alt=""
-            @click="showBank = false"
-          /> -->
         </div>
         <div class="content">
           <div class="bank-main">

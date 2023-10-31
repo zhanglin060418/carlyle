@@ -76,4 +76,6 @@ public interface IPanUserAssetService
 	public Long assetTotalBalance();
 
     public Long assetTotalRebate();
+
+    public PanUserAsset getDrawsNumberByUserId(Long userId);
 }

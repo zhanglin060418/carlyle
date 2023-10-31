@@ -31,4 +31,6 @@ public interface ITransService
     public String productReward(PanUserBalance requestUserBalance);
 
     public String rewardTransferOut(PanUserBalance rewardBalance);
+
+    public String addLotteryMove(PanLottery resultPanLottery);
 }

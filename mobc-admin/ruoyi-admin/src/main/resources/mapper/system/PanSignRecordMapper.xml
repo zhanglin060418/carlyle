@@ -52,7 +52,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND <![CDATA[ DATE_FORMAT(s.sign_time,'%Y-%m-%d') <= DATE_FORMAT( #{params.endTime},'%Y-%m-%d') ]]>
             </if>
         </where>
-        order by s.sign_time desc
+        <!-- 数据范围过滤 -->
+        <if test="propName == 'signTime' and sortType == 'descending'">
+            order by s.sign_time desc
+        </if>
+        <if test="propName == 'signTime'  and sortType == 'ascending' ">
+            order by s.sign_time asc
+        </if>
+        <if test="propName == 'continuousDay' and sortType == 'descending'">
+            order by s.continuous_day desc
+        </if>
+        <if test="propName == 'continuousDay' and sortType == 'ascending'">
+            order by s.continuous_day asc
+        </if>
     </select>
 
 
