@@ -93,5 +93,10 @@ public class PanLotteryServiceImpl implements IPanLotteryService
         return panLotteryMapper.getDrawsById(id);
     }
 
+    @Override
+    public List<PanDrawsDetail> getCouponList(PanDrawsDetail drawsDetail) {
+        return panLotteryMapper.getCouponList(drawsDetail);
+    }
+
 
 }

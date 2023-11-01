@@ -57,4 +57,6 @@ public interface PanLotteryMapper
     public List<PanDrawsDetail> getVoucherList(PanDrawsDetail drawsDetail);
 
     public PanDrawsDetail getDrawsById(Long id);
+
+    public List<PanDrawsDetail> getCouponList(PanDrawsDetail drawsDetail);
 }

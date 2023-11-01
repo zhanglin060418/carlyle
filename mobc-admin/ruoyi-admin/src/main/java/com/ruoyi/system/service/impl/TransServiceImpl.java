@@ -231,6 +231,18 @@ public class TransServiceImpl implements ITransService {
 
                 logger.info("****交易管理-余额购买产品-幸运收益-UserBalance:{}", JSONObject.toJSONString(luckyUserBalance));
                 userBalanceMapper.updatePanUserBalance(luckyUserBalance);
+            }else if(purchaseBean.getIsVoucher().equals("0")){
+                PanDrawsDetail drawsDetail =new PanDrawsDetail();
+                drawsDetail.setType(LotteryType.Voucher.trim());
+                drawsDetail.setUserId(purchaseBean.getBuyer());
+                drawsDetail.setLotteryId(purchaseBean.getProduct());
+                drawsDetail.setName("优惠券 "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
+                drawsDetail.setNameEn("Coupon "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
+                drawsDetail.setAmount(purchaseBean.getVoucherObainAmount());
+                drawsDetail.setStatus(PrizeStatus.TO_BE_USED);
+                drawsDetail.setPrizeMode(PrizeMode.BUY_PROD);
+                drawsDetail.setEndDate(DateUtils.getSomeDayLaterDateByToday(purchaseBean.getVoucherCycle()));
+                int i =  panLotteryMapper.addDrawsDetail(drawsDetail);
             }
             if(purchaseBean.getIsDraws().equals("0")){
                 PanUserAsset panUserAsset = new PanUserAsset();
@@ -436,6 +448,13 @@ public class TransServiceImpl implements ITransService {
                 parentUser.setRewardAmt(parentUser.getRewardAmt().add(firstPurchaseCommission));
                 logger.info("****交易管理-首单-UserBalance :{}", JSONObject.toJSONString(parentUser));
                 userBalanceMapper.updatePanUserBalance(parentUser);
+
+                /**
+                 * 赠送抽奖1次
+                 */
+                PanUserAsset panUserAsset = new PanUserAsset();
+                panUserAsset.setUserId(currUser.getParentId());
+                userAssetMapper.updateDrawsNumberAdd(panUserAsset);
             }
 
             /**
@@ -907,6 +926,7 @@ public class TransServiceImpl implements ITransService {
         drawsDetail.setNameEn(resultLottery.getNameEn());
         drawsDetail.setAmount(resultLottery.getAmount());
         drawsDetail.setStatus(PrizeStatus.COMPLETED);
+        drawsDetail.setPrizeMode(PrizeMode.DRAWS);
         if(resultLottery.getType().equals(LotteryType.Cash)){
             PanUserBalance userBalance = userBalanceMapper.getPanUserBalanceByUserId(resultLottery.getUserId());
             BigDecimal drawsBalanceBefore = userBalance.getBalance();

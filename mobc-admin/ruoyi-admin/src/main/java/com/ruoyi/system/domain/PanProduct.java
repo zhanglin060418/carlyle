@@ -143,9 +143,23 @@ public class PanProduct extends BaseEntity
 
     private String isVoucher;
 
+    private Integer voucherObtainStart;
+
+    private Integer voucherObtainEnd;
+
     private Integer voucherStart;
 
     private Integer voucherEnd;
+
+    private Integer voucherCycle;
+
+    public Integer getVoucherCycle() {
+        return voucherCycle;
+    }
+
+    public void setVoucherCycle(Integer voucherCycle) {
+        this.voucherCycle = voucherCycle;
+    }
 
     public String getIsDraws() {
         return isDraws;
@@ -463,6 +477,22 @@ public class PanProduct extends BaseEntity
 
     public void setBuyCount(Integer buyCount) {
         this.buyCount = buyCount;
+    }
+
+    public Integer getVoucherObtainStart() {
+        return voucherObtainStart;
+    }
+
+    public void setVoucherObtainStart(Integer voucherObtainStart) {
+        this.voucherObtainStart = voucherObtainStart;
+    }
+
+    public Integer getVoucherObtainEnd() {
+        return voucherObtainEnd;
+    }
+
+    public void setVoucherObtainEnd(Integer voucherObtainEnd) {
+        this.voucherObtainEnd = voucherObtainEnd;
     }
 
     @Override

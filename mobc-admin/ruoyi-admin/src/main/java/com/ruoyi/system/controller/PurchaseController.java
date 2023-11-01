@@ -265,13 +265,17 @@ public class PurchaseController extends BaseController {
 
             Purchase purchase = new Purchase();
             //判断余额
-            if(purchaseCreate.getDrawsId()>0){
+            if(purchaseCreate.getDrawsId()!=null&&purchaseCreate.getDrawsId()>0){
                 PanDrawsDetail drawsDetail =  panLotteryService.getDrawsById(purchaseCreate.getDrawsId());
                 if(drawsDetail==null){
                     finalAjax.put("msg", "The coupon does not exist");
                     return finalAjax;
                 }
-                if(drawsDetail.getStatus().equals("Expired")){
+                if(!drawsDetail.getType().equals(LotteryType.Voucher.trim())){
+                    finalAjax.put("msg", "Is no coupon ");
+                    return finalAjax;
+                }
+                if(drawsDetail.getStatus().equals(PrizeStatus.EXPIRED)){
                     finalAjax.put("msg", "The coupon Expired");
                     return finalAjax;
                 }
@@ -301,16 +305,19 @@ public class PurchaseController extends BaseController {
                 purchase.setAmount(purchaseCreate.getAmount());
                 purchase.setPayBack("0");
                 purchase.setIsDraws(panProduct.getIsDraws());
-                if (panProduct.getHasGroupBuyOption().equals("0")) {
-                    int luckyAmount = DateUtils.getluckyAmtRandom(panProduct.getLuckyNumberRangeStart(), panProduct.getLuckyNumberRangeEnd());
-
-                    purchase.setIsLucky("0");
-                    purchase.setLuckyAmt(new BigDecimal(luckyAmount).multiply(new BigDecimal(100)));
-                } else {
+                if(panProduct.getIsVoucher().equals("0")){
+                    int voucherObainAmount = DateUtils.getluckyAmtRandom(panProduct.getVoucherObtainStart(), panProduct.getVoucherObtainEnd());
+                    purchase.setIsVoucher("0");
                     purchase.setIsLucky("1");
+                    purchase.setVoucherCycle(panProduct.getVoucherCycle());
+                    purchase.setVoucherObainAmount(new BigDecimal(voucherObainAmount).multiply(new BigDecimal(100)));
+                }else if (panProduct.getHasGroupBuyOption().equals("0")) {
+                    int luckyAmount = DateUtils.getluckyAmtRandom(panProduct.getLuckyNumberRangeStart(), panProduct.getLuckyNumberRangeEnd());
+                    purchase.setIsLucky("0");
+                    purchase.setIsVoucher("1");
+                    purchase.setLuckyAmt(new BigDecimal(luckyAmount).multiply(new BigDecimal(100)));
                 }
                 purchase.setStatus(TransStatus.SUCCESS);
-
                 logger.info("****产品购买-info:{}", JSONObject.toJSONString(purchase));
                 String result = iTransService.purchaseBalance(purchase);
                 if (result.equals(MessageStatus.SUCCESS)) {

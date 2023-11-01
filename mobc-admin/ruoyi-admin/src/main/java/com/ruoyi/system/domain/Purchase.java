@@ -93,6 +93,9 @@ public class Purchase extends BaseEntity {
     }
 
     private BigDecimal luckyAmt;
+
+    private BigDecimal voucherObainAmount;
+
     private String isLucky;
 
     private String isDraws;
@@ -103,12 +106,32 @@ public class Purchase extends BaseEntity {
 
     private Integer voucherEnd;
 
+
+
     /**
      * 状态
      */
     private String status;
 
     private PanProduct item;
+
+    private Integer voucherCycle;
+
+    public Integer getVoucherCycle() {
+        return voucherCycle;
+    }
+
+    public void setVoucherCycle(Integer voucherCycle) {
+        this.voucherCycle = voucherCycle;
+    }
+
+    public BigDecimal getVoucherObainAmount() {
+        return voucherObainAmount;
+    }
+
+    public void setVoucherObainAmount(BigDecimal voucherObainAmount) {
+        this.voucherObainAmount = voucherObainAmount;
+    }
 
     public String getIsDraws() {
         return isDraws;

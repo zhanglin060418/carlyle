@@ -41,43 +41,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isVoucher"    column="is_voucher"    />
         <result property="voucherStart"    column="voucher_start"    />
         <result property="voucherEnd"    column="voucher_end"    />
+        <result property="voucherObtainStart"    column="voucher_obtain_start"    />
+        <result property="voucherObtainEnd"    column="voucher_obtain_end"    />
+        <result property="voucherCycle"    column="voucher_cycle"    />
     </resultMap>
 
     <sql id="selectPanProductVo">
-        select id, name, name_in,curr_fund,is_draws,is_voucher,voucher_start,voucher_end, name_en, name_ru, cover_images, category, type, reward_product, daily_interest, cycle, minimum_buy, maximum_buy, fund_type, progress, show_progress_bar, selling_timestamp, total_fund, copies, is_visible, on_sale, has_group_buy_option, lucky_number_range_start, lucky_number_range_end, status, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time from pan_product
+        select id, name, name_in,curr_fund,voucher_cycle,is_draws,is_voucher,voucher_obtain_start,voucher_obtain_end,voucher_start,voucher_end, name_en, name_ru, cover_images, category, type, reward_product, daily_interest, cycle, minimum_buy, maximum_buy, fund_type, progress, show_progress_bar, selling_timestamp, total_fund, copies, is_visible, on_sale, has_group_buy_option, lucky_number_range_start, lucky_number_range_end, status, cast(description as char) as description, cast(description_en as char) as description_en, description_in, description_ru, create_time, update_time from pan_product
     </sql>
 
     <select id="selectPanProductList" parameterType="PanProduct" resultMap="PanProductResult">
         <include refid="selectPanProductVo"/>
         <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="nameIn != null  and nameIn != ''"> and name_in = #{nameIn}</if>
-            <if test="nameEn != null  and nameEn != ''"> and name_en = #{nameEn}</if>
-            <if test="nameRu != null  and nameRu != ''"> and name_ru = #{nameRu}</if>
-            <if test="coverImages != null  and coverImages != ''"> and cover_images = #{coverImages}</if>
-            <if test="category != null  and category != ''"> and category = #{category}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="rewardProduct != null "> and reward_product = #{rewardProduct}</if>
-            <if test="dailyInterest != null "> and daily_interest = #{dailyInterest}</if>
-            <if test="cycle != null "> and cycle = #{cycle}</if>
-            <if test="minimumBuy != null "> and minimum_buy = #{minimumBuy}</if>
-            <if test="maximumBuy != null "> and maximum_buy = #{maximumBuy}</if>
             <if test="fundType != null  and fundType != ''"> and fund_type = #{fundType}</if>
-            <if test="progress != null "> and progress = #{progress}</if>
-            <if test="showProgressBar != null  and showProgressBar != ''"> and show_progress_bar = #{showProgressBar}</if>
-            <if test="sellingTimestamp != null "> and selling_timestamp = #{sellingTimestamp}</if>
-            <if test="totalFund != null "> and total_fund = #{totalFund}</if>
-            <if test="copies != null "> and copies = #{copies}</if>
             <if test="isVisible != null  and isVisible != ''"> and is_visible = #{isVisible}</if>
             <if test="onSale != null  and onSale != ''"> and on_sale = #{onSale}</if>
-            <if test="hasGroupBuyOption != null  and hasGroupBuyOption != ''"> and has_group_buy_option = #{hasGroupBuyOption}</if>
-            <if test="luckyNumberRangeStart != null "> and lucky_number_range_start = #{luckyNumberRangeStart}</if>
-            <if test="luckyNumberRangeEnd != null "> and lucky_number_range_end = #{luckyNumberRangeEnd}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="description != null  and description != ''"> and description = #{description}</if>
-            <if test="descriptionEn != null  and descriptionEn != ''"> and description_en = #{descriptionEn}</if>
-            <if test="descriptionIn != null  and descriptionIn != ''"> and description_in = #{descriptionIn}</if>
-            <if test="descriptionRu != null  and descriptionRu != ''"> and description_ru = #{descriptionRu}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 				AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			</if>
@@ -111,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pd.minimum_buy,
             pd.maximum_buy,
             pd.fund_type,
+            pd.voucher_cycle,
             pd.progress,
             pd.show_progress_bar,
             pd.selling_timestamp,
@@ -123,6 +106,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pd.is_voucher,
             pd.voucher_start,
             pd.voucher_end,
+            pd.voucher_obtain_start,
+            pd.voucher_obtain_end,
             pd.on_sale,
             IFNULL(pp.cun, 0)  buyCount
         FROM
@@ -186,6 +171,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isVoucher != null">is_voucher,</if>
             <if test="voucherStart != null">voucher_start,</if>
             <if test="voucherEnd != null">voucher_end,</if>
+            <if test="voucherObtainStart != null">voucher_obtain_start,</if>
+            <if test="voucherObtainEnd != null">voucher_obtain_end,</if>
+            <if test="voucherCycle != null">voucher_cycle,</if>
             create_time
          )values(
             <if test="name != null and name != ''">#{name},</if>
@@ -221,6 +209,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isVoucher != null">#{isVoucher},</if>
             <if test="voucherStart != null">#{voucherStart},</if>
             <if test="voucherEnd != null">#{voucherEnd},</if>
+            <if test="voucherObtainStart != null">#{voucherObtainStart},</if>
+            <if test="voucherObtainEnd != null">#{voucherObtainEnd},</if>
+            <if test="voucherCycle != null">#{voucherCycle},</if>
             now()
          )
     </insert>
@@ -261,6 +252,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isVoucher != null">is_voucher =#{isVoucher},</if>
             <if test="voucherStart != null">voucher_start =#{voucherStart},</if>
             <if test="voucherEnd != null">voucher_end =#{voucherEnd},</if>
+            <if test="voucherObtainStart != null">voucher_obtain_start = #{voucherObtainStart},</if>
+            <if test="voucherObtainEnd != null">voucher_obtain_end = #{voucherObtainEnd},</if>
+            <if test="voucherCycle != null">voucher_cycle = #{voucherCycle},</if>
             update_time = now()
         </set>
         where id = #{id}

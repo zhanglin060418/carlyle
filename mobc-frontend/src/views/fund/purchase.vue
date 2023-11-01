@@ -13,7 +13,7 @@
             <img src="static/assets/image/lucky/coupon.png" alt="" />
             <div class="info">
               <p>{{voucherItem.nameEn}}  ({{currencyShape}}:{{ parseFloat(voucherItem.amount/100)}})</p>
-              <span>Expired: {{ voucherItem.endDate}} </span>
+              <span>Expired: {{ formatDate(voucherItem.endDate)}} </span>
             </div>
           </div>
           <van-icon name="arrow" />
@@ -95,7 +95,7 @@
                       {{ item.nameEn }}
                     </p>
                     <span>
-                   Expired: {{ item.endDate}} </span
+                   Expired: {{ formatDate(item.endDate)}} </span
                     >
                   </div>
                 </div>
@@ -247,7 +247,7 @@
             :style="{ height:'14.2rem',width:'76%',margin: '0% 12% 40% 12% ' }">
       <div class="sell-lucky" @click="closeLucky">
         <div class="content-money">
-          <p class="money">{{currencyShape}} {{luckyAmount/100}}</p>
+          <p class="money">{{prizeType}}{{currencyShape}}{{luckyAmount/100}}</p>
         </div>
       </div>
     </van-popup>
@@ -284,6 +284,7 @@ export default {
       currentShow: false,
       reqNum: null,
       postNum: null,
+      prizeType :'',
       balance: 0,
       assetBalance: 0,
       pList:[],
@@ -528,7 +529,12 @@ export default {
         this.addToPurchase(formData).then(res => {
           this.isLoading = false
           if(res.code == 200) {
-            if(res.data.isLucky == '0'){
+            if(res.data.isVoucher =='0'){
+              this.prizeType ='Coupon: ';
+              this.luckyAmount = res.data.voucherObainAmount;
+              this.showLucky = true;
+            }else if(res.data.isLucky == '0'){
+              this.prizeType ='Cash: ';
               this.luckyAmount = res.data.luckyAmt;
               this.showLucky = true;
             }else{
@@ -552,7 +558,24 @@ export default {
         })
       }
       return true
-    }
+    },
+    formatDate(val) {
+      if (val == null)
+        return
+      const now = new Date(val)
+      var year = now.getFullYear();       //年
+      var month = now.getMonth() + 1;     //月
+      var day = now.getDate();            //日
+      var clock = '';
+      if(day < 10)
+        clock += "0";
+      clock += day + "/";
+      if(month < 10)
+        clock += "0";
+      clock += month + "/";
+      clock += year
+      return(clock);
+    },
   },
 }
 </script>

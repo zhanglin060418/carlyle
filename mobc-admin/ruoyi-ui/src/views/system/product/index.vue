@@ -155,12 +155,12 @@
           <span v-if="scope.row.isDraws == '1'" style="color: #ffba00">否</span>
         </template>
       </el-table-column>
-<!--      <el-table-column label="是否支持使用优惠券" align="center" prop="isVoucher" >-->
-<!--        <template slot-scope="scope">-->
-<!--          <span v-if="scope.row.isVoucher == '0'" style="color: #71e2a3">是</span>-->
-<!--          <span v-if="scope.row.isVoucher == '1'" style="color: #ffba00">否</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="是否获得优惠券" align="center" prop="isVoucher" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.isVoucher == '0'" style="color: #71e2a3">是</span>
+          <span v-if="scope.row.isVoucher == '1'" style="color: #ffba00">否</span>
+       </template>
+     </el-table-column>
       <el-table-column label="是否开启幸运收入" align="center" prop="hasGroupBuyOption" >
         <template slot-scope="scope">
           <span v-if="scope.row.hasGroupBuyOption == '0'" style="color: #71e2a3">是</span>
@@ -407,6 +407,21 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="form.status" placeholder="状态" size="mini">
+                <el-option
+                  v-for="(item, index) in statusOptions"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="是否开启幸运收入" prop="hasGroupBuyOption">
               <el-radio-group v-model="form.hasGroupBuyOption">
                 <el-radio
@@ -417,18 +432,18 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
-            <el-form-item label="幸运收入区间开始值" prop="luckyNumberRangeStart">
+            <el-form-item label="幸运收入开始值" prop="luckyNumberRangeStart">
               <el-input-number size="mini" v-model="form.luckyNumberRangeStart" controls-position="right" :step="1" :min="0" placeholder="请输入幸运收入区间开始值" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="幸运收入区间终止值" prop="luckyNumberRangeEnd">
+            <el-form-item label="幸运收入终止值" prop="luckyNumberRangeEnd">
               <el-input-number size="mini" v-model="form.luckyNumberRangeEnd" controls-position="right" :step="1" :min="0" placeholder="请输入幸运收入区间终止值" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="是否获得抽奖机会" prop="isDraws">
               <el-radio-group v-model="form.isDraws">
@@ -440,29 +455,44 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
-            <el-form-item label="优惠券区间开始值" prop="voucherStart">
+            <el-form-item label="使用优惠券开始值" prop="voucherStart">
               <el-input-number size="mini" v-model="form.voucherStart" controls-position="right" :step="1" :min="0" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="优惠券区间终止值" prop="voucherEnd">
+            <el-form-item label="使用优惠券终止值" prop="voucherEnd">
               <el-input-number size="mini" v-model="form.voucherEnd" controls-position="right" :step="1" :min="0" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status" placeholder="状态" size="mini">
-                <el-option
-                  v-for="(item, index) in statusOptions"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled">
-                </el-option>
-              </el-select>
+            <el-form-item label="是否获得优惠券" prop="isVoucher">
+              <el-radio-group v-model="form.isVoucher">
+                <el-radio
+                  v-for="dict in dict.type.sys_normal_disable"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="优惠券有效期" prop="voucherCycle">
+              <el-input-number size="mini" v-model="form.voucherCycle" controls-position="right" :step="1" :min="0"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="获得优惠券开始值" prop="voucherObtainStart">
+              <el-input-number size="mini" v-model="form.voucherObtainStart" controls-position="right" :step="1" :min="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="获得优惠券终止值" prop="voucherObtainEnd">
+              <el-input-number size="mini" v-model="form.voucherObtainEnd" controls-position="right" :step="1" :min="0" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -563,6 +593,9 @@ export default {
         cycle: [
           { required: true, message: "周期不能为空", trigger: "blur" }
         ],
+        voucherCycle: [
+          { required: true, message: "优惠券有效期不能为空", trigger: "blur" }
+        ],
         minimumBuy: [
           { required: true, message: "会员充值最小金额不能为空", trigger: "blur" }
         ],
@@ -600,22 +633,31 @@ export default {
           { required: true, message: "是否开启幸运收入不能为空", trigger: "blur" }
         ],
         luckyNumberRangeStart: [
-          { required: true, message: "幸运收入区间开始值不能为空", trigger: "blur" }
+          { required: true, message: "幸运收入开始值不能为空", trigger: "blur" }
         ],
         luckyNumberRangeEnd: [
-          { required: true, message: "幸运收入区间终止值不能为空", trigger: "blur" }
+          { required: true, message: "幸运收入终止值不能为空", trigger: "blur" }
         ],
         isDraws: [
           { required: true, message: "是否获得抽奖机会不能为空", trigger: "blur" }
         ],
         voucherStart: [
-          { required: true, message: "优惠券区间开始值不能为空", trigger: "blur" }
+          { required: true, message: "使用优惠券开始值不能为空", trigger: "blur" }
         ],
         voucherEnd: [
-          { required: true, message: "优惠券区间终止值不能为空", trigger: "blur" }
+          { required: true, message: "使用优惠券终止值不能为空", trigger: "blur" }
         ],
         status: [
           { required: true, message: "状态不能为空", trigger: "change" }
+        ],
+        isVoucher: [
+          { required: true, message: "是否获得优惠券不能为空", trigger: "blur" }
+        ],
+        voucherObtainStart: [
+          { required: true, message: "获得优惠券开始值不能为空", trigger: "blur" }
+        ],
+        voucherObtainEnd: [
+          { required: true, message: "获得优惠券终止值不能为空", trigger: "blur" }
         ],
       },
       // Status Options
@@ -716,6 +758,9 @@ export default {
         description: null,
         voucherStart: null,
         voucherEnd: null,
+        voucherCycle:null,
+        voucherObtainStart: null,
+        voucherObtainEnd: null,
         descriptionEn: null,
         descriptionIn: null,
         descriptionRu: null,
@@ -773,18 +818,27 @@ export default {
           this.form.maximumBuy = this.form.maximumBuy * 100
           this.form.totalFund = this.form.totalFund * 100
           this.form.currFund = this.form.currFund * 100
+
+          if(this.form.hasGroupBuyOption=='0' && this.form.isVoucher=='0'){
+            this.$modal.msg("获得幸运收入和获得优惠券不能同时开启，请检查");
+            return;
+          }
           if(this.form.hasGroupBuyOption=='0'){
             if(this.form.luckyNumberRangeEnd =='0'||this.form.luckyNumberRangeStart>this.form.luckyNumberRangeEnd){
               this.$modal.msg("幸运区间值异常，请检查");
               return;
             }
           }
-
           if(this.form.voucherEnd =='0'||this.form.voucherStart>this.form.voucherEnd){
-            this.$modal.msg("优惠券区间值异常，请检查");
+            this.$modal.msg("使用优惠券区间值异常，请检查");
             return;
           }
-
+          if(this.form.isVoucher=='0') {
+            if (this.form.voucherObtainEnd == '0' || this.form.voucherObtainStart > this.form.voucherObtainEnd) {
+              this.$modal.msg("获得优惠券区间值异常，请检查");
+              return;
+            }
+          }
           const reward = this.form.rewardProduct
           if (reward!=null) {
             const curr = this.rewardProductList.filter(item => item.name == reward)

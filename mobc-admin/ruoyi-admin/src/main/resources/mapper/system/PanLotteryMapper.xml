@@ -39,8 +39,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="category"    column="category"    />
         <result property="cycle"    column="cycle"    />
         <result property="amount"    column="amount"    />
+        <result property="prizeMode"    column="prize_mode"    />
+        <result property="productId"    column="product_id"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
+
     </resultMap>
 
     <sql id="selectPanLotteryVo">
@@ -56,6 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             d.id,
             d.user_id,
             d.lottery_id,
+            d.prize_mode,
+            d.product_id,
             d.name,
             d.name_en,
             d.type,
@@ -73,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="name != null  and name != ''"> and d.name like concat('%', #{name}, '%')</if>
             <if test="type != null  and type != ''"> and d.type = #{type}</if>
+            <if test="prizeMode != null  and prizeMode != ''"> and d.prize_mode = #{prizeMode}</if>
             <if test="status != null  and status != ''"> and d.status = #{status}</if>
             <if test="userName != null and userName != ''"> and sys_user.user_name like concat('%',#{userName}) </if>
             <if test="topName != null  and topName != ''"> and u2.user_name = #{topName} </if>
@@ -158,6 +164,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null and name != ''">name,</if>
             <if test="nameEn != null and nameEn != ''">name_en,</if>
             <if test="amount != null and amount != ''">amount,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="prizeMode != null and prizeMode != ''">prize_mode,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -169,6 +177,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null and name != ''">#{name},</if>
             <if test="nameEn != null and nameEn != ''">#{nameEn},</if>
             <if test="amount != null and amount != ''">#{amount},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="prizeMode != null and prizeMode != ''">#{prizeMode},</if>
             now()
         </trim>
     </insert>
@@ -198,6 +208,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM
             pan_draws_detail d
             where d.user_id = #{userId}
+            and d.prize_mode='DRAWS'
             ORDER BY d.create_time desc
     </select>
 
@@ -249,6 +260,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pan_draws_detail d
         WHERE
             d.id = #{id}
+    </select>
+    <select id="getCouponList" parameterType="PanDrawsDetail" resultMap="PanDrawsDetailResult">
+        SELECT
+            d.id,
+            d.name_en,
+            d.amount,
+            d.status,
+            d.type,
+            d.end_date,
+            d.create_time
+        FROM
+            pan_draws_detail d
+        WHERE
+            d.user_id = #{userId}
+            AND d.type = 'Voucher'
     </select>
 
 </mapper>

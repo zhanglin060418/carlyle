@@ -50,6 +50,23 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="来源" prop="prizeMode">
+        <el-select
+          size="mini"
+          v-model="queryParams.prizeMode"
+          placeholder="来源"
+          clearable
+          @keyup.enter.native="handleQuery"
+        >
+          <el-option
+            v-for="(item, index) in prizeModeOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="状态" prop="status">
         <el-select
           size="mini"
@@ -98,6 +115,20 @@
           <span v-else-if="scope.row.type == 'Virtual'">虚拟物品</span>
         </template>
       </el-table-column>
+      <el-table-column label="面值" align="center" prop="amountBefore">
+        <template slot-scope="scope">
+          {{ parseFloat(scope.row.amount)/100 || 0}}
+        </template>
+      </el-table-column>
+      <el-table-column label="有效期" align="center" prop="endDate"/>
+
+      <el-table-column label="来源" align="center" prop="prizeMode" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.prizeMode == 'DRAWS'" >抽奖</span>
+          <span v-else-if="scope.row.prizeMode == 'BUY_PROD'" style="color: #120cfc">购买产品</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
           <span v-if="scope.row.status == 'Completed'" style="color: #71e2a3">已完成</span>
@@ -105,12 +136,7 @@
           <span v-else-if="scope.row.status == 'ToBeUsed'" style="color: #ffba00">待使用</span>
         </template>
       </el-table-column>
-      <el-table-column label="面值" align="center" prop="amountBefore">
-        <template slot-scope="scope">
-          {{ parseFloat(scope.row.amount)/100 || 0}}
-        </template>
-      </el-table-column>
-      <el-table-column label="有效期" align="center" prop="endDate"/>
+
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -157,7 +183,7 @@ export default {
       drawsList: [],
       dateRange: [],
       // 弹出层标题
-      title: "抽奖记录",
+      title: "奖品记录",
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -193,6 +219,14 @@ export default {
         }, {
           "label": "待使用",
           "value": "ToBeUsed"
+        }],
+      prizeModeOptions: [
+        {
+          "label": "抽奖",
+          "value": "DRAWS"
+        },{
+          "label": "购买产品",
+          "value": "Buy_PROD"
         }],
     };
   },

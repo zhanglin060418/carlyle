@@ -96,6 +96,10 @@ export default client => ({
       return client.get('/system/draws/getVoucherList', arg)
     },
 
+    getCouponList() {
+      return client.get('/system/draws/getCouponList')
+    },
+
     getPurchaseListForBuy() {
       return client.get('/system/purchase/getPurchaseListForBuy')
     },

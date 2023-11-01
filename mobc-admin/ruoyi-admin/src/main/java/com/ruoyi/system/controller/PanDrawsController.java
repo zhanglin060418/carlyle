@@ -80,4 +80,15 @@ public class PanDrawsController extends BaseController {
         return ajax;
     }
 
+    @GetMapping("/getCouponList")
+    public AjaxResult getCouponList() {
+        LoginUser currentUser = getLoginUser();
+        PanDrawsDetail drawsDetail = new PanDrawsDetail();
+        drawsDetail.setUserId(currentUser.getUserId());
+        List<PanDrawsDetail> drawsList = panLotteryService.getCouponList(drawsDetail);
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put(AjaxResult.DATA_TAG, drawsList);
+        return ajax;
+    }
+
 }

@@ -4,12 +4,14 @@
         <div slot="content" class="record-list" v-for="item in drawsList">
           <div class="h-top">
             <div class="left-box">
-              <p class="orderNo" style="font-size:16px; color: #333;">{{ item.nameEn }}</p>
-              <p v-if="item.type =='Voucher'" class="usdt"> Expired: {{ item.endDate}}</p>
+              <p style="font-size:14px;color: #000000;" class="orderNo" >{{ item.nameEn }}</p>
+              <p v-if="item.type =='Voucher'" style="font-size:14px;" class="usdt" > Expired: {{ formatDate(item.endDate)}}</p>
               <p class="time">{{ parseEnDateTime(item.createTime) }}</p>
             </div>
-            <div class="right-state">
-              {{ stateText(item.status) }}
+            <div style="font-size:14px;" class="right-state" >
+              <span v-if="item.status == 'Completed'" style="color: #71e2a3">Completed</span>
+              <span v-else-if="item.status == 'Expired'" style="color: #fc0000">Expired</span>
+              <span v-else-if="item.status == 'ToBeUsed'" style="color: #ffba00">To Be Used</span>
             </div>
           </div>
         </div>
@@ -74,6 +76,23 @@
         if (res.code == 200) {
           this.drawsList = res.data
         }
+      },
+      formatDate(val) {
+        if (val == null)
+          return
+        const now = new Date(val)
+        var year = now.getFullYear();       //年
+        var month = now.getMonth() + 1;     //月
+        var day = now.getDate();            //日
+        var clock = '';
+        if(day < 10)
+          clock += "0";
+        clock += day + "/";
+        if(month < 10)
+          clock += "0";
+        clock += month + "/";
+        clock += year
+        return(clock);
       },
     },
   }

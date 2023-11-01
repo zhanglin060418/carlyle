@@ -595,6 +595,16 @@ const routes = [{
             title: '',
         },
     },
+
+        {
+            path: '/coupon',
+            name: '优惠券',
+            component: () =>
+                import ('@/views/lottery/couponlist'),
+            meta: {
+                title: 'Coupon',
+            },
+        },
         {
             path: '/setPayPwd',
             name: '设置支付密码',

@@ -68,10 +68,10 @@
         </div>
         <van-icon name="arrow r-arr" />
       </div>
-      <div class="team-cell line05" @click="toLottery()">
-        <img src="static/assets/image/wind/icon/icon-lottery.png" alt="" />
+      <div class="team-cell line05" @click="toCoupon()">
+        <img src="static/assets/image/lucky/coupon.png" alt="" />
         <div class="info">
-          <p>Lottery</p>
+          <p>Coupon</p>
         </div>
         <van-icon name="arrow r-arr" />
      </div>
@@ -220,11 +220,11 @@
           this.$router.push('/login')
         }
       },
-      toLottery() {
+      toCoupon() {
         if (this.isLogin) {
           const user_id = this.userInfo.user_id;
           this.$router.push({
-            path: '/lottery',
+            path: '/coupon',
             query: {
               data:user_id
             },

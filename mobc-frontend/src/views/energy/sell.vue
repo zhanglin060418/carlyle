@@ -18,17 +18,16 @@
             {{ $t('payDetail.text17') }}
           </div>
           <div class="card-info" v-else>
-             <img src="static/assets/image/dw/add-bank-l.png" alt="" />
+             <img src="static/assets/image/bank.png" alt="" />
             <div class="info">
               <p>
-                {{ bankItem.bankName }}(
-                {{ bankItem.cardNo.toString().substring(0, 4) }} **** ****
+                {{ bankItem.cardNo.toString().substring(0, 4) }} ********
                 {{
                   bankItem.cardNo.toString().substring(
                     bankItem.cardNo.toString().length - 4,
                     bankItem.cardNo.toString().length
                   )
-                }} )
+                }}
               </p>
               <span>{{ $t('payDetail.text49') }}</span>
             </div>
@@ -102,7 +101,7 @@
           <div class="bank-main">
             <div
               class="display-box line05"
-              :class="{ active: bankItem.cardId == item.cardId }"
+              :class="{ active: bankItem.id == item.id }"
               v-for="item in bankcards"
               :key="item.id"
               @click="bankClick(item)"
@@ -110,16 +109,16 @@
               <div class="left">
                 <!-- <img src="static/assets/image/dw/add-bank-l.png" alt="" /> -->
                 <div class="infos">
-                  <p>{{ item.bank.name }}</p>
+                  <p>{{ item.bankName }}</p>
                   <span>
-                    {{ item.cardNo.substring(0, 4) }} **** ****
+                    {{ item.cardNo.substring(0, 4) }} ********
                     {{
                       item.cardNo.substring(
                         item.cardNo.length - 4,
                         item.cardNo.length
                       )
-                    }}</span
-                  >
+                    }}</span>
+
                 </div>
               </div>
               <div class="right" v-if="item.id == bankItem.id">

@@ -6,9 +6,9 @@
       </div>
     </div>
     <div class="my-btn-box"  style="padding-left:10px;padding-right: 10px" >
-      <div class="my-btn tg" @click="downAppEx" >
-        <img src="static/assets/image/wind/icon/download.png" alt="" />
-        <p>{{ $t('dw.t163') }}</p>
+      <div class="my-btn tg" @click="toLottery()" >
+        <img src="static/assets/image/wind/icon/icon-lottery.png" alt="" />
+        <p>Lottery Draws</p>
       </div>
 
       <div class="my-btn whats"  @click="gotoNews">
@@ -218,6 +218,20 @@ export default {
         return false
       }
       return true
+    },
+
+    toLottery() {
+      if (this.isLogin) {
+        const user_id = this.userInfo.user_id;
+        this.$router.push({
+          path: '/lottery',
+          query: {
+            data:user_id
+          },
+        })
+      } else {
+        this.$router.push('/login')
+      }
     },
     toGo(path, type) {
       if (this.isLogin()) {

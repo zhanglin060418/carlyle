@@ -68,6 +68,9 @@ public class PanDrawsDetail extends BaseEntity
 
     private Long productId;
 
+    private String prizeMode;
+
+
     public Long getId() {
         return id;
     }
@@ -234,5 +237,13 @@ public class PanDrawsDetail extends BaseEntity
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public String getPrizeMode() {
+        return prizeMode;
+    }
+
+    public void setPrizeMode(String prizeMode) {
+        this.prizeMode = prizeMode;
     }
 }
