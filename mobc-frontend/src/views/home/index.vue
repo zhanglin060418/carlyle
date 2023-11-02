@@ -222,12 +222,8 @@ export default {
 
     toLottery() {
       if (this.isLogin) {
-        const user_id = this.userInfo.user_id;
         this.$router.push({
           path: '/lottery',
-          query: {
-            data:user_id
-          },
         })
       } else {
         this.$router.push('/login')

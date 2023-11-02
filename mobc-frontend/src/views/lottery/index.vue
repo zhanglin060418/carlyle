@@ -36,15 +36,28 @@
             </div>
         </div>
         <van-popup
-                v-model="showDraws"
+                v-model="showCash"
                 round
                 position="bottom"
                 safe-area-inset-bottom
                 class="popup-lucky"
                 :style="{ height:'14.2rem',width:'76%',margin: '0% 12% 20% 12% ' }">
-            <div class="sell-lucky" @click="closeDraws">
+            <div class="sell-lucky" @click="closeCash">
                 <div class="content-money">
-                    <p class="money">{{prizeName}}</p>
+                    <p class="money">{{currencyShape}} {{cashAounmt/100}}</p>
+                </div>
+            </div>
+        </van-popup>
+        <van-popup
+                v-model="showDraws"
+                round
+                position="bottom"
+                safe-area-inset-bottom
+                class="popup-draws"
+                :style="{ height:'9.3rem',width:'76%',margin: '0% 12% 45% 12% ' }">
+            <div class="sell-draws" @click="closeDraws">
+                <div class="content-money">
+                    <p class="money">{{currencyShape}} {{drawsAmount/100}}</p>
                 </div>
             </div>
         </van-popup>
@@ -59,8 +72,10 @@
                 isLoading:false,
                 userId:0,
                 isDraws:false,
-                showDraws:false,
-                prizeName: '',
+                showCash:false,
+                drawsAmount:0,
+                cashAounmt:0,
+                showDraws: false,
                 drawsText: '',
                 number_of_draws: 0, //限制每天抽奖次数，接口返回
                 prize_data: null, //中奖信息
@@ -75,15 +90,19 @@
             };
         },
         created() {
-            this.userId = this.$route.query.data;
             let token = localStorage.getItem('token') || null
             if(token == null) {
                 this.errDialog(this.$t('msg.loginFirst'))
                 return this.$router.push("/login")
             }
-            this.sym = localStorage.getItem('localeCurrency') || 'NGN'
             this.getList();
             this.getDrawsText()
+
+            this.sym = localStorage.getItem('localeCurrency') || 'NGN'
+            if(this.sym == 'NGN')
+                this.currencyShape = '₦'
+            else this.currencyShape = '¥'
+
         },
         watch: {
             '$route'() {
@@ -126,7 +145,7 @@
                 this.$router.push({
                     path: '/drawsList',
                 })
-                },
+             },
             move() {
                 if (this.number_of_draws == 0) {
                     this.errDialog("Lottery opportunities have been exhausted")
@@ -134,14 +153,14 @@
                     this.errDialog("please do not click repeatedly");
                 } else {
                     this.isLoading = true;
+                    const user_id = this.userInfo.user_id;
                     //执行抽奖
-                    this.addLotteryMove({userId: this.userId,}).then(res => {
+                    this.addLotteryMove({userId: user_id,}).then(res => {
                         if (res.code == 200) {
                             this.isLoading = false;
                             this.number_of_draws = this.number_of_draws - 1;
                             this.isDraws = true;
                             this.prize_data = res.data;
-                            this.prizeName = this.prize_data.nameEn
                             this.speed = 150;
                             this.prize =  res.data.category;
                             this.startRoll();
@@ -177,7 +196,13 @@
                     clearTimeout(this.timer); // 清除转动定时器
                     this.times = 0; // 转动跑格子次数初始化为0，可以开始下次抽奖
                     if(this.prize_data!=null){
-                        this.showDraws = true;
+                        if(this.prize_data.type=='Voucher'){
+                            this.drawsAmount = this.prize_data.amount;
+                            this.showDraws = true;
+                        }else if(this.prize_data.type=='Cash'){
+                            this.cashAounmt = this.prize_data.amount;
+                            this.showCash = true;
+                        }
                     }
                 } else {
                     if (this.times < this.cycle - 20) {
@@ -189,6 +214,9 @@
                 }
             },
 
+            closeCash(){
+                this.showCash = false;
+            },
             closeDraws(){
                 this.showDraws = false;
             },

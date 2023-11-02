@@ -60,6 +60,11 @@
         </template>
       </el-table-column>
       <el-table-column label="英文名称" align="center" prop="nameEn"/>
+      <el-table-column label="面值" align="center" prop="minimumBuy" >
+        <template slot-scope="scope">
+          {{parseFloat(scope.row.amount/100)}}
+        </template>
+      </el-table-column>
       <el-table-column label="缩略图" align="center" prop="coverImages" width="80">
         <template slot-scope="scope">
           <image-preview :src="scope.row.coverImages" :width="50" :height="50"/>
@@ -71,11 +76,6 @@
           <span v-if="scope.row.type == 'Cash'">现金</span>
           <span v-else-if="scope.row.type == 'Voucher'">优惠券</span>
           <span v-else-if="scope.row.type == 'Virtual'">虚拟物品</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="面值" align="center" prop="minimumBuy" >
-        <template slot-scope="scope">
-        {{parseFloat(scope.row.amount/100)}}
         </template>
       </el-table-column>
       <el-table-column label="概率" align="center" prop="probability"/>

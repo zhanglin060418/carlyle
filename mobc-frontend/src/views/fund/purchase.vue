@@ -255,13 +255,26 @@
             position="bottom"
             safe-area-inset-bottom
             class="popup-lucky"
-            :style="{ height:'14.2rem',width:'76%',margin: '0% 12% 40% 12% ' }">
+            :style="{ height:'14.2rem',width:'76%',margin: '0% 12% 25% 12% ' }">
       <div class="sell-lucky" @click="closeLucky">
         <div class="content-money">
-          <p class="money">{{prizeType}}{{currencyShape}}{{luckyAmount/100}}</p>
+          <p class="money">{{currencyShape}} {{luckyAmount/100}}</p>
         </div>
       </div>
     </van-popup>
+    <van-popup
+              v-model="showDraws"
+              round
+              position="bottom"
+              safe-area-inset-bottom
+              class="popup-draws"
+              :style="{ height:'9.3rem',width:'76%',margin: '0% 12% 45% 12% ' }">
+        <div class="sell-draws" @click="closeDraws">
+          <div class="content-money">
+            <p class="money">{{currencyShape}} {{drawsAmount/100}}</p>
+          </div>
+        </div>
+      </van-popup>
   </div>
     <loadding v-if="isLoading"></loadding>
     </div>
@@ -281,6 +294,8 @@ export default {
     return {
       currencyShape: '',
       luckyAmount:0,
+      drawsAmount:0,
+      showDraws: false,
       isLoading: false,
       showLucky: false,
       showVoucher: false,
@@ -488,6 +503,12 @@ export default {
         path: '/fund',
       })
     },
+    closeDraws(){
+      this.showDraws = false;
+      this.$router.push({
+        path: '/fund',
+      })
+    },
     async buy() {
       this.verifyPayDlgOpen = false
       const user_id = this.userInfo.user_id
@@ -550,11 +571,10 @@ export default {
           this.isLoading = false
           if(res.code == 200) {
             if(res.data.isVoucher =='0'){
-              this.prizeType ='Voucher: ';
-              this.luckyAmount = res.data.voucherObainAmount;
-              this.showLucky = true;
+              this.drawsAmount = res.data.voucherObainAmount;
+              this.showDraws = true;
+
             }else if(res.data.isLucky == '0'){
-              this.prizeType ='Cash: ';
               this.luckyAmount = res.data.luckyAmt;
               this.showLucky = true;
             }else{
