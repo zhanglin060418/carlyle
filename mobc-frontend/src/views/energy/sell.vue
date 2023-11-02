@@ -107,7 +107,7 @@
               @click="bankClick(item)"
             >
               <div class="left">
-                <!-- <img src="static/assets/image/dw/add-bank-l.png" alt="" /> -->
+                <img src="static/assets/image/bank.png" alt="" />
                 <div class="infos">
                   <p>{{ item.bankName }}</p>
                   <span>

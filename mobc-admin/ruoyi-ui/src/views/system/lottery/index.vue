@@ -163,7 +163,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="标识" prop="category" >
-              <el-input-number readonly="readonly" size="mini" v-model="form.category" controls-position="right" :step="1" :min="0" placeholder="请输入标识" />
+              <el-input readonly="readonly" size="mini" v-model="form.category"  />
             </el-form-item>
           </el-col>
         </el-row>

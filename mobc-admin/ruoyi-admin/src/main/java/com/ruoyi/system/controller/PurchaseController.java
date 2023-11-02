@@ -305,6 +305,8 @@ public class PurchaseController extends BaseController {
                 purchase.setAmount(purchaseCreate.getAmount());
                 purchase.setPayBack("0");
                 purchase.setIsDraws(panProduct.getIsDraws());
+                purchase.setIsLucky(panProduct.getHasGroupBuyOption());
+                purchase.setIsVoucher(panProduct.getIsVoucher());
                 if(panProduct.getIsVoucher().equals("0")){
                     int voucherObainAmount = DateUtils.getluckyAmtRandom(panProduct.getVoucherObtainStart(), panProduct.getVoucherObtainEnd());
                     purchase.setIsVoucher("0");

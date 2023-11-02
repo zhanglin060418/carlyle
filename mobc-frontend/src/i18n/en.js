@@ -81,7 +81,7 @@ export default {
   user: {
     setting: 'Setting',
     checkin: 'Sign In',
-    lottery: 'Lottery',
+    lottery: 'Lottery Draws',
     help: 'FAQ',
     service: 'Customer Service',
     uid: 'UID',
@@ -274,7 +274,7 @@ export default {
     Reward_Transfer_Out :'Reward Transfer Out',
     Lucky_Income :'Lucky Income',
     Draws_Income :'Draws Income',
-    Coupon_Deals :'Coupon Deals'
+    Coupon_Deals :'Voucher Deals'
 
   },
   //支付详情
@@ -329,8 +329,8 @@ export default {
     text53: 'Choose Methods',
     text54: 'Account Balance',
     text55: 'Online payment',
-    text56: 'No Coupon',
-    text57: 'Select Coupon',
+    text56: 'No Voucher',
+    text57: 'Select Voucher',
   },
   sa: {
     payment: 'Payment',
@@ -862,7 +862,8 @@ export default {
     t229: 'Buy member',
     t230: 'Total Buy member',
     t232: 'Total Purchase',
-    t231: 'NEWS'
+    t231: 'NEWS',
+    t233: 'Expiration date',
 
   },
 }

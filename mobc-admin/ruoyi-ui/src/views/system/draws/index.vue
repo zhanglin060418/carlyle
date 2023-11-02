@@ -125,7 +125,7 @@
       <el-table-column label="来源" align="center" prop="prizeMode" >
         <template slot-scope="scope">
           <span v-if="scope.row.prizeMode == 'DRAWS'" >抽奖</span>
-          <span v-else-if="scope.row.prizeMode == 'BUY_PROD'" style="color: #120cfc">购买产品</span>
+          <span v-else-if="scope.row.prizeMode == 'BUY_PROD'">购买产品</span>
         </template>
       </el-table-column>
 

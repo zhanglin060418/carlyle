@@ -34,8 +34,8 @@
 
     <el-table v-loading="loading" :data="treatmentList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="介绍" align="center" prop="description" />
-      <el-table-column label="介绍 (英文)" align="center" prop="descriptionEn" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="标题" align="center" prop="remark" />
 <!--      <el-table-column label="介绍 (印度语)" align="center" prop="descriptionIn" />-->
 <!--      <el-table-column label="介绍 (俄文)" align="center" prop="descriptionRu" />-->
 <!--      <el-table-column label="备注" align="center" prop="remark" />-->

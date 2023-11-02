@@ -207,7 +207,19 @@ public class TransServiceImpl implements ITransService {
 
             SysUser sysUser = sysUserMapper.selectUserById(purchaseBean.getBuyer());
             logger.info("****交易管理-余额购买产品-UserInfo", JSONObject.toJSONString(sysUser));
-            if (purchaseBean.getIsLucky().equals("0")) {
+            if(purchaseBean.getIsVoucher().equals("0")){
+                PanDrawsDetail drawsDetail =new PanDrawsDetail();
+                drawsDetail.setType(LotteryType.Voucher.trim());
+                drawsDetail.setUserId(purchaseBean.getBuyer());
+                drawsDetail.setLotteryId(purchaseBean.getProduct());
+                drawsDetail.setName("优惠券 "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
+                drawsDetail.setNameEn("Voucher "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
+                drawsDetail.setAmount(purchaseBean.getVoucherObainAmount());
+                drawsDetail.setStatus(PrizeStatus.TO_BE_USED);
+                drawsDetail.setPrizeMode(PrizeMode.BUY_PROD);
+                drawsDetail.setEndDate(DateUtils.getSomeDayLaterDateByToday(purchaseBean.getVoucherCycle()));
+                int i =  panLotteryMapper.addDrawsDetail(drawsDetail);
+            }else if (purchaseBean.getIsLucky().equals("0")) {
                 PanUserBalance luckyUserBalance = userBalanceMapper.getPanUserBalanceByUserId(purchaseBean.getBuyer());
                 BigDecimal luckyBalanceBefore = luckyUserBalance.getBalance();
                 BigDecimal luckyBalanceAfter = luckyUserBalance.getBalance().add(purchaseBean.getLuckyAmt());
@@ -231,18 +243,6 @@ public class TransServiceImpl implements ITransService {
 
                 logger.info("****交易管理-余额购买产品-幸运收益-UserBalance:{}", JSONObject.toJSONString(luckyUserBalance));
                 userBalanceMapper.updatePanUserBalance(luckyUserBalance);
-            }else if(purchaseBean.getIsVoucher().equals("0")){
-                PanDrawsDetail drawsDetail =new PanDrawsDetail();
-                drawsDetail.setType(LotteryType.Voucher.trim());
-                drawsDetail.setUserId(purchaseBean.getBuyer());
-                drawsDetail.setLotteryId(purchaseBean.getProduct());
-                drawsDetail.setName("优惠券 "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
-                drawsDetail.setNameEn("Coupon "+purchaseBean.getVoucherObainAmount().divide(new BigDecimal(100)));
-                drawsDetail.setAmount(purchaseBean.getVoucherObainAmount());
-                drawsDetail.setStatus(PrizeStatus.TO_BE_USED);
-                drawsDetail.setPrizeMode(PrizeMode.BUY_PROD);
-                drawsDetail.setEndDate(DateUtils.getSomeDayLaterDateByToday(purchaseBean.getVoucherCycle()));
-                int i =  panLotteryMapper.addDrawsDetail(drawsDetail);
             }
             if(purchaseBean.getIsDraws().equals("0")){
                 PanUserAsset panUserAsset = new PanUserAsset();

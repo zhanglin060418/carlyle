@@ -13,7 +13,7 @@
             <img src="static/assets/image/lucky/coupon.png" alt="" />
             <div class="info">
               <p>{{voucherItem.nameEn}}  ({{currencyShape}}:{{ parseFloat(voucherItem.amount/100)}})</p>
-              <span>Expired: {{ formatDate(voucherItem.endDate)}} </span>
+              <span>{{$t('dw.t233')}}: {{ formatDate(voucherItem.endDate)}} </span>
             </div>
           </div>
           <van-icon name="arrow" />
@@ -89,18 +89,29 @@
                       @click="voucherClick(item)"
               >
                 <div class="left">
-                  <!-- <img src="static/assets/image/dw/add-bank-l.png" alt="" /> -->
+                  <img src="static/assets/image/lucky/coupon.png" alt="" />
                   <div class="infos">
                     <p>
                       {{ item.nameEn }}
                     </p>
                     <span>
-                   Expired: {{ formatDate(item.endDate)}} </span
+                   {{$t('dw.t233')}}: {{ formatDate(item.endDate)}} </span
                     >
                   </div>
                 </div>
                 <div class="right" v-if="item.id == voucherItem.id">
                   <van-icon name="checked check" />
+                </div>
+              </div>
+              <div class="display-box line05" @click="toCoupon()">
+                <div class="left">
+                  <!-- <img src="static/assets/image/dw/add-bank-b.png" alt="" /> -->
+                  <div class="infos">
+                    <p class="new">All Vouchers</p>
+                  </div>
+                </div>
+                <div class="right">
+                  <van-icon name="arrow" />
                 </div>
               </div>
             </div>
@@ -157,7 +168,7 @@
             <div class="display-box" style="height: 35px" v-if="voucherItem!=null&&voucherItem.amount>0">
               <div class="left">
                 <div class="infos">
-                  <p class="new">Coupon</p>
+                  <p class="new">Voucher</p>
                 </div>
               </div>
               <div class="right">
@@ -462,6 +473,15 @@ export default {
         }
       })
     },
+    toCoupon() {
+        const user_id = this.userInfo.user_id;
+        this.$router.push({
+          path: '/coupon',
+          query: {
+            data:user_id
+          },
+        })
+    },
     closeLucky(){
       this.showLucky = false;
       this.$router.push({
@@ -530,7 +550,7 @@ export default {
           this.isLoading = false
           if(res.code == 200) {
             if(res.data.isVoucher =='0'){
-              this.prizeType ='Coupon: ';
+              this.prizeType ='Voucher: ';
               this.luckyAmount = res.data.voucherObainAmount;
               this.showLucky = true;
             }else if(res.data.isLucky == '0'){

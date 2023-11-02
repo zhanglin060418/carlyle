@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="125px">
       <el-form-item label="产品名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -45,6 +45,55 @@
         <el-select
           size="mini" v-model="queryParams.onSale"
           placeholder="是否发售"
+          clearable
+          style="width: 120px"
+        >
+          <el-option
+            v-for="(item, index) in visibleOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="是否获得优惠券" prop="isVoucher">
+        <el-select
+          size="mini" v-model="queryParams.isVoucher"
+          placeholder="是否获得优惠券"
+          clearable
+          style="width: 120px"
+        >
+          <el-option
+            v-for="(item, index) in visibleOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否获得抽奖机会" prop="isDraws">
+        <el-select
+          size="mini" v-model="queryParams.isDraws"
+          placeholder="是否获得抽奖机会"
+          clearable
+          style="width: 120px"
+        >
+          <el-option
+            v-for="(item, index) in visibleOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否开启幸运收益" prop="hasGroupBuyOption">
+        <el-select
+          size="mini" v-model="queryParams.hasGroupBuyOption"
+          placeholder="是否开启幸运收益"
           clearable
           style="width: 120px"
         >

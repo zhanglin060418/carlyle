@@ -11,7 +11,11 @@
                     <li v-for="(item, i) in lotteryList"
                         :key="i"
                         :class="['item' + (i + 1), { active: currentIndex == i }]">
-                        <div class="desc"><img :src="imgBaseUrl + item.coverImages" /></div>
+                        <div class="desc">
+                            <viewer :images="image" >
+                                <img :src="imgBaseUrl + item.coverImages" alt="" />
+                            </viewer>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -21,7 +25,13 @@
                 </div>
 
                 <div class="my-btn whats"  @click="toDetail()">
-                    <p style="font-size: 16px">VIEW</p>
+                    <p style="font-size: 16px">Get records</p>
+                </div>
+            </div>
+
+            <div class="desc" style="background: #eaeeff;">
+                <div class="ql-snow" >
+                    <p class="ql-editor" v-html="drawsText.descriptionEn" />
                 </div>
             </div>
         </div>
@@ -51,6 +61,7 @@
                 isDraws:false,
                 showDraws:false,
                 prizeName: '',
+                drawsText: '',
                 number_of_draws: 0, //限制每天抽奖次数，接口返回
                 prize_data: null, //中奖信息
                 lotteryList: [],
@@ -72,12 +83,12 @@
             }
             this.sym = localStorage.getItem('localeCurrency') || 'NGN'
             this.getList();
-
-
+            this.getDrawsText()
         },
         watch: {
             '$route'() {
                     this.getList();
+                    this.getDrawsText()
                 }
             },
         computed: {
@@ -89,12 +100,25 @@
             ...mapActions('user', {
                 getLotteryList:'getLotteryList',
                 addLotteryMove:'addLotteryMove',
+                getTeamTreatmentText: 'getTreatmentText'
             }),
 
             async getList() {
                 await this.getLotteryList().then(res =>{
                     this.lotteryList = res.lotteryList;
                     this.number_of_draws = res.data.drawsNumber;
+                })
+            },
+            async getDrawsText() {
+                await this.getTeamTreatmentText().then(res => {
+                    if(res.data.length>0){
+                        for (let item of res.data) {
+                            if(item.remark.includes('Draws')) {
+                                this.drawsText = item;
+                            }
+
+                        }
+                    }
                 })
             },
 
@@ -121,9 +145,6 @@
                             this.speed = 150;
                             this.prize =  res.data.category;
                             this.startRoll();
-                            this.getLotteryList().then(res =>{
-                                this.number_of_draws = res.data.drawsNumber;
-                            })
                         } else {
                             this.isLoading = false;
                             this.errDialog(res.msg)
@@ -172,7 +193,8 @@
                 this.showDraws = false;
             },
             shuax(){
-                location.reload();
+                this.getList();
+                this.isDraws=false;
             }
         },
     };

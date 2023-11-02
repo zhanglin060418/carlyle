@@ -5,13 +5,13 @@
           <div class="h-top" style="background-color: #eaeeff">
             <div class="left-box">
               <p style="font-size:14px;color: #000000;" class="orderNo" >{{ item.nameEn }}</p>
-              <p style="font-size:14px;" class="usdt" > Expired: {{ formatDate(item.endDate)}}</p>
+              <p style="font-size:14px;" class="usdt" >{{$t('dw.t233')}}: {{ formatDate(item.endDate)}}</p>
               <p class="time">{{ parseEnDateTime(item.createTime) }}</p>
             </div>
             <div style="font-size:14px;" class="right-state" >
               <span v-if="item.status == 'Completed'" style="color: #71e2a3">Completed</span>
               <span v-else-if="item.status == 'Expired'" style="color: #fc0000">Expired</span>
-              <span v-else-if="item.status == 'ToBeUsed'" style="color: #ffba00">To Be Used</span>
+              <span v-else-if="item.status == 'ToBeUsed'" @click="toBuy" style="color: #ffba00">To Be Used</span>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@
     },
     created() {
       this.sym = localStorage.getItem('localCurrency') || 'NGN'
-      this.title ='Coupon'
+      this.title ='Voucher'
       this.getList()
     },
     watch: {
@@ -63,6 +63,11 @@
         if (res.code == 200) {
           this.couponList= res.data;
         }
+      },
+      toBuy(){
+        this.$router.push({
+          path: '/fund',
+        })
       },
       formatDate(val) {
         if (val == null)

@@ -58,6 +58,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="rewardProduct != null "> and reward_product = #{rewardProduct}</if>
             <if test="fundType != null  and fundType != ''"> and fund_type = #{fundType}</if>
             <if test="isVisible != null  and isVisible != ''"> and is_visible = #{isVisible}</if>
+            <if test="isVoucher != null  and isVoucher != ''"> and is_voucher = #{isVoucher}</if>
+            <if test="isDraws != null  and isDraws != ''"> and is_draws = #{isDraws}</if>
+            <if test="hasGroupBuyOption != null  and hasGroupBuyOption != ''"> and has_group_buy_option = #{hasGroupBuyOption}</if>
             <if test="onSale != null  and onSale != ''"> and on_sale = #{onSale}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->

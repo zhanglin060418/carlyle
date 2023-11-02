@@ -71,7 +71,7 @@
       <div class="team-cell line05" @click="toCoupon()">
         <img src="static/assets/image/lucky/coupon.png" alt="" />
         <div class="info">
-          <p>Coupon</p>
+          <p>Voucher</p>
         </div>
         <van-icon name="arrow r-arr" />
      </div>
