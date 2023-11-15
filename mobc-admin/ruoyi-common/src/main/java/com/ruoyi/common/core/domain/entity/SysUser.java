@@ -141,6 +141,14 @@ public class SysUser extends BaseEntity
     private Long rewardAmt;
     private Long rewardProductAmt;
     private Long noBackProductAmt;
+    private Integer vipLevel;
+    public Integer getVipLevel() {
+        return vipLevel;
+    }
+
+    public void setVipLevel(Integer vipLevel) {
+        this.vipLevel = vipLevel;
+    }
 
     private int size;
     private int currentPage;
@@ -268,6 +276,8 @@ public class SysUser extends BaseEntity
     {
         this.phonenumber = phonenumber;
     }
+
+
 
     public String getSex()
     {

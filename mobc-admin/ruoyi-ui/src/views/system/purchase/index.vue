@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="用户账号" prop="userName">
         <el-input
           v-model="queryParams.userName"
@@ -40,6 +40,39 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="是否返本" prop="payBack">
+        <el-select
+          size="mini" v-model="queryParams.payBack"
+          placeholder="是否返本"
+          clearable
+          style="width: 120px"
+        >
+          <el-option
+            v-for="(item, index) in visibleOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="结算开始日期" prop="beginDate">
+        <el-date-picker clearable
+                        v-model="queryParams.beginDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="收益开始日期" >
+        </el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="结算到期日期" prop="endDate">
+        <el-date-picker clearable
+                        v-model="queryParams.endDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="收益到期日期" >
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker
@@ -286,6 +319,13 @@ export default {
           { required: true, message: "创建时间不能为空", trigger: "blur" }
         ]
       },
+      visibleOptions: [{
+        "label": "是",
+        "value": "1"
+      }, {
+        "label": "否",
+        "value": "0"
+      }],
     };
   },
   created() {

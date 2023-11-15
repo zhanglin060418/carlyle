@@ -11,7 +11,17 @@
           <div class="username ell">
             <span> {{ userName }} <img id="dis" @click="showAnHide" alt="" /></span>
           </div>
-          <span class="uId">UID:C{{ isLogin ? userInfo.user_id : '--' }}</span>
+          <span class="uId" @click="goShowVipRate">
+            UID:C{{ isLogin ? userInfo.user_id : '--' }}
+            <lable  style=" background-image: linear-gradient(to bottom, red, #fd8403, #ff0);-webkit-background-clip: text;-webkit-text-fill-color: #fd8403;margin-left: 5px; font-weight:bold; font-size:15px;margin-top: 5px">
+             <template v-if="balanceData.vipLevel>0">
+              <img src="static/assets/image/my/vip.png" style="width:auto ;height: 10px; margin-bottom: 5px;margin-right: 2px" alt="" />
+             </template>
+              <template v-else>
+              <img src="static/assets/image/my/no-vip.png" style="width:auto ;height: 10px; margin-bottom: 5px;margin-right: 2px" alt="" />
+             </template>
+            </lable>
+          </span>
         </div>
       </div>
     </div>
@@ -21,6 +31,19 @@
       </p>
       <span>{{ $t('dw.t204') }}({{sym}})</span>
     </div>
+    <van-popup
+            v-model="showVipRate"
+            round
+            position="bottom"
+            safe-area-inset-bottom
+            class="popup-vipRate"
+            :style="{ height:'10.6rem',width:'96%',margin: '0% 2% 45% 2% ' }">
+      <div class="sell-vipRate" @click="closeVipRate">
+        <div class="content-money">
+          <p class="money"></p>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 <script>
@@ -34,6 +57,7 @@ export default {
       userName:'',
       flag:false,
       balanceData: null,
+      showVipRate:false,
       totalWithdrawalBalance: 0,
       assetBalance: 0
     }
@@ -95,6 +119,12 @@ export default {
       } else {
         this.$router.push('/login')
       }
+    },
+    goShowVipRate(){
+      this.showVipRate = true;
+    },
+    closeVipRate(){
+      this.showVipRate = false;
     },
     showAnHide() {
         let dis = document.querySelector('#dis')

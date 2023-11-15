@@ -102,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
             <if test="product != null "> and product = #{product}</if>
             <if test="productName != null "> and pd.name = #{productName} </if>
+            <if test="payBack != null "> and pan_purchase.pay_back = #{payBack} </if>
             <if test="orderNo != null  and orderNo != ''"> and pan_purchase.order_no = #{orderNo}</if>
             <if test="status != null  and status != ''"> and pan_purchase.status = #{status}</if>
             <if test="beginDate != null  and beginDate != ''"> and begin_date = #{beginDate}</if>
@@ -179,6 +180,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="managerName != null  and managerName != ''"> and u3.user_name = #{managerName} </if>
             <if test="product != null "> and product = #{product}</if>
             <if test="productName != null "> and pd.name = #{productName} </if>
+            <if test="payBack != null "> and pan_purchase.pay_back = #{payBack} </if>
             <if test="orderNo != null  and orderNo != ''"> and pan_purchase.order_no = #{orderNo}</if>
             <if test="status != null  and status != ''"> and pan_purchase.status = #{status}</if>
             <if test="beginDate != null  and beginDate != ''"> and begin_date = #{beginDate}</if>
@@ -398,5 +400,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE
             pan_purchase.buyer = #{buyer}
             order by pan_purchase.create_time desc
+    </select>
+
+    <select id="selectPurchaseAmtByVip" parameterType="Long" resultMap="PurchaseResult">
+         SELECT
+            IFNULL(sum(p.amount),0) amount
+        FROM
+            pan_purchase p
+                LEFT JOIN pan_product pd ON p.product = pd.id
+        where
+            p.buyer = #{buyer}
+        and pd.name != 'Reward Product'
+		and p.pay_back ='0'
     </select>
 </mapper>

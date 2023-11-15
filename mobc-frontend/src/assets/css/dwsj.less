@@ -26,7 +26,7 @@ body {
   width: 100%;
   .person {
     display: flex;
-    width: 56%;
+    width: 60%;
     .avatar {
       width: 55px;
       height: 55px;
@@ -40,7 +40,7 @@ body {
       }
     }
     .account {
-      width: 66%;
+      width: 75%;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -52,7 +52,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 40px;
+        height: 44px;
         .username {
           position: relative;
           width: 100%;
@@ -61,7 +61,7 @@ body {
             height: 24px;
             padding: 0 12px;
             background: url(/static/assets/image/bcf/show.png);
-            margin-bottom: 6px;
+            margin-top: -6px;
          }
           img.hover{
             position: relative;
@@ -69,13 +69,13 @@ body {
             height: 24px;
             padding: 0 12px;
             background: url(/static/assets/image/bcf/hide.png);
-            margin-bottom: 6px;
+            margin-top: -6px;
           }
         }
         .uId {
           font-weight: 500;
           font-size: 11px;
-          margin-top: 3px;
+          margin-top: 1px;
         }
       }
     }
@@ -84,7 +84,7 @@ body {
   .balance {
     height: 50px;
     background-size: cover;
-    width: 44%;
+    width: 40%;
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -2705,6 +2705,33 @@ body {
   height: 100%;
   .sell-draws {
     background: url('/static/assets/image/Voucher.png');
+    background-size: 100%;
+    width: 100%;
+    height: auto;
+    .content-money {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      padding-top: 2rem;
+      align-items: center;
+      justify-content: center;
+      .money {
+        font-size: 24px;
+        font-weight: 700;
+        background-color: white;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: #a21717;
+      }
+    }
+  }
+}
+
+.popup-vipRate {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  .sell-vipRate {
+    background: url('/static/assets/image/my/rate.png');
     background-size: 100%;
     width: 100%;
     height: auto;

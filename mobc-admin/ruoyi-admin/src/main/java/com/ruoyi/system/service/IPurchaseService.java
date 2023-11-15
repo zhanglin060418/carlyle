@@ -100,4 +100,6 @@ public interface IPurchaseService
     public  List<Purchase> selectPurchaseListByUser(Purchase purchase);
 
     public List<Purchase> selectPurchaseListForBuy(Purchase userPurchase);
+
+    public Purchase selectPurchaseAmtByVip(Long buyer);
 }

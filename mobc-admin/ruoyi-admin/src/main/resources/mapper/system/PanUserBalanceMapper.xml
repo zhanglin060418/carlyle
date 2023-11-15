@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="agentName"    column="agent_name"  />
         <result property="isRebate"    column="is_rebate"  />
         <result property="drawsNumber"    column="draws_number"  />
+        <result property="vipLevel"		column="vip_level"	  />
 
     </resultMap>
 
@@ -125,8 +126,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getPanUserBalanceByUserId" parameterType="Long" resultMap="PanUserBalanceResult">
-        <include refid="selectPanUserBalanceVo"/>
-        where user_id = #{userId}
+        SELECT
+            b.user_balance_id,
+            b.user_id,
+            b.reward_amt,
+            b.balance,
+            b.transit_amt,
+            b.lock_balance,
+            b.available_amt,
+            b.transit_amt,
+            b.asset_balance,
+            u.vip_level
+        FROM
+            pan_user_balance b left join sys_user u on b.user_id = u.user_id
+        WHERE
+            b.user_id = #{userId}
     </select>
 
     <select id="getUserBalanceByUserId" parameterType="Long" resultMap="PanUserBalanceResult">

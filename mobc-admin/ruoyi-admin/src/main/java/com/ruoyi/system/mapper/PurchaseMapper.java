@@ -100,4 +100,7 @@ public interface PurchaseMapper
     public List<Purchase> getTotalPurchase(Purchase userPurchase);
 
     public List<Purchase> selectPurchaseListByUser(Purchase purchase);
+
+    public Purchase selectPurchaseAmtByVip(Long buyer);
+
 }

@@ -76,6 +76,14 @@ public class PanUserBalance extends BaseEntity
     private String  billType;
     private String transType;
     private String isRebate;
+    private Integer vipLevel;
+    public Integer getVipLevel() {
+        return vipLevel;
+    }
+
+    public void setVipLevel(Integer vipLevel) {
+        this.vipLevel = vipLevel;
+    }
     public String getBillType() {
         return billType;
     }

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BillType;
@@ -254,7 +255,17 @@ public class TransServiceImpl implements ITransService {
                 commission(purchaseBean, sysUser);
             }
         }
-        int i = purchaseMapper.insertPurchase(purchaseBean);
+        purchaseMapper.insertPurchase(purchaseBean);
+        //vip等级计算
+        String vipLevelAmt = sysConfigService.selectConfigByKey("VIP_LEVEL_AMT");
+        JSONObject vipLevelObject = JSON.parseObject(vipLevelAmt);
+        Purchase purchaseAmount = purchaseMapper.selectPurchaseAmtByVip(purchaseBean.getBuyer());
+        SysUser userBean = new SysUser();
+        userBean.setVipLevel(DateUtils.getVipLevel(vipLevelObject, purchaseAmount.getAmount()));
+        userBean.setUserId(purchaseBean.getBuyer());
+        logger.info("****购买产品-userVip:" + JSONObject.toJSONString(userBean) + "purchaseAmt:" + purchaseAmount.getAmount());
+        int i = sysUserMapper.updateUser(userBean);
+
         if (i < 1) {
             result = MessageStatus.ERROR;
         }

@@ -878,7 +878,7 @@ export default {
               return;
             }
           }
-          if(this.form.voucherEnd =='0'||this.form.voucherStart>this.form.voucherEnd){
+          if(this.form.voucherStart>this.form.voucherEnd){
             this.$modal.msg("使用优惠券区间值异常，请检查");
             return;
           }

@@ -164,6 +164,10 @@ public class PanWithdrawController extends BaseController {
                     ajax.put("msg", "Account No withdrawal permission");
                     return ajax;
                 }
+                if(sysUser.getVipLevel()<1){
+                    ajax.put("msg", "You must become a VIP to withdraw funds");
+                    return ajax;
+                }
                 if (iswithdrawalTime()) {
                     if (panWithdrawCreate.getAmount() == null) {
                         ajax.put("msg", "amount can not be empty, please try again later");

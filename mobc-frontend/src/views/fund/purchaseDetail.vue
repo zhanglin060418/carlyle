@@ -7,7 +7,7 @@
           <carousel :elements="list.item.coverImages.split(',').map(item => imgBaseUrl + item)" style="width: 80px;"/>
           <div class="info">
             <p v-if="$i18n.locale=='zh_CN'" class="t">{{list.item.name}}</p>
-            <p v-else>{{list.item.nameEn}} </p>
+            <p v-else style="font-weight: bold;">{{list.item.nameEn}} </p>
             <p>{{ $t('dw.t168') }}: {{parseFloat(list.amount*list.item.dailyInterest/10000).toFixed(2)}}</p>
             <p>{{ $t('dw.t185') }}: {{list.item.cycle}} {{ $t('dw.t7') }}</p>
             <p>{{ $t('dw.t180') }}: {{ parseFloat(list.totalInterest/100).toFixed(2) }}</p>

@@ -44,6 +44,8 @@
         <input
           v-model="reqMoney"
           type="digit"
+          id="inputMoney"
+          @blur="checkMoney"
           :placeholder="$t('payDetail.text50')"
         />
       </div>
@@ -228,6 +230,22 @@ export default {
       getPaymentRules: 'user/getPaymentRules',
       getUserBalance: 'user/getUserBalance',
     }),
+    checkMoney(){
+        const zdyMoney = this.reqMoney;
+        if(zdyMoney == '' || zdyMoney == undefined){
+          return false
+        }
+        if(zdyMoney>3000){
+           var result = parseFloat(zdyMoney);
+           result = Math.round(zdyMoney) / 1000;
+           var num = result.toString();
+          if (!(/(^[1-9]\d*$)/.test(num))) {
+            this.errDialog('Please enter the amount (in thousands).');
+            return false;
+          }
+        }
+    },
+
     async getPaymentRule() {
       const user_id = this.userInfo.user_id
       let userBalance = await this.getUserBalance({
@@ -256,6 +274,19 @@ export default {
       this.bankItem = item
     },
     sellClick() {
+      const zdyMoney = this.reqMoney;
+      if(zdyMoney == '' || zdyMoney == undefined){
+        return false
+      }
+      if(zdyMoney>3000){
+        var result = parseFloat(zdyMoney);
+        result = Math.round(zdyMoney) / 1000;
+        var num = result.toString();
+        if (!(/(^[1-9]\d*$)/.test(num))) {
+          this.errDialog('Please enter the amount (in thousands).');
+          return false;
+        }
+      }
       this.reqNum = this.reqMoney * 100
       if (this.isSubmit) return
       let minAmount = this.minAmount / 100

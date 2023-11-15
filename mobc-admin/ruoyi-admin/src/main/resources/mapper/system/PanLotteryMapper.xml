@@ -193,7 +193,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="updateVoucherEndDate">
-        update pan_draws_detail set status ='Expired'
+        update pan_draws_detail set status ='Expired',update_time = now()
         where status = 'ToBeUsed' and type = 'Voucher' and CURDATE() > end_date
     </update>
 

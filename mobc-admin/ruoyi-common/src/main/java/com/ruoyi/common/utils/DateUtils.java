@@ -1,9 +1,11 @@
 package com.ruoyi.common.utils;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import com.alibaba.fastjson2.JSONObject;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.lang.management.ManagementFactory;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -358,6 +360,43 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             }
         }
         return prize;
+    }
+
+    public static int getVipLevel(JSONObject vipLevelObject, BigDecimal purcherAmt) {
+        int vipLevel = 0;
+        BigDecimal vip1 = new BigDecimal(vipLevelObject.get("vip1").toString());
+        BigDecimal vip2 = new BigDecimal(vipLevelObject.get("vip2").toString());
+        BigDecimal vip3 = new BigDecimal(vipLevelObject.get("vip3").toString());
+        BigDecimal vip4 = new BigDecimal(vipLevelObject.get("vip4").toString());
+        BigDecimal vip5 = new BigDecimal(vipLevelObject.get("vip5").toString());
+        BigDecimal vip6 = new BigDecimal(vipLevelObject.get("vip6").toString());
+        BigDecimal vip7 = new BigDecimal(vipLevelObject.get("vip7").toString());
+        BigDecimal vip8 = new BigDecimal(vipLevelObject.get("vip8").toString());
+        BigDecimal vip9 = new BigDecimal(vipLevelObject.get("vip9").toString());
+
+        if(vip1.compareTo(purcherAmt)>0){
+            vipLevel = 0;
+        }else if(purcherAmt.compareTo(vip1)>=0&&vip2.compareTo(purcherAmt)>0){
+            vipLevel = 1;
+        } else if(purcherAmt.compareTo(vip2)>=0&&vip3.compareTo(purcherAmt)>0){
+            vipLevel = 2;
+        }else if(purcherAmt.compareTo(vip3)>=0&&vip4.compareTo(purcherAmt)>0){
+            vipLevel = 3;
+        }else if(purcherAmt.compareTo(vip4)>=0&&vip5.compareTo(purcherAmt)>0){
+            vipLevel = 4;
+        }else if(purcherAmt.compareTo(vip5)>=0&&vip6.compareTo(purcherAmt)>0){
+            vipLevel = 5;
+        }else if(purcherAmt.compareTo(vip6)>=0&&vip7.compareTo(purcherAmt)>0){
+            vipLevel = 6;
+        }else if(purcherAmt.compareTo(vip7)>=0&&vip8.compareTo(purcherAmt)>0){
+            vipLevel = 7;
+        }else if(purcherAmt.compareTo(vip8)>=0&&vip9.compareTo(purcherAmt)>0){
+            vipLevel = 8;
+        }else if(purcherAmt.compareTo(vip9)>=0){
+            vipLevel = 9;
+        }
+        return vipLevel;
+
     }
 
     public static void main(String[] args) {

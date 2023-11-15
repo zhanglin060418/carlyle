@@ -1,5 +1,6 @@
 package com.ruoyi.system.jobs;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BillType;
@@ -27,6 +28,9 @@ public class PanInterest {
     private IPurchaseService iPurchaseService;
 
     @Autowired
+    private ISysUserService userService;
+
+    @Autowired
     private IPanTransactionHistoryService iPanTransactionHistoryService;
 
     @Autowired
@@ -42,7 +46,6 @@ public class PanInterest {
     private IPanUserAssetService iPanUserAssetService;
 
     private static final Logger log = LoggerFactory.getLogger(PanInterest.class);
-
 
     public void ryNoParams() {
         log.info("****任务调度-ryNoParams Strat****");
@@ -67,12 +70,14 @@ public class PanInterest {
                 taskRecord.setTaskDate(todayDate);
                 log.info("****任务调度 Task Record:" + JSONObject.toJSONString(taskRecord));
                 iTaskRecordService.insertTaskJobRecord(taskRecord);
+                String vipLevelAmt = iSysConfigService.selectConfigByKey("VIP_LEVEL_AMT");
+                JSONObject vipLevelObject = JSON.parseObject(vipLevelAmt);
 
                 /**
                  * 优惠卷过期
                  */
                 List<PanDrawsDetail> drawsList = lotteryService.getVoucherListByJob();
-                if(drawsList.size()>0){
+                if (drawsList.size() > 0) {
                     lotteryService.updateVoucherEndDate();
                 }
 
@@ -83,9 +88,9 @@ public class PanInterest {
                 log.info("****任务调度产品列表Size：" + purchaseList.size());
                 if (purchaseList.size() > 0) {
                     for (int i = 0; i < purchaseList.size(); i++) {
-                        try{
-                          generatePurchaseInterest(purchaseList.get(i), todayDate);
-                        }catch (Exception e){
+                        try {
+                            generatePurchaseInterest(purchaseList.get(i), todayDate, vipLevelObject);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -99,9 +104,9 @@ public class PanInterest {
                 log.info("****增值宝利率:" + treasureRate);
                 if (userAssetList.size() > 0) {
                     for (int i = 0; i < userAssetList.size(); i++) {
-                        try{
+                        try {
                             generateTreasureInterest(userAssetList.get(i), treasureRate);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -119,7 +124,7 @@ public class PanInterest {
      * 产品利息处理
      */
     @Transactional
-    public void generatePurchaseInterest(Purchase currPurchase, String todayDate) {
+    public void generatePurchaseInterest(Purchase currPurchase, String todayDate, JSONObject vipLevelObject) {
         log.info("****产品利息处理开始****" + currPurchase.getBuyer());
         PanUserBalance userBalance = iPanUserBalanceService.getUserBalanceByUserId(currPurchase.getBuyer());
         log.info("****任务调度产品利息处理更新前余额-userBalance:" + JSONObject.toJSONString(userBalance));
@@ -129,7 +134,8 @@ public class PanInterest {
             BigDecimal beforeBalance = userBalance.getBalance();
             BigDecimal afterBalance = userBalance.getBalance().add(dailyReward);
             // 更新今日收益
-            currPurchase.setTotalInterest(currPurchase.getTotalInterest().add(dailyReward));
+            BigDecimal currTotalInterest  = currPurchase.getTotalInterest().add(dailyReward);
+            currPurchase.setTotalInterest(currTotalInterest);
 
             PanTransactionHistory transHistory = new PanTransactionHistory();
             transHistory.setAmount(dailyReward);
@@ -149,6 +155,16 @@ public class PanInterest {
             BigDecimal currAvailableAmt = userBalance.getAvailableAmt().add(dailyReward);
             userBalance.setBalance(currBalance);
             userBalance.setAvailableAmt(currAvailableAmt);
+            String isInit = vipLevelObject.get("is_init").toString();
+            iPurchaseService.updatePurchase(currPurchase);
+            if (isInit.equals("N")) {
+                Purchase purchaseAmount = iPurchaseService.selectPurchaseAmtByVip(currPurchase.getBuyer());
+                SysUser userBean = new SysUser();
+                userBean.setVipLevel(DateUtils.getVipLevel(vipLevelObject, purchaseAmount.getAmount()));
+                userBean.setUserId(currPurchase.getBuyer());
+                userService.updateUser(userBean);
+                log.info("****任务调度-userVip:" + JSONObject.toJSONString(userBean) + "purchaseAmt:" + purchaseAmount.getAmount());
+            }
         }
         if (currPurchase.getEndDate().equals(todayDate) && currPurchase.getPayBack().equals("0")) {
             log.info("****任务调度 本金返还 Start****");
@@ -176,13 +192,20 @@ public class PanInterest {
             userBalance.setAvailableAmt(userBalance.getAvailableAmt().add(amount));
             //减少基金金额
             userBalance.setLockBalance(userBalance.getLockBalance().subtract(amount));
+            iPurchaseService.updatePurchase(currPurchase);
 
+            Purchase purchaseAmount = iPurchaseService.selectPurchaseAmtByVip(currPurchase.getBuyer());
+            SysUser userBean = new SysUser();
+            userBean.setVipLevel(DateUtils.getVipLevel(vipLevelObject, purchaseAmount.getAmount()));
+            userBean.setUserId(currPurchase.getBuyer());
+            userService.updateUser(userBean);
+            log.info("****任务调度-userVip:" + JSONObject.toJSONString(userBean) + "purchaseAmt:" + purchaseAmount.getAmount());
 
         }
 
         log.info("****任务调度-UserBalance:" + JSONObject.toJSONString(userBalance));
         iPanUserBalanceService.updatePanUserBalance(userBalance);
-        iPurchaseService.updatePurchase(currPurchase);
+
     }
 
     /***
@@ -228,4 +251,5 @@ public class PanInterest {
         }
         log.info("****增值宝收益任务结束****");
     }
+
 }

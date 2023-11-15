@@ -47,6 +47,7 @@
 		<result property="availableAmt" column="available_amt"/>
 		<result property="assetBalance" column="asset_balance"	  />
 		<result property="firstDeposit"		column="first_deposit"	  />
+		<result property="vipLevel"		column="vip_level"	  />
 		<association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
 		<collection  property="roles"   javaType="java.util.List"           resultMap="RoleResult" />
 	</resultMap>
@@ -102,6 +103,7 @@
 			u.user_type,
 			u.whatsapp,
 			u.telegram,
+			u.vip_level,
 			d.dept_id,
 			d.parent_id,
 			d.ancestors,
@@ -152,6 +154,7 @@
 		u.great_grand_id,
 		u4.user_name great_grand_username,
 		u.top_id,
+		u.vip_level,
 		u.manager_id,
 		u5.user_name top_name,
 		u6.user_name manager_name,
@@ -233,6 +236,7 @@
 		u.nick_name,
 		u.email,
 		u.avatar,
+		u.vip_level,
 		u.phonenumber,
 		u.PASSWORD,
 		u.pay_password,
@@ -399,6 +403,7 @@
 		u.nick_name,
 		u.user_name,
 		u.email,
+		u.vip_level,
 		u.avatar,
 		u.phonenumber,
 		u.pay_password,
@@ -551,6 +556,7 @@
 				u5.user_name top_username,
 				u.user_type,
 				u.whatsapp,
+				u.vip_level,
 				u.telegram
 			FROM
 				sys_user u
@@ -645,6 +651,7 @@
 			<if test="isInviteCode != null and isInviteCode != ''">is_invite_code = #{isInviteCode},</if>
 			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="vipLevel != null">vip_level = #{vipLevel},</if>
 			<if test="remark != null">remark = #{remark},</if>
 			update_time = sysdate()
 		</set>

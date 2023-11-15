@@ -108,6 +108,7 @@
       <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
       <el-table-column label="代理商"  align="center" prop="agentName" v-if= "$auth.hasPermi('system:agent:edit')"/>
       <el-table-column label="名称" align="center" prop="name"/>
+      <el-table-column label="英文名称" align="center" prop="nameEn"/>
       <el-table-column label="奖品类型" align="center" prop="type" >
         <template slot-scope="scope">
           <span v-if="scope.row.type == 'Cash'">现金</span>
@@ -120,15 +121,14 @@
           {{ parseFloat(scope.row.amount)/100 || 0}}
         </template>
       </el-table-column>
-      <el-table-column label="有效期" align="center" prop="endDate"/>
-
       <el-table-column label="来源" align="center" prop="prizeMode" >
         <template slot-scope="scope">
           <span v-if="scope.row.prizeMode == 'DRAWS'" >抽奖</span>
           <span v-else-if="scope.row.prizeMode == 'BUY_PROD'">购买产品</span>
         </template>
       </el-table-column>
-
+      <el-table-column label="奖品ID/产品ID" align="center" prop="lotteryId"/>
+      <el-table-column label="有效期" align="center" prop="endDate"/>
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
           <span v-if="scope.row.status == 'Completed'" style="color: #71e2a3">已完成</span>

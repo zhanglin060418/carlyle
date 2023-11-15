@@ -132,6 +132,7 @@
           <el-table-column label="业务员" align="center"prop="topName" v-if= "$auth.hasPermi('system:user:edit')"/>
           <el-table-column label="经理"  align="center" prop="managerName" v-if= "$auth.hasPermi('system:manager:edit')"/>
           <el-table-column label="代理商"  align="center" prop="agentName" v-if= "$auth.hasPermi('system:agent:edit')"/>
+          <el-table-column label="VIP等级" align="center" prop="vipLevel" />
           <el-table-column label="最后登录IP" align="center" prop="loginIp" />
           <el-table-column label="最后登录时间" align="center" prop="loginDate" :sortable="'custom'"/>
           <el-table-column label="邀请码" align="center" key="inviteCode" prop="inviteCode"/>
