@@ -275,7 +275,7 @@
         let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
         if (isiOS) {
 
-          _downUrl = "https://www.fairburnsegg.com/fairburnseggs";
+          _downUrl = "https://app.carlyles.online/carlyle";
         } else if (isAndroid) {
           // _downUrl =
           //     'https://superwind-003.s3-accelerate.amazonaws.com/apk/SuperWind.apk'
